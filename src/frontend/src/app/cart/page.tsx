@@ -48,6 +48,7 @@ export default function CartPage() {
 
       <div className="mt-6 grid gap-6 lg:grid-cols-[1fr_360px]">
         {/* Itens */}
+        <div>
         <ul className="space-y-3">
           {items.map(item => (
             <li key={item.variationId} className="flex gap-3 rounded-lg border border-border bg-white p-3 sm:gap-4 sm:p-4">
@@ -82,11 +83,12 @@ export default function CartPage() {
               </div>
             </li>
           ))}
-
-          <div className="pt-2 text-right">
-            <button onClick={clear} className="text-xs text-ink-3 hover:text-error">Esvaziar carrinho</button>
-          </div>
         </ul>
+
+        <div className="pt-2 text-right">
+          <button onClick={clear} className="text-xs text-ink-3 hover:text-error">Esvaziar carrinho</button>
+        </div>
+        </div>
 
         {/* Resumo */}
         <aside className="lg:sticky lg:top-20 lg:self-start">

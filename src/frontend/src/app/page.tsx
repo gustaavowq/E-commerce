@@ -1,7 +1,7 @@
 // Home da loja. SSR com fetch direto na API (server-side via INTERNAL_API_URL).
 import Link from 'next/link'
 import Image from 'next/image'
-import { ArrowRight, ShieldCheck, Truck, Zap } from 'lucide-react'
+import { ArrowRight, ShieldCheck, Truck, Zap, MapPin, MessageCircle, Heart } from 'lucide-react'
 import { listFeatured } from '@/services/products'
 import { listBrands } from '@/services/brands'
 import { ProductCard } from '@/components/ProductCard'
@@ -110,24 +110,106 @@ export default async function HomePage() {
         </div>
       </section>
 
-      {/* CTA comunidade */}
-      <section className="container-app pb-12">
-        <div className="relative overflow-hidden rounded-xl bg-primary-700 text-white">
+      {/* Sobre teaser */}
+      <section className="bg-surface-alt py-12 sm:py-16">
+        <div className="container-app grid items-center gap-10 lg:grid-cols-2">
+          <div className="relative aspect-[4/5] overflow-hidden rounded-xl bg-primary-700 lg:aspect-square animate-scale-in">
+            <Image
+              src="/marketing/comunidade.jpg"
+              alt="Comunidade Miami Store"
+              fill
+              sizes="(max-width: 1024px) 100vw, 50vw"
+              className="object-cover transition-transform duration-700 hover:scale-105"
+            />
+            <div className="absolute inset-0 bg-gradient-to-t from-ink/40 via-transparent to-transparent" />
+          </div>
+          <div className="animate-fade-up">
+            <p className="text-xs font-bold uppercase tracking-widest text-primary-700">Sobre a Miami</p>
+            <h2 className="mt-2 font-display text-2xl text-ink sm:text-4xl">
+              Loja de marca, jeito de gente.
+            </h2>
+            <p className="mt-4 text-sm leading-relaxed text-ink-2 sm:text-base">
+              A gente nasceu em 2020 cansado de ver gente boa pagando o triplo do preço. Hoje somos um time pequeno em São Paulo atendendo o Brasil inteiro, e cada peça que sai daqui foi conferida na mão.
+            </p>
+            <ul className="mt-5 space-y-2.5 text-sm text-ink-2">
+              <li className="flex items-start gap-2">
+                <ShieldCheck className="mt-0.5 h-5 w-5 shrink-0 text-primary-700" />
+                <span><strong className="text-ink">100% original</strong>. Caixa, etiqueta e nota fiscal sempre</span>
+              </li>
+              <li className="flex items-start gap-2">
+                <Heart className="mt-0.5 h-5 w-5 shrink-0 text-primary-700" />
+                <span><strong className="text-ink">Atendimento humano</strong>. Zap direto, sem robô</span>
+              </li>
+              <li className="flex items-start gap-2">
+                <Truck className="mt-0.5 h-5 w-5 shrink-0 text-primary-700" />
+                <span><strong className="text-ink">+15 mil pedidos</strong> entregues no Brasil todo</span>
+              </li>
+            </ul>
+            <Link
+              href="/sobre"
+              className="group mt-6 inline-flex items-center gap-2 rounded-md border border-primary-700 px-5 py-2.5 text-sm font-semibold text-primary-700 transition-all hover:gap-3 hover:bg-primary-700 hover:text-white"
+            >
+              Conhecer a história
+              <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
+            </Link>
+          </div>
+        </div>
+      </section>
+
+      {/* CTA dupla: Comunidade + Contato */}
+      <section className="container-app grid gap-4 py-12 sm:py-16 lg:grid-cols-2">
+        <div className="relative overflow-hidden rounded-xl bg-primary-700 text-white animate-fade-up">
           <Image
             src="/marketing/comunidade.jpg"
             alt="Galera da Miami Store reunida"
             fill
-            sizes="100vw"
+            sizes="(max-width: 1024px) 100vw, 50vw"
             className="object-cover opacity-30"
           />
-          <div className="relative px-6 py-10 text-center sm:px-12">
-            <h2 className="font-display text-2xl sm:text-3xl">Comunidade Miami</h2>
-            <p className="mt-3 text-sm text-white/95 sm:text-base">
-              Comprou? Marca a gente no Insta. A gente reposta o look e quem aparece ganha cupom no próximo pedido.
+          <div className="relative px-6 py-10 sm:px-8 sm:py-12">
+            <h2 className="font-display text-xl sm:text-2xl">Comunidade Miami</h2>
+            <p className="mt-2 text-sm text-white/95">
+              Comprou? Marca a gente no Insta. A gente reposta e quem aparece ganha cupom no próximo pedido.
             </p>
-            <a href="https://www.instagram.com/miamii_storee/" target="_blank" rel="noopener noreferrer" className="mt-5 inline-flex items-center gap-2 rounded-md bg-white px-5 py-2.5 text-sm font-bold text-primary-700 hover:bg-primary-50">
+            <a
+              href="https://www.instagram.com/miamii_storee/"
+              target="_blank" rel="noopener noreferrer"
+              className="mt-4 inline-flex items-center gap-2 rounded-md bg-white px-5 py-2.5 text-sm font-bold text-primary-700 transition hover:bg-primary-50"
+            >
               @miamii_storee
             </a>
+          </div>
+        </div>
+
+        <div className="relative overflow-hidden rounded-xl border border-border bg-white animate-fade-up" style={{ animationDelay: '100ms' }}>
+          <div aria-hidden className="absolute -right-12 -top-12 h-48 w-48 rounded-full bg-primary-700/5 blur-3xl" />
+          <div className="relative px-6 py-10 sm:px-8 sm:py-12">
+            <div className="flex items-center gap-2 text-primary-700">
+              <MessageCircle className="h-5 w-5" />
+              <p className="text-xs font-bold uppercase tracking-widest">Tira sua dúvida</p>
+            </div>
+            <h2 className="mt-2 font-display text-xl text-ink sm:text-2xl">Fala com a gente</h2>
+            <p className="mt-2 text-sm text-ink-2">
+              Atendimento de seg a sáb. Tira dúvida de tamanho, prazo, troca, ou só vem dar um oi mesmo.
+            </p>
+            <div className="mt-4 flex flex-wrap gap-2">
+              <Link
+                href="/contato"
+                className="inline-flex items-center gap-2 rounded-md bg-primary-700 px-5 py-2.5 text-sm font-bold text-white transition hover:bg-primary-900"
+              >
+                Página de contato
+              </Link>
+              <a
+                href="https://wa.me/5511999999999"
+                target="_blank" rel="noopener noreferrer"
+                className="inline-flex items-center gap-2 rounded-md border border-whatsapp/40 px-4 py-2.5 text-sm font-semibold text-whatsapp transition hover:bg-whatsapp/10"
+              >
+                <MessageCircle className="h-4 w-4" /> Zap direto
+              </a>
+            </div>
+            <p className="mt-4 flex items-center gap-1.5 text-xs text-ink-3">
+              <MapPin className="h-3.5 w-3.5" /> São Paulo · Atende o Brasil todo
+            </p>
           </div>
         </div>
       </section>

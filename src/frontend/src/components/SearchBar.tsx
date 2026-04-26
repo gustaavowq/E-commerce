@@ -106,7 +106,7 @@ export function SearchBar() {
         type="button"
         aria-label="Buscar produtos"
         onClick={() => setOpen(true)}
-        className="hidden h-11 w-11 items-center justify-center rounded-md text-ink hover:bg-surface-2 transition sm:flex"
+        className="flex h-11 w-11 items-center justify-center rounded-md text-ink hover:bg-surface-2 transition"
       >
         <Search className="h-5 w-5" />
       </button>

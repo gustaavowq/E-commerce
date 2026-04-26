@@ -1,7 +1,7 @@
 import Link from 'next/link'
-import Image from 'next/image'
 import { AuthenticityBadge } from './AuthenticityBadge'
 import { WishlistHeart } from './WishlistHeart'
+import { ProductImage } from './ProductImage'
 import { formatBRL, discountPercent, installmentLabel } from '@/lib/format'
 import type { ProductListItem } from '@/services/types'
 import { cn } from '@/lib/utils'
@@ -16,8 +16,6 @@ type Props = {
 export function ProductCard({ product, className, index = 0 }: Props) {
   const discount = discountPercent(product.basePrice, product.comparePrice)
   const outOfStock = product.totalStock === 0
-  const fallbackImg = `https://placehold.co/720x900/F0F0F0/9CA3AF?text=${encodeURIComponent(product.name)}`
-  const imgSrc = product.primaryImage?.url ?? fallbackImg
   const delay = Math.min(index, 9) * 50  // capa em 9 pra n ficar grid de 12 esperando 600ms
 
   return (
@@ -33,13 +31,12 @@ export function ProductCard({ product, className, index = 0 }: Props) {
     >
       {/* Imagem com badges flutuantes */}
       <div className="relative aspect-[4/5] overflow-hidden bg-surface-2">
-        <Image
-          src={imgSrc}
+        <ProductImage
+          src={product.primaryImage?.url}
           alt={product.primaryImage?.alt ?? product.name}
-          fill
+          fallbackLabel={product.name}
           sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 280px"
-          className="object-cover transition-transform duration-300 group-hover:scale-105"
-          unoptimized
+          zoomOnHover
         />
 
         {/* Topo: brand (esquerda) + heart (direita) */}
@@ -59,8 +56,8 @@ export function ProductCard({ product, className, index = 0 }: Props) {
           </span>
         )}
 
-        {/* Selo original no canto inferior direito */}
-        <div className="absolute bottom-2 right-2">
+        {/* Selo original no canto inferior direito (esconde em mobile pra não colidir com o badge de desconto) */}
+        <div className="absolute bottom-2 right-2 hidden sm:block">
           <AuthenticityBadge />
         </div>
 

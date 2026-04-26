@@ -1,5 +1,6 @@
 import Link from 'next/link'
 import { Instagram, MessageCircle } from 'lucide-react'
+import { PaymentBadges } from './PaymentBadges'
 
 export function Footer() {
   return (
@@ -12,7 +13,7 @@ export function Footer() {
               <span className="tracking-wide">MIAMI STORE</span>
             </Link>
             <p className="mt-3 text-sm text-ink-4">
-              Roupa de marca, original, com preço que entra no bolso. 🇺🇸
+              Roupa de marca, original, com preço que entra no bolso. Tudo aqui é original.
             </p>
             <div className="mt-4 flex items-center gap-3">
               <a
@@ -35,19 +36,22 @@ export function Footer() {
           </div>
 
           <div>
-            <h3 className="text-sm font-semibold uppercase tracking-wide">Atendimento</h3>
+            <h3 className="text-sm font-semibold uppercase tracking-wide">Navegue</h3>
             <ul className="mt-3 space-y-2 text-sm text-ink-4">
-              <li><a href="https://wa.me/5511999999999" className="hover:text-white">WhatsApp</a></li>
-              <li><Link href="/account" className="hover:text-white">Meus pedidos</Link></li>
-              <li><Link href="/policies/exchange" className="hover:text-white">Trocas e devoluções</Link></li>
-              <li><Link href="/policies/shipping" className="hover:text-white">Política de envio</Link></li>
+              <li><Link href="/" className="hover:text-white">Início</Link></li>
+              <li><Link href="/products" className="hover:text-white">Loja</Link></li>
+              <li><Link href="/sobre" className="hover:text-white">Sobre nós</Link></li>
+              <li><Link href="/contato" className="hover:text-white">Contato</Link></li>
             </ul>
           </div>
 
           <div>
-            <h3 className="text-sm font-semibold uppercase tracking-wide">Institucional</h3>
+            <h3 className="text-sm font-semibold uppercase tracking-wide">Ajuda</h3>
             <ul className="mt-3 space-y-2 text-sm text-ink-4">
-              <li><Link href="/about" className="hover:text-white">Sobre a Miami Store</Link></li>
+              <li><a href="https://wa.me/5511999999999" target="_blank" rel="noopener noreferrer" className="hover:text-white">WhatsApp</a></li>
+              <li><Link href="/account" className="hover:text-white">Meus pedidos</Link></li>
+              <li><Link href="/policies/exchange" className="hover:text-white">Trocas e devoluções</Link></li>
+              <li><Link href="/policies/shipping" className="hover:text-white">Política de envio</Link></li>
               <li><Link href="/policies/privacy" className="hover:text-white">Privacidade</Link></li>
               <li><Link href="/policies/terms" className="hover:text-white">Termos de uso</Link></li>
             </ul>
@@ -55,13 +59,12 @@ export function Footer() {
 
           <div>
             <h3 className="text-sm font-semibold uppercase tracking-wide">Pagamento</h3>
-            <ul className="mt-3 grid grid-cols-3 gap-2 text-xs">
-              {['Pix', 'Visa', 'Master', 'Elo', 'Amex', 'Boleto'].map(p => (
-                <li key={p} className="rounded-md bg-white/10 px-2 py-2 text-center text-ink-4">{p}</li>
-              ))}
-            </ul>
+            <p className="mt-3 text-xs text-ink-4">Aceitamos:</p>
+            <div className="mt-2">
+              <PaymentBadges />
+            </div>
             <p className="mt-4 text-xs text-ink-4">
-              Site seguro 🔒 Suas informações são protegidas com criptografia.
+              Site seguro. Suas informações são protegidas com criptografia.
             </p>
           </div>
         </div>

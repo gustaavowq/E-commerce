@@ -48,6 +48,8 @@ export function WishlistHeart({ productId, className, size = 'md' }: Props) {
     <button
       type="button"
       onClick={onClick}
+      onMouseDown={(e) => e.stopPropagation()}
+      onTouchStart={(e) => e.stopPropagation()}
       aria-pressed={has}
       aria-label={has ? 'Remover dos favoritos' : 'Adicionar aos favoritos'}
       className={cn(

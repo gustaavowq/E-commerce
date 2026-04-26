@@ -80,12 +80,6 @@ export default async function ProductsPage({ searchParams }: Props) {
           </h1>
           <p className="mt-1 text-sm text-ink-3">{total} {total === 1 ? 'produto' : 'produtos'}</p>
         </div>
-        <Filters
-          brands={brands}
-          categories={categories}
-          availableSizes={sizes}
-          availableColors={colors}
-        />
       </header>
 
       <div className="mt-6 grid gap-6 lg:grid-cols-[260px_1fr]">
