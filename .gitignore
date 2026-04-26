@@ -21,7 +21,7 @@ dist/
 build/
 out/
 .next/
-.tsbuildinfo
+*.tsbuildinfo
 
 # --- Coverage ---
 coverage/
@@ -42,8 +42,7 @@ Thumbs.db
 *.swp
 
 # --- Claude Code (preferências locais não vão pro repo) ---
-.claude/settings.local.json
-.claude/projects/
+.claude/
 
 # --- Docker ---
 *.local.yml
