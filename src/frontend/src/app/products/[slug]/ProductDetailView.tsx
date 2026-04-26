@@ -6,15 +6,25 @@ import Link from 'next/link'
 import { Check, Truck, ShieldCheck, Zap, MessageCircle, Ruler } from 'lucide-react'
 import { Button } from '@/components/ui/Button'
 import { AuthenticityBadge } from '@/components/AuthenticityBadge'
+import { WishlistHeart } from '@/components/WishlistHeart'
+import { ProductReviews } from '@/components/ProductReviews'
 import { useCart } from '@/stores/cart'
 import { formatBRL, discountPercent, installmentLabel, pixPrice } from '@/lib/format'
-import type { ProductDetail, ProductVariation } from '@/services/types'
+import type { ProductDetail, ProductVariation, StoreSettings } from '@/services/types'
 import { cn } from '@/lib/utils'
 
-type Props = { product: ProductDetail }
+type Props = {
+  product: ProductDetail
+  settings?: StoreSettings | null
+}
 
-export function ProductDetailView({ product }: Props) {
+export function ProductDetailView({ product, settings }: Props) {
   const addToCart = useCart(s => s.addItem)
+
+  // WhatsApp link contextual
+  const waNumber  = settings?.whatsappNumber ?? '5511999999999'
+  const waMessage = `Oi! Tô olhando aqui: ${product.brand.name} ${product.name}. Pode me ajudar?`
+  const waUrl     = `https://wa.me/${waNumber}?text=${encodeURIComponent(waMessage)}`
 
   const colors = useMemo(() => Array.from(new Map(
     product.variations.map(v => [v.color, { color: v.color, hex: v.colorHex }] as const),
@@ -32,12 +42,24 @@ export function ProductDetailView({ product }: Props) {
   const discount   = discountPercent(product.basePrice, product.comparePrice)
   const pixValue   = pixPrice(product.basePrice)
   const fallbackImg = `https://placehold.co/720x900/F0F0F0/9CA3AF?text=${encodeURIComponent(product.name)}`
-  const images     = product.images.length ? product.images : [{ id: 'fallback', url: fallbackImg, alt: product.name, sortOrder: 0, isPrimary: true }]
+
+  // Multi-imagens por cor: prioriza imagens da cor selecionada, senão genéricas
+  const images = useMemo(() => {
+    const all = product.images.length
+      ? product.images
+      : [{ id: 'fallback', url: fallbackImg, alt: product.name, sortOrder: 0, isPrimary: true, variationColor: null }]
+    if (!selectedColor) return all
+    const colorMatches = all.filter(i => i.variationColor === selectedColor)
+    const generic      = all.filter(i => !i.variationColor)
+    return colorMatches.length > 0 ? [...colorMatches, ...generic] : all
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [product.images, selectedColor])
 
   const onColorChange = (c: string) => {
     setSelectedColor(c)
     const first = product.variations.find(v => v.color === c)
     setSelectedVariation(first ?? null)
+    setActiveImageIdx(0)  // reset gallery pra primeira foto da nova cor
   }
 
   const onAddToCart = () => {
@@ -71,11 +93,12 @@ export function ProductDetailView({ product }: Props) {
             unoptimized
           />
           {discount && (
-            <span className="absolute left-3 top-3 rounded-sm bg-accent px-2 py-1 text-xs font-black text-white">
+            <span className="absolute left-3 top-3 rounded-sm bg-accent px-2 py-1 text-xs font-black text-white animate-fade-in">
               -{discount}%
             </span>
           )}
-          <div className="absolute right-3 top-3">
+          <div className="absolute right-3 top-3 flex flex-col items-end gap-2">
+            <WishlistHeart productId={product.id} size="md" />
             <AuthenticityBadge />
           </div>
         </div>
@@ -208,8 +231,11 @@ export function ProductDetailView({ product }: Props) {
         {/* Trust signals */}
         <ul className="mt-6 space-y-2 text-sm text-ink-2">
           <li className="flex items-center gap-2"><ShieldCheck className="h-4 w-4 text-primary-700" /> 100% original, vem com a caixa da marca</li>
-          <li className="flex items-center gap-2"><Truck className="h-4 w-4 text-primary-700" /> Frete fixo R$ 15, chega rápido</li>
-          <li className="flex items-center gap-2"><MessageCircle className="h-4 w-4 text-primary-700" /> Dúvida? Chama no Zap</li>
+          <li className="flex items-center gap-2"><Truck className="h-4 w-4 text-primary-700" /> Frete fixo {settings ? formatBRL(settings.shippingFlatRate) : 'R$ 15'}, chega rápido</li>
+          <li className="flex items-center gap-2">
+            <MessageCircle className="h-4 w-4 text-whatsapp" />
+            Dúvida? <a href={waUrl} target="_blank" rel="noopener noreferrer" className="font-semibold text-whatsapp hover:underline">Chama no Zap</a>
+          </li>
         </ul>
 
         {/* Descrição */}
@@ -218,6 +244,11 @@ export function ProductDetailView({ product }: Props) {
           <p className="mt-3 whitespace-pre-line text-sm leading-relaxed text-ink-2">{product.description}</p>
         </details>
       </aside>
+
+      {/* Reviews ocupa toda a largura abaixo */}
+      <div className="lg:col-span-2">
+        <ProductReviews productId={product.id} />
+      </div>
     </div>
   )
 }

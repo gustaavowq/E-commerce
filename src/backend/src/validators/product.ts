@@ -6,12 +6,15 @@ export const productListQuerySchema = z.object({
   brands:     z.string().optional(),                              // CSV de slugs
   category:   z.string().optional(),                              // slug
   categories: z.string().optional(),
-  size:       z.string().optional(),                              // P,M,G ou 40,41
-  color:      z.string().optional(),
+  size:       z.string().optional(),                              // single (compat)
+  sizes:      z.string().optional(),                              // CSV (P,M,G)
+  color:      z.string().optional(),                              // single (compat)
+  colors:     z.string().optional(),                              // CSV (Vermelho,Azul)
   search:     z.string().min(1).max(100).optional(),
   minPrice:   z.coerce.number().nonnegative().optional(),
   maxPrice:   z.coerce.number().nonnegative().optional(),
   inStock:    z.coerce.boolean().optional(),
+  onSale:     z.coerce.boolean().optional(),                      // só com comparePrice > basePrice
 
   // Ordenação
   sort:       z.enum([

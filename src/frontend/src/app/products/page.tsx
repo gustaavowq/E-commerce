@@ -1,52 +1,74 @@
-// Listagem de produtos com filtro por brand/category via querystring.
-// Server component — SSR direto na API. Filtros básicos via Link (nada de client state pra MVP).
+// Listagem com filtros avançados (preço, tamanho, cor, promoção, marca, categoria).
 import Link from 'next/link'
 import { listProducts } from '@/services/products'
 import { listBrands } from '@/services/brands'
 import { listCategories } from '@/services/categories'
 import { ProductCard } from '@/components/ProductCard'
+import { Filters } from './Filters'
 import type { ProductListQuery } from '@/services/types'
 
-type Props = { searchParams: { brand?: string; category?: string; sort?: string; search?: string } }
+type Props = {
+  searchParams: {
+    brands?: string; brand?: string;
+    categories?: string; category?: string;
+    sizes?: string; colors?: string;
+    minPrice?: string; maxPrice?: string;
+    onSale?: string;
+    sort?: string; search?: string;
+  }
+}
 
 export const dynamic = 'force-dynamic'
 
 export default async function ProductsPage({ searchParams }: Props) {
-  const query: ProductListQuery = {
+  const fullQuery: Record<string, string | number | undefined> = {
     brand:    searchParams.brand,
+    brands:   searchParams.brands,
     category: searchParams.category,
+    categories: searchParams.categories,
     search:   searchParams.search,
-    sort:     (searchParams.sort as ProductListQuery['sort']) ?? 'newest',
+    sort:     searchParams.sort ?? 'newest',
+    minPrice: searchParams.minPrice ? Number(searchParams.minPrice) : undefined,
+    maxPrice: searchParams.maxPrice ? Number(searchParams.maxPrice) : undefined,
     limit:    24,
   }
+  if (searchParams.sizes)  fullQuery.sizes  = searchParams.sizes
+  if (searchParams.colors) fullQuery.colors = searchParams.colors
+  if (searchParams.onSale) fullQuery.onSale = searchParams.onSale
 
   const [productsRes, brands, categories] = await Promise.all([
-    listProducts(query),
+    listProducts(fullQuery as ProductListQuery),
     listBrands(),
     listCategories(),
   ])
 
   const total = productsRes.meta?.total ?? productsRes.data.length
 
-  // Pra montar links de filtro mantendo outros parâmetros
-  const buildLink = (changes: Partial<typeof searchParams>) => {
-    const sp = new URLSearchParams()
-    Object.entries({ ...searchParams, ...changes }).forEach(([k, v]) => {
-      if (v) sp.set(k, v)
-      else sp.delete(k)
-    })
-    const qs = sp.toString()
-    return `/products${qs ? `?${qs}` : ''}`
-  }
+  // Coleta tamanhos/cores únicos pra mostrar como filtros
+  const sizesSet  = new Set<string>()
+  const colorsMap = new Map<string, string | null>()
+  productsRes.data.forEach(p => {
+    p.sizes.forEach(s => sizesSet.add(s))
+    p.colors.forEach(c => colorsMap.set(c.color, c.hex))
+  })
+  const SIZE_ORDER = ['PP', 'P', 'M', 'G', 'GG', 'XGG']
+  const sizes = Array.from(sizesSet).sort((a, b) => {
+    const ia = SIZE_ORDER.indexOf(a); const ib = SIZE_ORDER.indexOf(b)
+    if (ia !== -1 || ib !== -1) return (ia === -1 ? 99 : ia) - (ib === -1 ? 99 : ib)
+    const na = Number(a); const nb = Number(b)
+    if (!isNaN(na) && !isNaN(nb)) return na - nb
+    return a.localeCompare(b)
+  })
+  const colors = Array.from(colorsMap.entries()).map(([name, hex]) => ({ name, hex }))
 
   return (
     <div className="container-app py-6 sm:py-10">
-      {/* Breadcrumb + título */}
       <nav className="mb-3 text-xs text-ink-3">
         <Link href="/" className="hover:text-primary-700">Home</Link>
         <span className="mx-1.5">›</span>
         <span>Produtos</span>
       </nav>
+
       <header className="flex flex-wrap items-end justify-between gap-3">
         <div>
           <h1 className="font-display text-2xl text-ink sm:text-3xl">
@@ -58,83 +80,35 @@ export default async function ProductsPage({ searchParams }: Props) {
           </h1>
           <p className="mt-1 text-sm text-ink-3">{total} {total === 1 ? 'produto' : 'produtos'}</p>
         </div>
+        <Filters
+          brands={brands}
+          categories={categories}
+          availableSizes={sizes}
+          availableColors={colors}
+        />
       </header>
 
       <div className="mt-6 grid gap-6 lg:grid-cols-[260px_1fr]">
-        {/* Sidebar de filtros — desktop. Mobile vira drawer no sprint 2. */}
-        <aside className="hidden space-y-6 lg:block">
-          <FilterSection title="Marcas">
-            <FilterLink href={buildLink({ brand: undefined })} active={!searchParams.brand}>Todas</FilterLink>
-            {brands.map(b => (
-              <FilterLink key={b.slug} href={buildLink({ brand: b.slug })} active={searchParams.brand === b.slug} count={b.productCount}>
-                {b.name}
-              </FilterLink>
-            ))}
-          </FilterSection>
-          <FilterSection title="Categorias">
-            <FilterLink href={buildLink({ category: undefined })} active={!searchParams.category}>Todas</FilterLink>
-            {categories.map(c => (
-              <FilterLink key={c.slug} href={buildLink({ category: c.slug })} active={searchParams.category === c.slug} count={c.productCount}>
-                {c.name}
-              </FilterLink>
-            ))}
-          </FilterSection>
-          <FilterSection title="Ordenar por">
-            {[
-              { v: 'newest',     l: 'Mais recentes' },
-              { v: 'featured',   l: 'Em destaque' },
-              { v: 'price_asc',  l: 'Menor preço' },
-              { v: 'price_desc', l: 'Maior preço' },
-              { v: 'name_asc',   l: 'A → Z' },
-            ].map(o => (
-              <FilterLink key={o.v} href={buildLink({ sort: o.v })} active={(searchParams.sort ?? 'newest') === o.v}>
-                {o.l}
-              </FilterLink>
-            ))}
-          </FilterSection>
-        </aside>
+        <Filters
+          brands={brands}
+          categories={categories}
+          availableSizes={sizes}
+          availableColors={colors}
+        />
 
-        {/* Grid */}
         <div>
           {productsRes.data.length === 0 ? (
-            <div className="rounded-lg border border-border bg-white p-10 text-center">
-              <p className="text-lg font-semibold text-ink">Nenhum produto encontrado</p>
-              <p className="mt-2 text-sm text-ink-3">Tenta tirar algum filtro ou voltar pra <Link href="/products" className="text-primary-700 hover:underline">todos os produtos</Link>.</p>
+            <div className="rounded-lg border border-border bg-white p-10 text-center animate-fade-up">
+              <p className="text-lg font-semibold text-ink">Nada bate com esses filtros</p>
+              <p className="mt-2 text-sm text-ink-3">Tira um filtro ou volta pra <Link href="/products" className="text-primary-700 hover:underline">todos os produtos</Link>.</p>
             </div>
           ) : (
             <div className="grid grid-cols-2 gap-3 sm:gap-4 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-4">
-              {productsRes.data.map(p => <ProductCard key={p.id} product={p} />)}
+              {productsRes.data.map((p, i) => <ProductCard key={p.id} product={p} index={i} />)}
             </div>
           )}
         </div>
       </div>
     </div>
-  )
-}
-
-function FilterSection({ title, children }: { title: string; children: React.ReactNode }) {
-  return (
-    <div>
-      <h3 className="mb-2 text-xs font-bold uppercase tracking-wider text-ink-3">{title}</h3>
-      <div className="space-y-1">{children}</div>
-    </div>
-  )
-}
-
-function FilterLink({ href, active, count, children }: { href: string; active?: boolean; count?: number; children: React.ReactNode }) {
-  return (
-    <Link
-      href={href}
-      className={`flex items-center justify-between rounded-md px-3 py-2 text-sm transition ${
-        active
-          ? 'bg-primary-50 font-semibold text-primary-700'
-          : 'text-ink-2 hover:bg-surface-2'
-      }`}
-    >
-      <span>{children}</span>
-      {count !== undefined && count > 0 && (
-        <span className="text-xs text-ink-3">{count}</span>
-      )}
-    </Link>
   )
 }

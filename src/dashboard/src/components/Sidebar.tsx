@@ -2,17 +2,19 @@
 
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import { LayoutDashboard, ShoppingBag, Package, Users, LogOut, Store } from 'lucide-react'
+import { LayoutDashboard, ShoppingBag, Package, Users, LogOut, Store, Tag, Settings as SettingsIcon } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { useAuth } from '@/stores/auth'
 import { logout } from '@/services/auth'
 import { useRouter } from 'next/navigation'
 
 const NAV = [
-  { href: '/',          label: 'Visão geral',     icon: LayoutDashboard },
-  { href: '/orders',    label: 'Pedidos',         icon: ShoppingBag },
-  { href: '/products',  label: 'Produtos',        icon: Package },
-  { href: '/customers', label: 'Clientes',        icon: Users },
+  { href: '/',          label: 'Visão geral', icon: LayoutDashboard },
+  { href: '/orders',    label: 'Pedidos',     icon: ShoppingBag },
+  { href: '/products',  label: 'Produtos',    icon: Package },
+  { href: '/customers', label: 'Clientes',    icon: Users },
+  { href: '/coupons',   label: 'Cupons',      icon: Tag },
+  { href: '/settings',  label: 'Configurações', icon: SettingsIcon },
 ]
 
 export function Sidebar() {

@@ -11,6 +11,59 @@ export const adminOrdersRouter: Router = Router()
 
 const ALLOWED_STATUS_VALUES = ['PENDING_PAYMENT', 'PAID', 'PREPARING', 'SHIPPED', 'DELIVERED', 'CANCELLED', 'REFUNDED'] as const
 
+// GET /api/admin/orders/export.csv — exporta todos os pedidos (filtrados)
+adminOrdersRouter.get('/export.csv', async (req, res, next) => {
+  try {
+    const status = typeof req.query.status === 'string' ? req.query.status : undefined
+    const where: Prisma.OrderWhereInput = {}
+    if (status && (ALLOWED_STATUS_VALUES as readonly string[]).includes(status)) {
+      where.status = status as OrderStatus
+    }
+    const orders = await prisma.order.findMany({
+      where,
+      orderBy: { createdAt: 'desc' },
+      include: {
+        user:    { select: { name: true, email: true, cpf: true } },
+        address: true,
+        items:   { select: { productName: true, variationLabel: true, quantity: true, unitPrice: true, subtotal: true } },
+        payments: { select: { method: true, status: true } },
+      },
+    })
+
+    // CSV manual (BOM pra Excel abrir UTF-8 certinho)
+    const escape = (v: unknown): string => {
+      if (v == null) return ''
+      const s = String(v).replace(/"/g, '""')
+      return /[",\n;]/.test(s) ? `"${s}"` : s
+    }
+    const lines = [
+      ['Pedido','Data','Status','Pagamento','Cliente','Email','CPF','Cidade','UF','Subtotal','Frete','Desconto','Total','Itens'].join(';'),
+      ...orders.map(o => [
+        o.orderNumber,
+        o.createdAt.toISOString(),
+        o.status,
+        o.payments[0]?.status ?? '',
+        o.user.name,
+        o.user.email,
+        o.user.cpf ?? '',
+        o.address.city,
+        o.address.state,
+        Number(o.subtotal).toFixed(2),
+        Number(o.shippingCost).toFixed(2),
+        Number(o.discount).toFixed(2),
+        Number(o.total).toFixed(2),
+        o.items.map(i => `${i.quantity}x ${i.productName} (${i.variationLabel})`).join(' | '),
+      ].map(escape).join(';')),
+    ]
+
+    const csv = '﻿' + lines.join('\n')
+    const filename = `miami-pedidos-${new Date().toISOString().slice(0, 10)}.csv`
+    res.setHeader('Content-Type', 'text/csv; charset=utf-8')
+    res.setHeader('Content-Disposition', `attachment; filename="${filename}"`)
+    return res.send(csv)
+  } catch (err) { next(err) }
+})
+
 // GET /api/admin/orders — lista paginada com filtros
 adminOrdersRouter.get('/', async (req, res, next) => {
   try {

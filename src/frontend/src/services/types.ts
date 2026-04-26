@@ -71,7 +71,65 @@ export type ProductDetail = {
   brand:    Brand
   category: Pick<Category, 'id' | 'slug' | 'name'>
   variations: ProductVariation[]
-  images:     Required<ProductImage>[]
+  images:     Array<ProductImage & { variationColor?: string | null }>
+}
+
+// Settings públicos (branding da loja)
+export type StoreSettings = {
+  storeName: string
+  storeTagline: string | null
+  logoUrl: string | null
+  faviconUrl: string | null
+  whatsappNumber: string | null
+  whatsappMessage: string | null
+  instagramHandle: string | null
+  email: string | null
+  phone: string | null
+  cnpj: string | null
+  legalName: string | null
+  address: string | null
+  privacyPolicy: string | null
+  termsOfUse: string | null
+  exchangePolicy: string | null
+  shippingPolicy: string | null
+  aboutUs: string | null
+  pixDiscountPercent: number
+  shippingFlatRate: number
+  freeShippingMinValue: number | null
+}
+
+// Reviews
+export type Review = {
+  id: string
+  rating: number
+  comment: string | null
+  userName: string
+  createdAt: string
+}
+
+export type ReviewSummary = {
+  average: number
+  total: number
+  distribution: Array<{ star: number; count: number }>
+}
+
+export type ReviewsPayload = {
+  summary: ReviewSummary
+  mine: { id: string; rating: number; comment: string | null; isApproved: boolean } | null
+  reviews: Review[]
+}
+
+// Wishlist
+export type WishlistEntry = {
+  id: string
+  addedAt: string
+  product: {
+    id: string; slug: string; name: string;
+    basePrice: number; comparePrice: number | null;
+    brand: { name: string; slug: string };
+    category: { name: string; slug: string };
+    primaryImage: { url: string; alt: string | null } | null;
+  }
 }
 
 export type ProductListQuery = {

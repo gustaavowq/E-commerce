@@ -7,6 +7,7 @@ import type {
   AdminOrderListItem, AdminOrderDetail, OrderStatus,
   AdminCustomerListItem, AdminCustomerDetail,
   Brand, Category,
+  StoreSettings, Coupon, CouponInput,
 } from './types'
 
 // ----- Dashboard -----
@@ -54,4 +55,18 @@ export const adminCustomers = {
 export const refs = {
   brands:     () => get<Brand[]>('/brands'),
   categories: () => get<Category[]>('/categories'),
+}
+
+// ----- Settings -----
+export const adminSettings = {
+  get:    ()              => get<StoreSettings>('/admin/settings'),
+  update: (body: Partial<StoreSettings>) => patch<StoreSettings>('/admin/settings', body),
+}
+
+// ----- Coupons -----
+export const adminCoupons = {
+  list:   ()              => apiList<Coupon[]>('/admin/coupons'),
+  create: (body: CouponInput) => post<Coupon>('/admin/coupons', body),
+  update: (id: string, body: Partial<CouponInput>) => patch<Coupon>(`/admin/coupons/${id}`, body),
+  remove: (id: string)    => del<null>(`/admin/coupons/${id}`),
 }

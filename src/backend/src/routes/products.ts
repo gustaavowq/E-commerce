@@ -42,15 +42,23 @@ productsRouter.get('/', async (req, res, next) => {
       if (q.minPrice !== undefined) where.basePrice.gte = q.minPrice
       if (q.maxPrice !== undefined) where.basePrice.lte = q.maxPrice
     }
-    if (q.size || q.color || q.inStock) {
+    const sizeList  = csvList(q.sizes)  ?? (q.size  ? [q.size]  : undefined)
+    const colorList = csvList(q.colors) ?? (q.color ? [q.color] : undefined)
+    if (sizeList || colorList || q.inStock) {
       where.variations = {
         some: {
           isActive: true,
-          ...(q.size  ? { size:  { equals: q.size,  mode: 'insensitive' } } : {}),
-          ...(q.color ? { color: { equals: q.color, mode: 'insensitive' } } : {}),
+          ...(sizeList  ? { size:  { in: sizeList,  mode: 'insensitive' as const } } : {}),
+          ...(colorList ? { color: { in: colorList, mode: 'insensitive' as const } } : {}),
           ...(q.inStock ? { stock: { gt: 0 } } : {}),
         },
       }
+    }
+    // "Em promoção" = comparePrice setado e > basePrice
+    if (q.onSale) {
+      // Prisma 5 não tem comparação coluna-coluna nativa em where simples,
+      // então usa NOT null + filter posterior. Pra MVP: só comparePrice not null.
+      where.comparePrice = { not: null }
     }
 
     const orderBy: Prisma.ProductOrderByWithRelationInput[] = (() => {
@@ -144,7 +152,7 @@ productsRouter.get('/:slug', async (req, res, next) => {
         },
         images: {
           orderBy: [{ isPrimary: 'desc' }, { sortOrder: 'asc' }],
-          select: { id: true, url: true, alt: true, sortOrder: true, isPrimary: true },
+          select: { id: true, url: true, alt: true, sortOrder: true, isPrimary: true, variationColor: true },
         },
       },
     })

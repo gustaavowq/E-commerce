@@ -3,7 +3,7 @@
 import { useState } from 'react'
 import Link from 'next/link'
 import { usePathname, useRouter } from 'next/navigation'
-import { Menu, X, Store, LayoutDashboard, ShoppingBag, Package, Users, LogOut } from 'lucide-react'
+import { Menu, X, Store, LayoutDashboard, ShoppingBag, Package, Users, LogOut, Tag, Settings as SettingsIcon } from 'lucide-react'
 import { useAuth } from '@/stores/auth'
 import { logout } from '@/services/auth'
 import { cn } from '@/lib/utils'
@@ -13,6 +13,8 @@ const NAV = [
   { href: '/orders',    label: 'Pedidos',     icon: ShoppingBag },
   { href: '/products',  label: 'Produtos',    icon: Package },
   { href: '/customers', label: 'Clientes',    icon: Users },
+  { href: '/coupons',   label: 'Cupons',      icon: Tag },
+  { href: '/settings',  label: 'Configurações', icon: SettingsIcon },
 ]
 
 export function MobileTopBar() {

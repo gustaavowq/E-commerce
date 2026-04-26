@@ -65,3 +65,4 @@ logs/
 test-results/
 playwright-report/
 playwright/.cache/
+scripts/cloudflared.exe

@@ -114,6 +114,7 @@ authRouter.post('/register', authLimiter, async (req, res, next) => {
 
 // =====================================================================
 // POST /api/auth/login — login pra CUSTOMER ou ADMIN
+// Merge automático do carrinho de visitante pro carrinho do user.
 // =====================================================================
 authRouter.post('/login', authLimiter, async (req, res, next) => {
   try {
@@ -124,6 +125,17 @@ authRouter.post('/login', authLimiter, async (req, res, next) => {
 
     const valid = await verifyPassword(body.password, user.passwordHash)
     if (!valid) throw errors.unauthorized('Email ou senha incorretos')
+
+    // Merge cart de visitante (cookie guest_sid) → cart do user
+    const guestSid = req.cookies?.guest_sid
+    if (guestSid && user.role === 'CUSTOMER') {
+      try {
+        await mergeGuestCart(guestSid, user.id)
+      } catch (e) {
+        // não bloqueia o login se merge falhar
+        console.warn('[auth/login] cart merge falhou:', e)
+      }
+    }
 
     const accessToken = signAccessToken({ userId: user.id, role: user.role })
     const refreshTokenRaw = await issueRefreshToken(user.id, req)
@@ -142,6 +154,53 @@ authRouter.post('/login', authLimiter, async (req, res, next) => {
     next(err)
   }
 })
+
+// Junta carrinho de visitante (sessionId) com carrinho do user logado.
+// Pra cada item do guest cart: se o user já tem o mesmo variationId, soma
+// as quantidades respeitando estoque. Se não tem, transfere o item.
+async function mergeGuestCart(guestSid: string, userId: string): Promise<void> {
+  const guestCart = await prisma.cart.findFirst({
+    where:   { sessionId: guestSid, status: 'active' },
+    include: { items: { include: { variation: { select: { stock: true } } } } },
+    orderBy: { updatedAt: 'desc' },
+  })
+  if (!guestCart || guestCart.items.length === 0) return
+
+  const userCart = await prisma.cart.findFirst({
+    where:   { userId, status: 'active' },
+    orderBy: { updatedAt: 'desc' },
+  }) ?? await prisma.cart.create({ data: { userId, status: 'active' } })
+
+  for (const item of guestCart.items) {
+    const existing = await prisma.cartItem.findUnique({
+      where: { cartId_variationId: { cartId: userCart.id, variationId: item.variationId } },
+    })
+    const targetQty = Math.min(
+      item.variation.stock,
+      (existing?.quantity ?? 0) + item.quantity,
+    )
+    if (targetQty <= 0) continue
+
+    if (existing) {
+      await prisma.cartItem.update({ where: { id: existing.id }, data: { quantity: targetQty } })
+    } else {
+      await prisma.cartItem.create({
+        data: {
+          cartId:      userCart.id,
+          productId:   item.productId,
+          variationId: item.variationId,
+          quantity:    targetQty,
+        },
+      })
+    }
+  }
+
+  // Marca o cart de visitante como mergeado pra não ressuscitar
+  await prisma.cart.update({
+    where: { id: guestCart.id },
+    data:  { status: 'converted', convertedAt: new Date() },
+  })
+}
 
 // =====================================================================
 // POST /api/auth/refresh — rotaciona refresh + gera novo access

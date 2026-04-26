@@ -1,8 +1,10 @@
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import { getProduct } from '@/services/products'
+import { getStoreSettings } from '@/services/settings'
 import { ApiError } from '@/lib/api-error'
 import { ProductDetailView } from './ProductDetailView'
+import type { StoreSettings } from '@/services/types'
 
 type Props = { params: { slug: string } }
 
@@ -29,6 +31,10 @@ export default async function ProductPage({ params }: Props) {
     throw err
   }
 
+  // Settings pra contextual WhatsApp + frete dinâmico (não bloqueia se falhar)
+  let settings: StoreSettings | null = null
+  try { settings = await getStoreSettings() } catch {}
+
   return (
     <div className="container-app py-4 sm:py-8">
       <nav className="mb-3 text-xs text-ink-3">
@@ -41,7 +47,7 @@ export default async function ProductPage({ params }: Props) {
         <span className="text-ink-2">{product.name}</span>
       </nav>
 
-      <ProductDetailView product={product} />
+      <ProductDetailView product={product} settings={settings} />
     </div>
   )
 }

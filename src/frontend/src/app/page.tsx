@@ -18,38 +18,48 @@ export default async function HomePage() {
   return (
     <>
       {/* Hero */}
-      <section className="bg-ink text-white">
-        <div className="container-app grid items-center gap-8 py-10 sm:py-16 lg:grid-cols-2">
+      <section className="relative overflow-hidden bg-ink text-white">
+        {/* Glow decorativo */}
+        <div aria-hidden className="absolute -left-32 top-1/2 h-96 w-96 -translate-y-1/2 rounded-full bg-primary-700/30 blur-3xl" />
+        <div aria-hidden className="absolute -right-20 -top-20 h-80 w-80 rounded-full bg-accent/20 blur-3xl" />
+
+        <div className="container-app relative grid items-center gap-8 py-10 sm:py-16 lg:grid-cols-2">
           <div>
-            <p className="text-sm font-bold uppercase tracking-widest text-neon">Chegou peça nova</p>
-            <h1 className="mt-3 font-display text-3xl leading-tight sm:text-5xl lg:text-6xl">
+            <p className="text-sm font-bold uppercase tracking-widest text-neon animate-fade-up" style={{ animationDelay: '0ms' }}>
+              Chegou peça nova
+            </p>
+            <h1 className="mt-3 font-display text-3xl leading-tight sm:text-5xl lg:text-6xl animate-fade-up" style={{ animationDelay: '100ms' }}>
               Original,
               <br />
-              <span className="text-primary-300">com preço que cabe.</span>
+              <span className="text-shine">com preço que cabe.</span>
             </h1>
-            <p className="mt-4 max-w-md text-base text-ink-4">
+            <p className="mt-4 max-w-md text-base text-ink-4 animate-fade-up" style={{ animationDelay: '200ms' }}>
               Lacoste, Nike, Adidas, Tommy. Tudo original, vem com caixa, etiqueta e nota fiscal. Pix dá 5% off. Frete fixo R$ 15 em todo lugar.
             </p>
-            <div className="mt-6 flex flex-wrap gap-3">
-              <Link href="/products" className="inline-flex items-center gap-2 rounded-md bg-primary-700 px-6 py-3 text-base font-semibold text-white transition hover:bg-primary-900">
-                Ver coleção <ArrowRight className="h-4 w-4" />
+            <div className="mt-6 flex flex-wrap gap-3 animate-fade-up" style={{ animationDelay: '300ms' }}>
+              <Link
+                href="/products"
+                className="group inline-flex items-center gap-2 rounded-md bg-primary-700 px-6 py-3 text-base font-semibold text-white transition-all hover:bg-primary-900 hover:gap-3 hover:shadow-lg hover:shadow-primary-700/30"
+              >
+                Ver coleção
+                <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
               </Link>
-              <Link href="/products?brand=lacoste" className="inline-flex items-center gap-2 rounded-md border border-white/30 px-6 py-3 text-base font-semibold text-white transition hover:bg-white/10">
+              <Link href="/products?brand=lacoste" className="inline-flex items-center gap-2 rounded-md border border-white/30 px-6 py-3 text-base font-semibold text-white transition-all hover:bg-white/10 hover:border-white/60">
                 Só Lacoste
               </Link>
             </div>
           </div>
 
-          <div className="relative aspect-square w-full overflow-hidden rounded-xl bg-primary-700 lg:aspect-[4/5]">
+          <div className="relative aspect-square w-full overflow-hidden rounded-xl bg-primary-700 lg:aspect-[4/5] animate-scale-in" style={{ animationDelay: '150ms' }}>
             <Image
               src="/marketing/hero-banner.jpg"
               alt="Vocês não perdem por esperar"
               fill
               sizes="(max-width: 1024px) 100vw, 50vw"
-              className="object-cover"
+              className="object-cover transition-transform duration-700 hover:scale-105"
               priority
             />
-            <div className="absolute bottom-4 left-4 rounded-md bg-ink/80 px-3 py-1.5 text-xs font-bold uppercase backdrop-blur-sm">
+            <div className="absolute bottom-4 left-4 rounded-md bg-ink/80 px-3 py-1.5 text-xs font-bold uppercase backdrop-blur-sm animate-fade-up" style={{ animationDelay: '500ms' }}>
               Drop 2026
             </div>
           </div>
@@ -64,8 +74,12 @@ export default async function HomePage() {
             { icon: Zap,         title: 'Pix com 5% OFF',   text: 'Cai na hora, sem espera' },
             { icon: Truck,       title: 'Frete fixo R$ 15', text: 'Pra qualquer canto do Brasil' },
           ].map((it, i) => (
-            <div key={i} className="flex items-center gap-3 rounded-md p-3">
-              <div className="flex h-12 w-12 items-center justify-center rounded-pill bg-primary-50 text-primary-700">
+            <div
+              key={i}
+              className="group flex items-center gap-3 rounded-md p-3 animate-fade-up transition hover:bg-primary-50/40"
+              style={{ animationDelay: `${100 + i * 80}ms` }}
+            >
+              <div className="flex h-12 w-12 items-center justify-center rounded-pill bg-primary-50 text-primary-700 transition-transform group-hover:scale-110 group-hover:rotate-6">
                 <it.icon className="h-6 w-6" />
               </div>
               <div>
@@ -92,7 +106,7 @@ export default async function HomePage() {
           </Link>
         </div>
         <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 sm:gap-4 lg:grid-cols-4">
-          {featuredRes.data.map(p => <ProductCard key={p.id} product={p} />)}
+          {featuredRes.data.map((p, i) => <ProductCard key={p.id} product={p} index={i} />)}
         </div>
       </section>
 

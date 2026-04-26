@@ -76,6 +76,7 @@ model User {
   orders       Order[]
   carts        Cart[]
   reviews      Review[]
+  wishlist     WishlistItem[]
   refreshTokens       RefreshToken[]
   passwordResetTokens PasswordResetToken[]
 
@@ -84,6 +85,62 @@ model User {
 
   @@index([role])
   @@map("users")
+}
+
+// -----------------------------------------------------------------------------
+// STORE SETTINGS — config global da loja (singleton, id="default")
+// O lojista edita pelo painel /settings em vez de mexer em código/env.
+// -----------------------------------------------------------------------------
+model StoreSettings {
+  id              String   @id @default("default")
+  storeName       String   @default("Miami Store") @map("store_name")
+  storeTagline    String?  @map("store_tagline")
+  logoUrl         String?  @map("logo_url")
+  faviconUrl      String?  @map("favicon_url")
+
+  // Contato visível pro cliente
+  whatsappNumber  String?  @map("whatsapp_number")  // ex "5511999999999"
+  whatsappMessage String?  @map("whatsapp_message") @db.Text
+  instagramHandle String?  @map("instagram_handle") // ex "miamii_storee"
+  email           String?
+  phone           String?
+
+  // Empresa
+  cnpj            String?
+  legalName       String?  @map("legal_name")
+  address         String?
+
+  // Conteúdo legal (markdown)
+  privacyPolicy   String?  @map("privacy_policy") @db.Text
+  termsOfUse      String?  @map("terms_of_use") @db.Text
+  exchangePolicy  String?  @map("exchange_policy") @db.Text
+  shippingPolicy  String?  @map("shipping_policy") @db.Text
+  aboutUs         String?  @map("about_us") @db.Text
+
+  // Comercial
+  pixDiscountPercent  Int     @default(5) @map("pix_discount_percent")
+  shippingFlatRate    Decimal @default(15.00) @map("shipping_flat_rate") @db.Decimal(10, 2)
+  freeShippingMinValue Decimal? @map("free_shipping_min_value") @db.Decimal(10, 2)
+
+  updatedAt       DateTime @updatedAt @map("updated_at")
+
+  @@map("store_settings")
+}
+
+// -----------------------------------------------------------------------------
+// WISHLIST — produtos favoritados pelo cliente
+// -----------------------------------------------------------------------------
+model WishlistItem {
+  id         String   @id @default(cuid())
+  userId     String   @map("user_id")
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  productId  String   @map("product_id")
+  product    Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+  createdAt  DateTime @default(now()) @map("created_at")
+
+  @@unique([userId, productId])
+  @@index([userId])
+  @@map("wishlist_items")
 }
 
 model RefreshToken {
@@ -186,6 +243,7 @@ model Product {
   cartItems     CartItem[]
   orderItems    OrderItem[]
   reviews       Review[]
+  wishlistItems WishlistItem[]
 
   createdAt     DateTime @default(now()) @map("created_at")
   updatedAt     DateTime @updatedAt @map("updated_at")
@@ -222,17 +280,22 @@ model ProductVariation {
 }
 
 model ProductImage {
-  id          String   @id @default(cuid())
-  productId   String   @map("product_id")
-  product     Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
-  url         String
-  alt         String?
-  sortOrder   Int      @default(0) @map("sort_order")
-  isPrimary   Boolean  @default(false) @map("is_primary")
+  id           String   @id @default(cuid())
+  productId    String   @map("product_id")
+  product      Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+  // Imagem pode ser por produto (variationColor=null, vale pra todas as cores)
+  // OU por cor específica (ex: imagens só da variação vermelha).
+  // Quando user troca de cor, o frontend mostra primeiro as imagens dessa cor.
+  variationColor String? @map("variation_color")
+  url          String
+  alt          String?
+  sortOrder    Int      @default(0) @map("sort_order")
+  isPrimary    Boolean  @default(false) @map("is_primary")
 
-  createdAt   DateTime @default(now()) @map("created_at")
+  createdAt    DateTime @default(now()) @map("created_at")
 
   @@index([productId])
+  @@index([productId, variationColor])
   @@map("product_images")
 }
 

@@ -62,4 +62,29 @@ body {
   .touch-44 {
     @apply min-h-[44px] min-w-[44px];
   }
+
+  /* Gradient shine no texto (CTA do hero) */
+  .text-shine {
+    background: linear-gradient(90deg, #66BB6A 0%, #C5E000 50%, #66BB6A 100%);
+    background-size: 200% auto;
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    animation: shine 3s linear infinite;
+  }
+
+  /* Bounce sutil pra ícones de notificação */
+  .pulse-dot {
+    animation: pulseSoft 1.6s ease-in-out infinite;
+  }
+
+  /* Para quem prefere reduzir motion */
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+      scroll-behavior: auto !important;
+    }
+  }
 }

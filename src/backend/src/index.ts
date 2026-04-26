@@ -24,6 +24,9 @@ import { addressesRouter } from './routes/addresses.js'
 import { shippingRouter } from './routes/shipping.js'
 import { ordersRouter } from './routes/orders.js'
 import { webhooksRouter } from './routes/webhooks.js'
+import { settingsRouter } from './routes/settings.js'
+import { wishlistRouter } from './routes/wishlist.js'
+import { reviewsRouter } from './routes/reviews.js'
 import { adminRouter } from './routes/admin/index.js'
 
 // -----------------------------------------------------------------------------
@@ -90,6 +93,9 @@ function mountRoutes(prefix: string) {
   app.use(`${prefix}/shipping`,    shippingRouter)
   app.use(`${prefix}/orders`,      ordersRouter)
   app.use(`${prefix}/webhooks`,    webhooksRouter)
+  app.use(`${prefix}/settings`,    settingsRouter)
+  app.use(`${prefix}/wishlist`,    wishlistRouter)
+  app.use(`${prefix}/reviews`,     reviewsRouter)
   app.use(`${prefix}/admin`,       adminRouter)
 }
 

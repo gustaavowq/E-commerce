@@ -23,16 +23,16 @@ const TONE: Record<NonNullable<Props['tone']>, string> = {
 
 export function KpiCard({ label, value, hint, icon, tone = 'default', change, invertChange }: Props) {
   return (
-    <div className="rounded-lg border border-border bg-white p-5 shadow-sm">
+    <div className="group rounded-lg border border-border bg-white p-5 shadow-sm transition-all duration-200 hover:-translate-y-0.5 hover:shadow-md hover:border-primary-700/30 animate-fade-up">
       <div className="flex items-start justify-between">
         <p className="text-xs font-semibold uppercase tracking-wider text-ink-3">{label}</p>
         {icon && (
-          <span className={cn('flex h-9 w-9 items-center justify-center rounded-md', TONE[tone])}>
+          <span className={cn('flex h-9 w-9 items-center justify-center rounded-md transition-transform group-hover:scale-110', TONE[tone])}>
             {icon}
           </span>
         )}
       </div>
-      <p className="mt-2 text-2xl font-bold text-ink">{value}</p>
+      <p className="mt-2 text-2xl font-bold text-ink tabular-nums">{value}</p>
       <ChangeBadge change={change} invertChange={invertChange} hint={hint} />
     </div>
   )

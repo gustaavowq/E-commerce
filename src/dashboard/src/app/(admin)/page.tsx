@@ -13,6 +13,7 @@ import {
 } from 'recharts'
 import { adminDashboard } from '@/services/admin'
 import { KpiCard } from '@/components/KpiCard'
+import { AnimatedNumber } from '@/components/AnimatedNumber'
 import { formatBRL, formatNum, formatDate } from '@/lib/format'
 
 const PERIODS = [
@@ -109,26 +110,26 @@ export default function OverviewPage() {
       <section className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
         <KpiCard
           label="Receita"
-          value={summary ? formatBRL(summary.revenue.value) : '—'}
+          value={summary ? <AnimatedNumber value={summary.revenue.value} format={formatBRL} /> : '—'}
           change={summary?.revenue.change}
           icon={<DollarSign className="h-4 w-4" />}
         />
         <KpiCard
           label="Pedidos pagos"
-          value={summary ? formatNum(summary.paidOrders.value) : '—'}
+          value={summary ? <AnimatedNumber value={summary.paidOrders.value} format={formatNum} /> : '—'}
           change={summary?.paidOrders.change}
           icon={<ShoppingCart className="h-4 w-4" />}
           tone="success"
         />
         <KpiCard
           label="Ticket médio"
-          value={summary ? formatBRL(summary.averageTicket.value) : '—'}
+          value={summary ? <AnimatedNumber value={summary.averageTicket.value} format={formatBRL} /> : '—'}
           change={summary?.averageTicket.change}
           icon={<Receipt className="h-4 w-4" />}
         />
         <KpiCard
           label="Taxa de cancelamento"
-          value={summary ? `${summary.cancellationRate.value}%` : '—'}
+          value={summary ? <><AnimatedNumber value={summary.cancellationRate.value} decimals={1} />%</> : '—'}
           change={summary?.cancellationRate.change}
           invertChange  /* aumentar cancelamento é RUIM */
           icon={<XCircle className="h-4 w-4" />}
@@ -140,21 +141,21 @@ export default function OverviewPage() {
       <section className="grid gap-4 sm:grid-cols-3">
         <KpiCard
           label="Taxa de conversão"
-          value={summary?.conversionRate != null ? `${summary.conversionRate}%` : '—'}
+          value={summary?.conversionRate != null ? <><AnimatedNumber value={summary.conversionRate} decimals={1} />%</> : '—'}
           hint={summary ? `${summary.cartsInPeriod} carrinhos no período` : undefined}
           icon={<TrendingUp className="h-4 w-4" />}
           tone="success"
         />
         <KpiCard
           label="Abandono de carrinho"
-          value={summary?.abandonmentRate != null ? `${summary.abandonmentRate}%` : '—'}
+          value={summary?.abandonmentRate != null ? <><AnimatedNumber value={summary.abandonmentRate} decimals={1} />%</> : '—'}
           hint="Carrinhos com item que NÃO viraram pedido"
           icon={<ShoppingCart className="h-4 w-4" />}
           tone={summary && (summary.abandonmentRate ?? 0) > 70 ? 'warning' : 'default'}
         />
         <KpiCard
           label="SKUs com pouco estoque"
-          value={summary ? formatNum(summary.lowStockSkus) : '—'}
+          value={summary ? <AnimatedNumber value={summary.lowStockSkus} format={formatNum} /> : '—'}
           hint={summary ? `de ${summary.activeProducts} produtos ativos` : undefined}
           icon={<AlertTriangle className="h-4 w-4" />}
           tone={summary && summary.lowStockSkus > 0 ? 'warning' : 'default'}

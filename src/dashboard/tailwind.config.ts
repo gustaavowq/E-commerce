@@ -52,6 +52,20 @@ const config: Config = {
       borderRadius: {
         sm: '0.25rem', md: '0.5rem', lg: '0.75rem', xl: '1rem', pill: '9999px',
       },
+      animation: {
+        'fade-in':    'fadeIn 200ms ease-out',
+        'fade-up':    'fadeUp 400ms cubic-bezier(0.16, 1, 0.3, 1) both',
+        'slide-up':   'slideUp 250ms ease-out both',
+        'slide-down': 'slideDown 220ms cubic-bezier(0.16, 1, 0.3, 1) both',
+        'scale-in':   'scaleIn 250ms cubic-bezier(0.16, 1, 0.3, 1) both',
+      },
+      keyframes: {
+        fadeIn:    { from: { opacity: '0' }, to: { opacity: '1' } },
+        fadeUp:    { from: { opacity: '0', transform: 'translateY(12px)' }, to: { opacity: '1', transform: 'translateY(0)' } },
+        slideUp:   { from: { opacity: '0', transform: 'translateY(8px)' }, to: { opacity: '1', transform: 'translateY(0)' } },
+        slideDown: { from: { opacity: '0', transform: 'translateY(-12px)' }, to: { opacity: '1', transform: 'translateY(0)' } },
+        scaleIn:   { from: { opacity: '0', transform: 'scale(0.96)' }, to: { opacity: '1', transform: 'scale(1)' } },
+      },
     },
   },
   plugins: [],

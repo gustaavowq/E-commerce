@@ -1,6 +1,7 @@
 import Link from 'next/link'
 import Image from 'next/image'
 import { AuthenticityBadge } from './AuthenticityBadge'
+import { WishlistHeart } from './WishlistHeart'
 import { formatBRL, discountPercent, installmentLabel } from '@/lib/format'
 import type { ProductListItem } from '@/services/types'
 import { cn } from '@/lib/utils'
@@ -8,20 +9,24 @@ import { cn } from '@/lib/utils'
 type Props = {
   product: ProductListItem
   className?: string
+  /** Index na grid pra fazer stagger animation (50ms por item, max ~500ms) */
+  index?: number
 }
 
-export function ProductCard({ product, className }: Props) {
+export function ProductCard({ product, className, index = 0 }: Props) {
   const discount = discountPercent(product.basePrice, product.comparePrice)
   const outOfStock = product.totalStock === 0
   const fallbackImg = `https://placehold.co/720x900/F0F0F0/9CA3AF?text=${encodeURIComponent(product.name)}`
   const imgSrc = product.primaryImage?.url ?? fallbackImg
+  const delay = Math.min(index, 9) * 50  // capa em 9 pra n ficar grid de 12 esperando 600ms
 
   return (
     <Link
       href={`/products/${product.slug}`}
+      style={{ animationDelay: `${delay}ms` }}
       className={cn(
-        'group flex flex-col overflow-hidden rounded-lg bg-white border border-border transition-all duration-200',
-        'hover:-translate-y-0.5 hover:shadow-lg',
+        'group flex flex-col overflow-hidden rounded-lg bg-white border border-border transition-all duration-300 animate-fade-up',
+        'hover:-translate-y-1 hover:shadow-lg hover:border-primary-700/30',
         outOfStock && 'opacity-60',
         className,
       )}
@@ -37,17 +42,22 @@ export function ProductCard({ product, className }: Props) {
           unoptimized
         />
 
-        {/* Badges no topo */}
+        {/* Topo: brand (esquerda) + heart (direita) */}
         <div className="absolute left-2 right-2 top-2 flex items-start justify-between gap-2">
-          <span className="inline-flex items-center rounded-sm bg-white/90 px-2 py-1 text-xs font-bold uppercase text-ink backdrop-blur-sm">
+          <span className="inline-flex items-center rounded-sm bg-white/95 px-2 py-1 text-xs font-bold uppercase text-ink backdrop-blur-sm shadow-sm">
             {product.brand.name}
           </span>
-          {discount && (
-            <span className="inline-flex items-center rounded-sm bg-accent px-2 py-1 text-xs font-black text-white">
-              -{discount}%
-            </span>
-          )}
+          <div className="z-10">
+            <WishlistHeart productId={product.id} size="sm" />
+          </div>
         </div>
+
+        {/* Desconto no canto inferior esquerdo */}
+        {discount && (
+          <span className="absolute bottom-2 left-2 inline-flex items-center rounded-sm bg-accent px-2 py-1 text-xs font-black text-white shadow-md">
+            -{discount}%
+          </span>
+        )}
 
         {/* Selo original no canto inferior direito */}
         <div className="absolute bottom-2 right-2">

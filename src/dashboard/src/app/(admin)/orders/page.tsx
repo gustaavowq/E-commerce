@@ -3,7 +3,7 @@
 import { useState } from 'react'
 import Link from 'next/link'
 import { useQuery } from '@tanstack/react-query'
-import { Search, ChevronLeft, ChevronRight, ShoppingBag } from 'lucide-react'
+import { Search, ChevronLeft, ChevronRight, ShoppingBag, Download } from 'lucide-react'
 import { adminOrders } from '@/services/admin'
 import { Input } from '@/components/ui/Input'
 import { Button } from '@/components/ui/Button'
@@ -43,9 +43,18 @@ export default function OrdersListPage() {
 
   return (
     <div className="space-y-6">
-      <header>
-        <h1 className="text-2xl font-bold text-ink">Pedidos</h1>
-        <p className="text-sm text-ink-3">{total} pedidos no total</p>
+      <header className="flex flex-wrap items-end justify-between gap-3">
+        <div>
+          <h1 className="text-2xl font-bold text-ink">Pedidos</h1>
+          <p className="text-sm text-ink-3">{total} pedidos no total</p>
+        </div>
+        <a
+          href={`http://api.miami.test/admin/orders/export.csv${statusFilter !== 'ALL' ? `?status=${statusFilter}` : ''}`.replace('http://api.miami.test', process.env.NEXT_PUBLIC_API_URL || 'http://api.miami.test')}
+          target="_blank" rel="noopener noreferrer"
+          className="inline-flex h-10 items-center gap-2 rounded-md border border-border-strong bg-white px-4 text-sm font-semibold text-ink-2 hover:bg-surface-2 transition"
+        >
+          <Download className="h-4 w-4" /> Exportar CSV
+        </a>
       </header>
 
       {/* Filtros */}

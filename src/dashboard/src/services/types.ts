@@ -205,3 +205,57 @@ export type AdminCustomerDetail = {
 // Brands & Categories (refs pra forms)
 export type Brand    = { id: string; slug: string; name: string }
 export type Category = { id: string; slug: string; name: string }
+
+// Settings
+export type StoreSettings = {
+  storeName: string
+  storeTagline: string | null
+  logoUrl: string | null
+  faviconUrl: string | null
+  whatsappNumber: string | null
+  whatsappMessage: string | null
+  instagramHandle: string | null
+  email: string | null
+  phone: string | null
+  cnpj: string | null
+  legalName: string | null
+  address: string | null
+  privacyPolicy: string | null
+  termsOfUse: string | null
+  exchangePolicy: string | null
+  shippingPolicy: string | null
+  aboutUs: string | null
+  pixDiscountPercent: number
+  shippingFlatRate: number
+  freeShippingMinValue: number | null
+}
+
+// Coupons
+export type CouponType = 'PERCENT' | 'FIXED' | 'FREE_SHIPPING'
+
+export type Coupon = {
+  id: string
+  code: string
+  type: CouponType
+  value: number | null
+  minOrderValue: number | null
+  maxUses: number | null
+  usedCount: number
+  perUserLimit: number
+  validFrom: string
+  validUntil: string | null
+  isActive: boolean
+  createdAt: string
+}
+
+export type CouponInput = {
+  code: string
+  type: CouponType
+  value?: number | null
+  minOrderValue?: number | null
+  maxUses?: number | null
+  perUserLimit?: number
+  validFrom?: string
+  validUntil?: string | null
+  isActive?: boolean
+}
