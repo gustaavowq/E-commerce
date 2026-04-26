@@ -30,22 +30,27 @@ Tudo que segue eu já preparei. Você só precisa **clicar** nos serviços.
 
 ### 1. Subir o código pro GitHub
 
-Você precisa ter conta no GitHub. Se não tem, cria em https://github.com/signup (grátis, 30 segundos).
+O repo já tá criado em **https://github.com/gustaavowq/E-commerce.git** e o remote já tá configurado localmente. Falta só você fazer o push.
 
-**1.1.** Cria um repo novo em https://github.com/new
-- Nome: `miami-store` (ou o que quiser)
-- Visibilidade: **Private** (pode deixar Public se quiser, mas Private é mais seguro)
-- **NÃO** marca "Initialize with README" (já temos)
-- Clica **Create repository**
-
-**1.2.** O GitHub vai mostrar um bloco "…or push an existing repository". Copia o trecho que começa com `git remote add origin`. Vai ser tipo:
+**Caminho 1 — terminal (Git Bash ou PowerShell), na pasta do projeto:**
 ```bash
-git remote add origin https://github.com/SEU_USUARIO/miami-store.git
-git branch -M main
 git push -u origin main
 ```
 
-**1.3.** Cola isso no terminal (PowerShell ou Git Bash) na pasta do projeto e roda. Vai pedir login no GitHub na primeira vez (abre janela do browser).
+Na primeira vez, abre uma janela do browser pra autenticar no GitHub. Depois disso é automático.
+
+**Caminho 2 — sem terminal (mais fácil):**
+1. Baixa o **GitHub Desktop**: https://desktop.github.com (5 min de instalação)
+2. Login com tua conta
+3. File → Add Local Repository → seleciona a pasta `C:\Users\gu\Downloads\ecommerce-agents`
+4. Clica **Publish repository** → escolhe `gustaavowq/E-commerce` → Publish
+
+**Caminho 3 — upload via web (último recurso):**
+1. Eu vou criar um ZIP organizado em `C:\Users\gu\Downloads\miami-store.zip`
+2. Extrai o ZIP
+3. No GitHub web (página do repo), clica **Add file** → **Upload files** → arrasta a pasta inteira → Commit
+
+Assim que o código estiver no GitHub, segue pro passo 2 (Railway).
 
 ---
 
