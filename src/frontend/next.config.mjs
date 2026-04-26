@@ -39,7 +39,7 @@ const nextConfig = {
       "style-src 'self' 'unsafe-inline' fonts.googleapis.com",
       "font-src 'self' fonts.gstatic.com data:",
       "img-src 'self' data: https: blob:",
-      "connect-src 'self' https://*.trycloudflare.com https://api.mercadopago.com",
+      "connect-src 'self' https://*.trycloudflare.com https://*.up.railway.app https://*.vercel.app https://api.mercadopago.com",
       "frame-src 'self' https://www.google.com",
       "object-src 'none'",
       "base-uri 'self'",
