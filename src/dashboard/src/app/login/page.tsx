@@ -22,9 +22,8 @@ type Values = z.infer<typeof schema>
 function LoginForm() {
   const router = useRouter()
   const params = useSearchParams()
-  const setUser = useAuth(s => s.setUser)
-  const user    = useAuth(s => s.user)
-  const hyd     = useAuth(s => s.hydrated)
+  const user   = useAuth(s => s.user)
+  const hyd    = useAuth(s => s.hydrated)
 
   const [submitting, setSubmitting] = useState(false)
   const [error, setError] = useState<string | null>(
@@ -48,7 +47,11 @@ function LoginForm() {
         setError('Esse usuário não tem acesso ao painel.')
         return
       }
-      setUser(res.user)
+      // Set user e hydrated atomicamente. Se Providers ainda estiver com getMe
+      // pendente (cold-load + submit rápido), AdminLayout precisa ver hydrated=true
+      // pra não ficar travado em "Verificando acesso..." OU, pior, redirecionar
+      // pra /login se hydrated virar true antes do user propagar.
+      useAuth.setState({ user: res.user, hydrated: true })
       router.replace(params.get('next') ?? '/')
     } catch (err) {
       setError(ApiError.is(err) ? err.message : 'Não foi possível entrar')

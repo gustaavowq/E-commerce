@@ -20,7 +20,14 @@ export function Providers({ children }: { children: React.ReactNode }) {
   useEffect(() => {
     let cancelled = false
     getMe()
-      .then(r => { if (!cancelled) setUser(r.user) })
+      .then(r => {
+        if (cancelled) return
+        // Não sobrescreve user já setado por login concorrente (race condition).
+        // Senão getMe pendente do cold-load pode "voltar" depois do login e
+        // restaurar user antigo (ou apagar pra null), causando double-login.
+        if (useAuth.getState().user) return
+        setUser(r.user)
+      })
       .catch(err => {
         // 401 é esperado quando não logado
         if (!cancelled && !ApiError.is(err)) console.error(err)
