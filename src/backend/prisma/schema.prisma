@@ -237,6 +237,9 @@ model Product {
   measureTable  Json?    @map("measure_table")  // tabela de medidas estruturada
   metaTitle     String?  @map("meta_title")
   metaDesc      String?  @map("meta_desc")
+  // Tags livres pra filtros e categorização secundária ("novidade", "promo",
+  // "lançamento"). Lista escalar do Postgres — Prisma scalar list.
+  tags          String[] @default([])
 
   variations    ProductVariation[]
   images        ProductImage[]

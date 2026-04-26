@@ -6,18 +6,40 @@ import { Router } from 'express'
 import { Prisma } from '@prisma/client'
 import { prisma } from '../../lib/prisma.js'
 import { ok, created, errors, noContent } from '../../lib/api-response.js'
-import { productCreateSchema, productUpdateSchema, variationUpdateSchema, imageInputSchema } from '../../validators/product.js'
+import {
+  productCreateSchema, productUpdateSchema, variationUpdateSchema,
+  imageInputSchema, productBulkActionSchema,
+} from '../../validators/product.js'
 
 export const adminProductsRouter: Router = Router()
 
-// GET /api/admin/products — lista TUDO (inclui inativos)
+// GET /api/admin/products — lista TUDO (inclui inativos) com filtros admin
 adminProductsRouter.get('/', async (req, res, next) => {
   try {
     const page  = Math.max(1, Number(req.query.page  ?? 1))
     const limit = Math.min(100, Math.max(1, Number(req.query.limit ?? 20)))
-    const onlyInactive = req.query.onlyInactive === 'true'
 
-    const where: Prisma.ProductWhereInput = onlyInactive ? { isActive: false } : {}
+    const status   = String(req.query.status ?? '')          // 'active'|'inactive'|''
+    const featured = String(req.query.featured ?? '')        // 'yes'|'no'|''
+    const brandSlug    = String(req.query.brand ?? '').trim()
+    const categorySlug = String(req.query.category ?? '').trim()
+    const stock    = String(req.query.stock ?? '')           // 'zero'|'low'|'ok'|''
+    const search   = String(req.query.search ?? '').trim()
+
+    const where: Prisma.ProductWhereInput = {}
+    if (status === 'active')   where.isActive = true
+    if (status === 'inactive') where.isActive = false
+    if (featured === 'yes')    where.isFeatured = true
+    if (featured === 'no')     where.isFeatured = false
+    if (brandSlug)             where.brand    = { slug: brandSlug }
+    if (categorySlug)          where.category = { slug: categorySlug }
+    if (search) {
+      where.OR = [
+        { name: { contains: search, mode: 'insensitive' } },
+        { slug: { contains: search, mode: 'insensitive' } },
+        { variations: { some: { sku: { contains: search, mode: 'insensitive' } } } },
+      ]
+    }
 
     const [total, products] = await Promise.all([
       prisma.product.count({ where }),
@@ -33,12 +55,21 @@ adminProductsRouter.get('/', async (req, res, next) => {
           category: { select: { name: true, slug: true } },
           _count:   { select: { variations: true } },
           variations: { select: { stock: true } },
+          images:   { where: { isPrimary: true }, take: 1, select: { url: true } },
           updatedAt: true,
         },
       }),
     ])
 
-    return ok(res, products.map(p => ({
+    let filtered = products
+    if (stock === 'zero') filtered = products.filter(p => p.variations.reduce((s, v) => s + v.stock, 0) === 0)
+    if (stock === 'low')  filtered = products.filter(p => {
+      const t = p.variations.reduce((s, v) => s + v.stock, 0)
+      return t > 0 && t <= 5
+    })
+    if (stock === 'ok')   filtered = products.filter(p => p.variations.reduce((s, v) => s + v.stock, 0) > 5)
+
+    return ok(res, filtered.map(p => ({
       id:          p.id,
       slug:        p.slug,
       name:        p.name,
@@ -49,11 +80,58 @@ adminProductsRouter.get('/', async (req, res, next) => {
       category:    p.category,
       variationCount: p._count.variations,
       totalStock:  p.variations.reduce((acc, v) => acc + v.stock, 0),
+      thumbnail:   p.images[0]?.url ?? null,
       updatedAt:   p.updatedAt,
     })), { page, limit, total, totalPages: Math.ceil(total / limit) })
   } catch (err) {
     next(err)
   }
+})
+
+// PATCH /api/admin/products/bulk — ativar/inativar/destacar em massa
+adminProductsRouter.patch('/bulk', async (req, res, next) => {
+  try {
+    const body = productBulkActionSchema.parse(req.body)
+    const data: Prisma.ProductUpdateManyMutationInput =
+      body.action === 'activate'   ? { isActive: true }   :
+      body.action === 'deactivate' ? { isActive: false }  :
+      body.action === 'feature'    ? { isFeatured: true } :
+                                     { isFeatured: false }
+
+    const r = await prisma.product.updateMany({
+      where: { id: { in: body.ids } },
+      data,
+    })
+    return ok(res, { updated: r.count })
+  } catch (err) { next(err) }
+})
+
+// GET /api/admin/products/issues — produtos com problemas (sem foto, sem descrição, sem estoque)
+adminProductsRouter.get('/issues', async (_req, res, next) => {
+  try {
+    const all = await prisma.product.findMany({
+      where: { isActive: true },
+      select: {
+        id: true, slug: true, name: true, description: true,
+        brand:    { select: { name: true, slug: true } },
+        category: { select: { name: true, slug: true } },
+        _count:   { select: { images: true } },
+        variations: { select: { stock: true } },
+      },
+    })
+    const noImage       = all.filter(p => p._count.images === 0).slice(0, 10)
+    const noDescription = all.filter(p => !p.description || p.description.trim().length < 30).slice(0, 10)
+    const outOfStock    = all.filter(p => p.variations.reduce((s, v) => s + v.stock, 0) === 0).slice(0, 10)
+
+    function pick(p: typeof all[number]) {
+      return { id: p.id, slug: p.slug, name: p.name, brand: p.brand, category: p.category }
+    }
+    return ok(res, {
+      noImage:       noImage.map(pick),
+      noDescription: noDescription.map(pick),
+      outOfStock:    outOfStock.map(pick),
+    })
+  } catch (err) { next(err) }
 })
 
 // POST /api/admin/products — cria produto com variações + imagens

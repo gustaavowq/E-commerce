@@ -7,6 +7,7 @@ import { cn } from '@/lib/utils'
 import { useAuth } from '@/stores/auth'
 import { logout } from '@/services/auth'
 import { useRouter } from 'next/navigation'
+import { usePendingCounts } from '@/hooks/useNewOrderNotification'
 
 const NAV = [
   { href: '/',          label: 'Visão geral', icon: LayoutDashboard },
@@ -22,6 +23,8 @@ export function Sidebar() {
   const router   = useRouter()
   const user     = useAuth(s => s.user)
   const setUser  = useAuth(s => s.setUser)
+  const counts   = usePendingCounts()
+  const pendingOrders = counts?.pendingActions ?? 0
 
   const storeUrl = process.env.NEXT_PUBLIC_STORE_URL ?? '/'
 
@@ -53,6 +56,7 @@ export function Sidebar() {
           const active = item.href === '/'
             ? pathname === '/'
             : pathname.startsWith(item.href)
+          const showBadge = item.href === '/orders' && pendingOrders > 0
           return (
             <Link
               key={item.href}
@@ -65,7 +69,12 @@ export function Sidebar() {
               )}
             >
               <item.icon className="h-4 w-4" />
-              {item.label}
+              <span className="flex-1">{item.label}</span>
+              {showBadge && (
+                <span className="inline-flex h-5 min-w-[20px] items-center justify-center rounded-pill bg-warning px-1.5 text-[10px] font-bold text-white">
+                  {pendingOrders > 99 ? '99+' : pendingOrders}
+                </span>
+              )}
             </Link>
           )
         })}

@@ -44,6 +44,9 @@ Thumbs.db
 # --- Claude Code (preferências locais não vão pro repo) ---
 .claude/
 
+# --- Apps locais que o user instalou na pasta (NÃO commit binários) ---
+Obsidian/
+
 # --- Docker ---
 *.local.yml
 

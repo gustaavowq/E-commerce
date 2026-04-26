@@ -42,6 +42,14 @@ export function CheckoutFlow() {
   const [submitting, setSubmitting] = useState(false)
   const [error, setError] = useState<string | null>(null)
 
+  // Cupom (validação acontece no backend ao criar order — aqui só capturamos o código)
+  const [couponCode, setCouponCode] = useState('')
+  const [couponNote, setCouponNote] = useState<string | null>(null)
+  const [showCouponInput, setShowCouponInput] = useState(false)
+
+  // WhatsApp opt-in (avisar status do pedido pelo Zap)
+  const [whatsappOptIn, setWhatsappOptIn] = useState(false)
+
   // Auth gate
   useEffect(() => {
     if (hydAuth && !user) router.replace('/auth/login?next=/checkout')
@@ -116,6 +124,8 @@ export function CheckoutFlow() {
       const order = await createOrder({
         addressId:     selectedAddressId,
         paymentMethod: 'PIX',
+        couponCode:    couponCode.trim() || undefined,
+        notes:         whatsappOptIn ? 'Cliente quer atualizações pelo WhatsApp' : undefined,
       })
       clearLocal()
       router.push(`/orders/${order.id}`)
@@ -223,6 +233,59 @@ export function CheckoutFlow() {
                 ))}
               </ul>
             </div>
+
+            {/* Cupom (colapsável — não polui pra quem não tem) */}
+            <div className="rounded-lg border border-border bg-white p-4">
+              {!showCouponInput ? (
+                <button
+                  type="button"
+                  onClick={() => setShowCouponInput(true)}
+                  className="text-sm font-semibold text-primary-700 hover:underline"
+                >
+                  Tem cupom de desconto?
+                </button>
+              ) : (
+                <div>
+                  <label className="block text-sm font-semibold text-ink">Cupom de desconto</label>
+                  <p className="mt-0.5 text-xs text-ink-3">A validação rola na hora de finalizar. Se for inválido a gente avisa.</p>
+                  <div className="mt-2 flex gap-2">
+                    <input
+                      type="text"
+                      value={couponCode}
+                      onChange={(e) => { setCouponCode(e.target.value.toUpperCase()); setCouponNote(null) }}
+                      placeholder="Ex: PIXFIRST"
+                      maxLength={40}
+                      className="flex-1 rounded-md border border-border bg-white px-3 py-2 text-sm font-mono uppercase tracking-wider focus:border-primary-700 focus:outline-none focus:ring-2 focus:ring-primary-700/20"
+                    />
+                    <button
+                      type="button"
+                      onClick={() => { setCouponCode(''); setShowCouponInput(false); setCouponNote(null) }}
+                      className="rounded-md border border-border bg-white px-3 text-sm text-ink-3 hover:bg-surface-2"
+                    >
+                      Cancelar
+                    </button>
+                  </div>
+                  {couponCode && (
+                    <p className="mt-2 text-xs text-primary-700">✓ Cupom <strong>{couponCode}</strong> vai ser aplicado quando finalizar.</p>
+                  )}
+                  {couponNote && <p className="mt-2 text-xs text-error">{couponNote}</p>}
+                </div>
+              )}
+            </div>
+
+            {/* WhatsApp opt-in */}
+            <label className="flex cursor-pointer items-start gap-3 rounded-lg border border-border bg-white p-4 hover:border-whatsapp/40">
+              <input
+                type="checkbox"
+                checked={whatsappOptIn}
+                onChange={(e) => setWhatsappOptIn(e.target.checked)}
+                className="mt-0.5 h-4 w-4 accent-whatsapp"
+              />
+              <div className="text-sm">
+                <p className="font-semibold text-ink">Quero receber atualizações pelo WhatsApp 💚</p>
+                <p className="text-xs text-ink-3">Avisamos quando o pagamento confirmar e quando o pedido sair pra entrega.</p>
+              </div>
+            </label>
 
             <div className="rounded-lg border border-primary-700 bg-primary-50 p-4">
               <div className="flex items-center gap-2 text-sm font-bold text-primary-700">

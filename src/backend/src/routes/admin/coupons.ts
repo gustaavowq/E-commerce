@@ -105,6 +105,60 @@ adminCouponsRouter.patch('/:id', async (req, res, next) => {
   } catch (err) { next(err) }
 })
 
+// GET /api/admin/coupons/:id/metrics — performance do cupom
+adminCouponsRouter.get('/:id/metrics', async (req, res, next) => {
+  try {
+    const coupon = await prisma.coupon.findUnique({ where: { id: req.params.id } })
+    if (!coupon) throw errors.notFound('Cupom não encontrado')
+
+    const orders = await prisma.order.findMany({
+      where: { couponId: coupon.id, status: { in: ['PAID', 'PREPARING', 'SHIPPED', 'DELIVERED'] } },
+      select: { total: true, discount: true },
+    })
+
+    const usedCount        = orders.length
+    const revenueGenerated = orders.reduce((s, o) => s + Number(o.total),    0)
+    const totalDiscount    = orders.reduce((s, o) => s + Number(o.discount), 0)
+    const avgTicket        = usedCount > 0 ? revenueGenerated / usedCount : 0
+
+    return ok(res, {
+      couponId: coupon.id,
+      code:     coupon.code,
+      usedCount,
+      revenueGenerated,
+      totalDiscount,
+      avgTicket,
+    })
+  } catch (err) { next(err) }
+})
+
+// POST /api/admin/coupons/:id/duplicate — clona cupom (-COPY ou timestamp se conflito)
+adminCouponsRouter.post('/:id/duplicate', async (req, res, next) => {
+  try {
+    const orig = await prisma.coupon.findUnique({ where: { id: req.params.id } })
+    if (!orig) throw errors.notFound('Cupom não encontrado')
+
+    let newCode = `${orig.code}-COPY`
+    const existing = await prisma.coupon.findUnique({ where: { code: newCode } })
+    if (existing) newCode = `${orig.code}-${Date.now().toString(36).slice(-4).toUpperCase()}`
+
+    const cloned = await prisma.coupon.create({
+      data: {
+        code:          newCode,
+        type:          orig.type,
+        value:         orig.value,
+        minOrderValue: orig.minOrderValue,
+        maxUses:       orig.maxUses,
+        perUserLimit:  orig.perUserLimit,
+        validFrom:     new Date(),
+        validUntil:    orig.validUntil,
+        isActive:      false,  // criado desativado pra revisar antes de soltar
+      },
+    })
+    return created(res, cloned)
+  } catch (err) { next(err) }
+})
+
 adminCouponsRouter.delete('/:id', async (req, res, next) => {
   try {
     const exists = await prisma.coupon.findUnique({ where: { id: req.params.id } })

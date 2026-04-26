@@ -4,8 +4,8 @@ import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
-import { ArrowLeft, Save, Eye, EyeOff, Star, Package, Trash2, Plus, ImagePlus } from 'lucide-react'
-import { adminProducts, refs } from '@/services/admin'
+import { ArrowLeft, Save, Eye, EyeOff, Star, Package, Trash2, Plus, ImagePlus, Upload, Loader2 } from 'lucide-react'
+import { adminProducts, adminUpload, refs } from '@/services/admin'
 import { Button } from '@/components/ui/Button'
 import { Input } from '@/components/ui/Input'
 import { formatBRL, formatDateTime } from '@/lib/format'
@@ -65,6 +65,7 @@ function ImagesManager({
   const [alt, setAlt]               = useState('')
   const [isPrimary, setIsPrimary]   = useState(false)
   const [error, setError]           = useState<string | null>(null)
+  const [uploading, setUploading]   = useState(false)
 
   const addM = useMutation({
     mutationFn: () => adminProducts.addImage(productId, {
@@ -80,6 +81,34 @@ function ImagesManager({
     },
     onError: (err) => setError(ApiError.is(err) ? err.message : 'Erro ao adicionar'),
   })
+
+  // Upload via Cloudinary: lê arquivo como base64, manda pro backend, recebe URL pública
+  async function onFileSelected(e: React.ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0]
+    if (!file) return
+    if (!file.type.startsWith('image/')) { setError('Só aceita imagem (jpg/png/webp)'); return }
+    if (file.size > 10_000_000) { setError('Imagem maior que 10MB'); return }
+
+    setError(null); setUploading(true)
+    try {
+      const dataUri = await new Promise<string>((resolve, reject) => {
+        const r = new FileReader()
+        r.onload  = () => resolve(String(r.result))
+        r.onerror = () => reject(new Error('Falha ao ler arquivo'))
+        r.readAsDataURL(file)
+      })
+      const uploaded = await adminUpload.image(dataUri, 'miami-store/products', ['painel-upload'])
+      setUrl(uploaded.url)
+      if (!alt) setAlt(file.name.replace(/\.[^.]+$/, '').replace(/[-_]/g, ' '))
+    } catch (err) {
+      setError(ApiError.is(err)
+        ? (err.message + (err.code === 'SERVICE_UNAVAILABLE' ? ' (Cloudinary não configurado no servidor)' : ''))
+        : 'Falha no upload')
+    } finally {
+      setUploading(false)
+      e.target.value = ''  // reset pra permitir re-upload do mesmo arquivo
+    }
+  }
 
   const removeM = useMutation({
     mutationFn: (imageId: string) => adminProducts.removeImage(productId, imageId),
@@ -105,11 +134,34 @@ function ImagesManager({
 
       {showAdd && (
         <form onSubmit={submit} className="mb-5 space-y-3 rounded-md border border-border bg-surface-2/40 p-4">
+          {/* Upload via Cloudinary */}
+          <div className="rounded-md border-2 border-dashed border-primary-700/30 bg-white p-4">
+            <label htmlFor="image-upload" className={`flex cursor-pointer flex-col items-center gap-2 text-center ${uploading ? 'opacity-60' : ''}`}>
+              {uploading ? (
+                <Loader2 className="h-8 w-8 animate-spin text-primary-700" />
+              ) : (
+                <Upload className="h-8 w-8 text-primary-700" />
+              )}
+              <p className="text-sm font-semibold text-ink">
+                {uploading ? 'Enviando…' : 'Selecionar imagem do PC'}
+              </p>
+              <p className="text-xs text-ink-3">JPG, PNG ou WebP até 10MB. Otimizado automaticamente.</p>
+              <input
+                id="image-upload"
+                type="file"
+                accept="image/jpeg,image/png,image/webp"
+                onChange={onFileSelected}
+                disabled={uploading}
+                className="hidden"
+              />
+            </label>
+          </div>
+          <p className="text-center text-xs text-ink-4">— ou cola URL manualmente abaixo —</p>
           <Field label="URL ou caminho relativo (ex: /products/foto.jpg)">
             <Input
               value={url}
               onChange={e => setUrl(e.target.value)}
-              placeholder="/products/tenis-nike.jpg ou https://..."
+              placeholder="https://res.cloudinary.com/... ou /products/foto.jpg"
               required
             />
           </Field>

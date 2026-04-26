@@ -8,6 +8,7 @@ const nextConfig = {
       { protocol: 'http',  hostname: 'backend' },
       { protocol: 'http',  hostname: 'nginx' },
     ],
+    // Cloudinary: aceita qualquer URL https — já coberto pelo wildcard acima
   },
 
   // Headers de segurança no painel admin.

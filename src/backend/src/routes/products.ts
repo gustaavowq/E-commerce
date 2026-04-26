@@ -31,6 +31,8 @@ productsRouter.get('/', async (req, res, next) => {
     }
     if (brandSlugs)    where.brand    = { slug: { in: brandSlugs } }
     if (categorySlugs) where.category = { slug: { in: categorySlugs } }
+    const tagList = csvList(q.tags)
+    if (tagList) where.tags = { hasSome: tagList }
     if (q.search) {
       where.OR = [
         { name:        { contains: q.search, mode: 'insensitive' } },
@@ -167,6 +169,74 @@ productsRouter.get('/:slug', async (req, res, next) => {
         priceOverride: v.priceOverride ? Number(v.priceOverride) : null,
       })),
     })
+  } catch (err) {
+    next(err)
+  }
+})
+
+// =====================================================================
+// GET /api/products/:slug/related — "Quem viu também levou" (cross-sell)
+// Mesma categoria + mesma marca primeiro; completa com mesma categoria.
+// =====================================================================
+productsRouter.get('/:slug/related', async (req, res, next) => {
+  try {
+    const limit = Math.min(20, Math.max(1, Number(req.query.limit ?? 4)))
+
+    const base = await prisma.product.findUnique({
+      where: { slug: req.params.slug },
+      select: { id: true, brandId: true, categoryId: true },
+    })
+    if (!base) throw errors.notFound('Produto não encontrado')
+
+    const baseSelect = {
+      id: true, slug: true, name: true,
+      basePrice: true, comparePrice: true, isFeatured: true,
+      brand:    { select: { id: true, slug: true, name: true } },
+      category: { select: { id: true, slug: true, name: true } },
+      variations: { select: { stock: true, color: true, colorHex: true, size: true } },
+      images: { where: { isPrimary: true }, take: 1, select: { url: true, alt: true } },
+    } satisfies Prisma.ProductSelect
+
+    // 1) Mesma categoria + marca, sem o próprio
+    const sameBrand = await prisma.product.findMany({
+      where: {
+        isActive: true, id: { not: base.id },
+        brandId: base.brandId, categoryId: base.categoryId,
+      },
+      orderBy: [{ isFeatured: 'desc' }, { updatedAt: 'desc' }],
+      take: limit,
+      select: baseSelect,
+    })
+
+    let result = sameBrand
+    if (result.length < limit) {
+      // 2) Completa com mesma categoria (qualquer marca)
+      const more = await prisma.product.findMany({
+        where: {
+          isActive: true, id: { notIn: [base.id, ...sameBrand.map(p => p.id)] },
+          categoryId: base.categoryId,
+        },
+        orderBy: [{ isFeatured: 'desc' }, { updatedAt: 'desc' }],
+        take: limit - result.length,
+        select: baseSelect,
+      })
+      result = [...result, ...more]
+    }
+
+    return ok(res, result.map(p => ({
+      id:           p.id,
+      slug:         p.slug,
+      name:         p.name,
+      basePrice:    Number(p.basePrice),
+      comparePrice: p.comparePrice ? Number(p.comparePrice) : null,
+      isFeatured:   p.isFeatured,
+      brand:        p.brand,
+      category:     p.category,
+      primaryImage: p.images[0] ?? null,
+      sizes:        Array.from(new Set(p.variations.map(v => v.size))),
+      colors:       Array.from(new Map(p.variations.map(v => [v.color, { color: v.color, hex: v.colorHex }])).values()),
+      totalStock:   p.variations.reduce((acc, v) => acc + v.stock, 0),
+    })))
   } catch (err) {
     next(err)
   }

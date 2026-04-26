@@ -52,7 +52,7 @@ app.use(cors({
   origin:      env.CORS_ORIGIN.split(',').map(s => s.trim()),
   credentials: true,
 }))
-app.use(express.json({ limit: '1mb' }))
+app.use(express.json({ limit: '15mb' }))  // 15mb pra aceitar imagem base64 (upload Cloudinary)
 app.use(cookieParser())
 app.use(morgan(isDev ? 'dev' : 'combined'))
 

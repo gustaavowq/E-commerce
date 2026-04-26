@@ -51,6 +51,8 @@ export const errors = {
     new ApiError(422, 'UNPROCESSABLE_ENTITY', msg, details),
   internal:      (msg = 'Erro interno do servidor') =>
     new ApiError(500, 'INTERNAL', msg),
+  serviceUnavailable: (msg = 'Serviço indisponível') =>
+    new ApiError(503, 'SERVICE_UNAVAILABLE', msg),
 }
 
 export function ok<T>(res: Response, data: T, meta?: ApiSuccess<T>['meta']): Response {

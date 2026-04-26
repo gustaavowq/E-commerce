@@ -6,11 +6,18 @@ import Image from 'next/image'
 import { Minus, Plus, Trash2, ShoppingBag, Zap, Truck } from 'lucide-react'
 import { useCart } from '@/stores/cart'
 import { formatBRL, pixPrice } from '@/lib/format'
+import { getStoreSettings } from '@/services/settings'
+import type { StoreSettings } from '@/services/types'
 
 export default function CartPage() {
   // Hydration: o store persiste no localStorage. Render só após mount pra evitar mismatch.
   const [hydrated, setHydrated] = useState(false)
   useEffect(() => setHydrated(true), [])
+
+  const [settings, setSettings] = useState<StoreSettings | null>(null)
+  useEffect(() => {
+    getStoreSettings().then(setSettings).catch(() => setSettings(null))
+  }, [])
 
   const items     = useCart(s => s.items)
   const subtotal  = useCart(s => s.subtotal())
@@ -45,6 +52,11 @@ export default function CartPage() {
     <div className="container-app py-6 sm:py-10">
       <h1 className="font-display text-2xl text-ink sm:text-3xl">Carrinho</h1>
       <p className="mt-1 text-sm text-ink-3">{items.length} {items.length === 1 ? 'item' : 'itens'} no seu carrinho</p>
+
+      {/* Barra de frete grátis (só aparece se settings tem freeShippingMinValue) */}
+      {settings?.freeShippingMinValue && settings.freeShippingMinValue > 0 && (
+        <FreeShippingBar subtotal={subtotal} minValue={settings.freeShippingMinValue} />
+      )}
 
       <div className="mt-6 grid gap-6 lg:grid-cols-[1fr_360px]">
         {/* Itens */}
@@ -120,6 +132,34 @@ export default function CartPage() {
             Voltar pras peças
           </Link>
         </aside>
+      </div>
+    </div>
+  )
+}
+
+// Barra de progresso "faltam R$ X pra frete grátis" — booster de ticket-médio
+function FreeShippingBar({ subtotal, minValue }: { subtotal: number; minValue: number }) {
+  const reached = subtotal >= minValue
+  const pct = Math.min(100, (subtotal / minValue) * 100)
+  const missing = Math.max(0, minValue - subtotal)
+
+  return (
+    <div className={`mt-4 rounded-lg border p-3 transition-all ${reached ? 'border-success bg-success/5' : 'border-primary-700/30 bg-primary-50/50'} animate-fade-up`}>
+      <div className="flex items-center gap-2 text-sm">
+        <Truck className={`h-4 w-4 ${reached ? 'text-success' : 'text-primary-700'}`} />
+        {reached ? (
+          <p className="font-bold text-success">🎉 Você ganhou frete grátis!</p>
+        ) : (
+          <p className="text-ink-2">
+            Faltam <strong className="text-primary-700">{formatBRL(missing)}</strong> pra <strong>frete grátis</strong>
+          </p>
+        )}
+      </div>
+      <div className="mt-2 h-2 overflow-hidden rounded-full bg-surface-2">
+        <div
+          className={`h-full transition-all duration-500 ${reached ? 'bg-success' : 'bg-primary-700'}`}
+          style={{ width: `${pct}%` }}
+        />
       </div>
     </div>
   )

@@ -21,8 +21,18 @@ export const adminDashboard = {
 }
 
 // ----- Products -----
+export type AdminProductFilters = {
+  page?: number; limit?: number;
+  status?: 'active' | 'inactive' | '';
+  featured?: 'yes' | 'no' | '';
+  brand?: string; category?: string;
+  stock?: 'zero' | 'low' | 'ok' | '';
+  search?: string;
+  onlyInactive?: boolean;  // legacy
+}
+
 export const adminProducts = {
-  list: (q: { page?: number; limit?: number; onlyInactive?: boolean } = {}) =>
+  list: (q: AdminProductFilters = {}) =>
     apiList<AdminProductListItem[]>('/admin/products', { query: q }),
   get:    (id: string) => get<AdminProductDetail>(`/admin/products/${id}`),
   update: (id: string, body: Partial<AdminProductDetail>) =>
@@ -35,6 +45,18 @@ export const adminProducts = {
     post<{ id: string; url: string; alt: string | null; sortOrder: number; isPrimary: boolean; variationColor: string | null }>(`/admin/products/${productId}/images`, body),
   removeImage: (productId: string, imageId: string) =>
     del<null>(`/admin/products/${productId}/images/${imageId}`),
+  bulk: (ids: string[], action: 'activate' | 'deactivate' | 'feature' | 'unfeature') =>
+    patch<{ updated: number }>('/admin/products/bulk', { ids, action }),
+  issues: () => get<{ noImage: AdminProductListItem[]; noDescription: AdminProductListItem[]; outOfStock: AdminProductListItem[] }>('/admin/products/issues'),
+}
+
+// ----- Upload -----
+export const adminUpload = {
+  image: (source: string, folder?: string, tags?: string[]) =>
+    post<{ url: string; publicId: string; width: number; height: number; bytes: number; format: string; thumbnail: string }>(
+      '/admin/upload',
+      { source, folder, tags },
+    ),
 }
 
 // ----- Orders -----
@@ -68,9 +90,26 @@ export const adminSettings = {
 }
 
 // ----- Coupons -----
+export type CouponMetrics = {
+  couponId: string; code: string;
+  usedCount: number; revenueGenerated: number; totalDiscount: number; avgTicket: number;
+}
+
 export const adminCoupons = {
   list:   ()              => apiList<Coupon[]>('/admin/coupons'),
   create: (body: CouponInput) => post<Coupon>('/admin/coupons', body),
   update: (id: string, body: Partial<CouponInput>) => patch<Coupon>(`/admin/coupons/${id}`, body),
   remove: (id: string)    => del<null>(`/admin/coupons/${id}`),
+  metrics:   (id: string) => get<CouponMetrics>(`/admin/coupons/${id}/metrics`),
+  duplicate: (id: string) => post<Coupon>(`/admin/coupons/${id}/duplicate`, {}),
+}
+
+// ----- Top customers (LTV) -----
+export type TopCustomer = {
+  userId: string; name: string; email: string;
+  ordersCount: number; totalSpent: number; lastOrderAt: string | null;
+}
+
+export const adminDashboardExt = {
+  topCustomers: (limit = 10) => get<TopCustomer[]>('/admin/dashboard/top-customers', { query: { limit } }),
 }

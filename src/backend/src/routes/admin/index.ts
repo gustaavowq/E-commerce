@@ -9,6 +9,7 @@ import { adminCustomersRouter } from './customers.js'
 import { adminSettingsRouter } from './settings.js'
 import { adminCouponsRouter } from './coupons.js'
 import { adminReviewsRouter } from './reviews.js'
+import { adminUploadRouter } from './upload.js'
 
 export const adminRouter: Router = Router()
 
@@ -22,3 +23,4 @@ adminRouter.use('/settings',  adminSettingsRouter)
 adminRouter.use('/coupons',   adminCouponsRouter)
 adminRouter.use('/reviews',   adminReviewsRouter)
 adminRouter.use('/dashboard', adminDashboardRouter)
+adminRouter.use('/upload',    adminUploadRouter)

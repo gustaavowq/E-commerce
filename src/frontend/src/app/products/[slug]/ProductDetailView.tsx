@@ -1,16 +1,18 @@
 'use client'
 
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import Link from 'next/link'
-import { Check, Truck, ShieldCheck, Zap, MessageCircle, Ruler, X } from 'lucide-react'
+import { Check, Truck, ShieldCheck, Zap, MessageCircle, Ruler, X, Minus, Plus, Share2, Link2 } from 'lucide-react'
 import { Button } from '@/components/ui/Button'
 import { AuthenticityBadge } from '@/components/AuthenticityBadge'
 import { WishlistHeart } from '@/components/WishlistHeart'
 import { ProductReviews } from '@/components/ProductReviews'
 import { ProductImage } from '@/components/ProductImage'
+import { ProductCard } from '@/components/ProductCard'
 import { useCart } from '@/stores/cart'
+import { getRelated } from '@/services/products'
 import { formatBRL, discountPercent, installmentLabel, pixPrice } from '@/lib/format'
-import type { ProductDetail, ProductVariation, StoreSettings } from '@/services/types'
+import type { ProductDetail, ProductVariation, StoreSettings, ProductListItem } from '@/services/types'
 import { cn } from '@/lib/utils'
 
 type Props = {
@@ -39,6 +41,8 @@ export function ProductDetailView({ product, settings }: Props) {
   const [activeImageIdx, setActiveImageIdx] = useState(0)
   const [added, setAdded] = useState(false)
   const [showSizeChart, setShowSizeChart] = useState(false)
+  const [quantity, setQuantity] = useState(1)
+  const [shareCopied, setShareCopied] = useState(false)
 
   const discount   = discountPercent(product.basePrice, product.comparePrice)
   const pixValue   = pixPrice(product.basePrice)
@@ -64,6 +68,7 @@ export function ProductDetailView({ product, settings }: Props) {
 
   const onAddToCart = () => {
     if (!selectedVariation) return
+    const safeQty = Math.max(1, Math.min(quantity, selectedVariation.stock))
     addToCart({
       productId:    product.id,
       variationId:  selectedVariation.id,
@@ -73,9 +78,18 @@ export function ProductDetailView({ product, settings }: Props) {
       unitPrice:    selectedVariation.priceOverride ?? product.basePrice,
       imageUrl:     images[0]?.url ?? null,
       maxStock:     selectedVariation.stock,
-    })
+    }, safeQty)
     setAdded(true)
     setTimeout(() => setAdded(false), 2000)
+  }
+
+  function copyShareLink() {
+    const url = typeof window !== 'undefined' ? window.location.href : ''
+    if (!url) return
+    navigator.clipboard.writeText(url).then(() => {
+      setShareCopied(true)
+      setTimeout(() => setShareCopied(false), 2000)
+    }).catch(() => {})
   }
 
   return (
@@ -214,21 +228,64 @@ export function ProductDetailView({ product, settings }: Props) {
 
         {/* CTAs */}
         <div className="mt-6 flex flex-col gap-2">
-          <Button
-            size="lg"
-            fullWidth
-            disabled={!selectedVariation || selectedVariation.stock === 0}
-            onClick={onAddToCart}
-            leftIcon={added ? <Check className="h-5 w-5" /> : null}
-          >
-            {added ? 'Pronto, no carrinho' : 'Adicionar ao carrinho'}
-          </Button>
+          {/* Quantidade + Adicionar */}
+          <div className="flex gap-2">
+            <div className="flex h-12 items-center rounded-md border border-border bg-white">
+              <button
+                type="button"
+                onClick={() => setQuantity(q => Math.max(1, q - 1))}
+                disabled={!selectedVariation || quantity <= 1}
+                aria-label="Diminuir quantidade"
+                className="flex h-12 w-10 items-center justify-center text-ink-2 transition hover:bg-surface-2 disabled:opacity-40 disabled:cursor-not-allowed"
+              >
+                <Minus className="h-4 w-4" />
+              </button>
+              <span className="w-10 text-center text-base font-semibold text-ink">{quantity}</span>
+              <button
+                type="button"
+                onClick={() => setQuantity(q => Math.min(selectedVariation?.stock ?? 1, q + 1))}
+                disabled={!selectedVariation || quantity >= (selectedVariation?.stock ?? 1)}
+                aria-label="Aumentar quantidade"
+                className="flex h-12 w-10 items-center justify-center text-ink-2 transition hover:bg-surface-2 disabled:opacity-40 disabled:cursor-not-allowed"
+              >
+                <Plus className="h-4 w-4" />
+              </button>
+            </div>
+            <Button
+              size="lg"
+              fullWidth
+              disabled={!selectedVariation || selectedVariation.stock === 0}
+              onClick={onAddToCart}
+              leftIcon={added ? <Check className="h-5 w-5" /> : null}
+            >
+              {added ? 'Pronto, no carrinho' : `Adicionar (${quantity})`}
+            </Button>
+          </div>
           <Link
             href="/cart"
             className="inline-flex h-12 items-center justify-center rounded-md border border-primary-700 px-6 text-base font-semibold text-primary-700 transition hover:bg-primary-50"
           >
             Ver carrinho
           </Link>
+
+          {/* Compartilhar */}
+          <div className="mt-1 flex gap-2">
+            <a
+              href={`https://wa.me/?text=${encodeURIComponent(`Vê esse aqui: ${product.name} — ${typeof window !== 'undefined' ? window.location.href : ''}`)}`}
+              target="_blank" rel="noopener noreferrer"
+              className="inline-flex flex-1 items-center justify-center gap-2 rounded-md border border-whatsapp/40 bg-whatsapp/5 px-3 py-2 text-xs font-semibold text-whatsapp transition hover:bg-whatsapp/10"
+            >
+              <Share2 className="h-3.5 w-3.5" /> Compartilhar no Zap
+            </a>
+            <button
+              type="button"
+              onClick={copyShareLink}
+              className="inline-flex flex-1 items-center justify-center gap-2 rounded-md border border-border bg-white px-3 py-2 text-xs font-semibold text-ink-2 transition hover:bg-surface-2"
+            >
+              {shareCopied ? <Check className="h-3.5 w-3.5 text-success" /> : <Link2 className="h-3.5 w-3.5" />}
+              {shareCopied ? 'Link copiado' : 'Copiar link'}
+            </button>
+          </div>
         </div>
 
         {/* Trust signals */}
@@ -252,6 +309,9 @@ export function ProductDetailView({ product, settings }: Props) {
 
     {/* Reviews — full width */}
     <ProductReviews productId={product.id} />
+
+    {/* Cross-sell — quem viu também levou */}
+    <RelatedProducts slug={product.slug} />
 
     {/* Modal: Tabela de medidas */}
     {showSizeChart && (
@@ -312,5 +372,29 @@ export function ProductDetailView({ product, settings }: Props) {
       </div>
     )}
     </>
+  )
+}
+
+// "Quem viu também levou" — busca cross-sell e renderiza cards. Silent fallback.
+function RelatedProducts({ slug }: { slug: string }) {
+  const [items, setItems] = useState<ProductListItem[] | null>(null)
+  useEffect(() => {
+    let cancelled = false
+    getRelated(slug, 4)
+      .then(list => { if (!cancelled) setItems(list) })
+      .catch(() => { if (!cancelled) setItems([]) })
+    return () => { cancelled = true }
+  }, [slug])
+
+  if (!items || items.length === 0) return null
+
+  return (
+    <section className="mt-12">
+      <h2 className="font-display text-xl text-ink sm:text-2xl">Quem viu também levou</h2>
+      <p className="mt-1 text-sm text-ink-3">Combinações que fazem sentido com essa peça</p>
+      <div className="mt-5 grid grid-cols-2 gap-3 sm:grid-cols-4 sm:gap-4">
+        {items.map((p, i) => <ProductCard key={p.id} product={p} index={i} />)}
+      </div>
+    </section>
   )
 }

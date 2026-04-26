@@ -301,3 +301,36 @@ adminDashboardRouter.get('/funnel', async (req, res, next) => {
     ])
   } catch (err) { next(err) }
 })
+
+// GET /api/admin/dashboard/top-customers?limit=10 — clientes por LTV
+adminDashboardRouter.get('/top-customers', async (req, res, next) => {
+  try {
+    const limit = Math.min(50, Math.max(1, Number(req.query.limit ?? 10)))
+
+    const grouped = await prisma.order.groupBy({
+      by: ['userId'],
+      where: { status: { in: [...PAID_STATUSES] } },
+      _sum:   { total: true },
+      _count: { _all:  true },
+      _max:   { createdAt: true },
+      orderBy: { _sum: { total: 'desc' } },
+      take: limit,
+    })
+
+    const userIds = grouped.map(g => g.userId)
+    const users = await prisma.user.findMany({
+      where: { id: { in: userIds } },
+      select: { id: true, name: true, email: true },
+    })
+    const byId = new Map(users.map(u => [u.id, u]))
+
+    return ok(res, grouped.map(g => ({
+      userId:       g.userId,
+      name:         byId.get(g.userId)?.name  ?? '—',
+      email:        byId.get(g.userId)?.email ?? '—',
+      ordersCount:  g._count._all,
+      totalSpent:   Number(g._sum.total ?? 0),
+      lastOrderAt:  g._max.createdAt,
+    })))
+  } catch (err) { next(err) }
+})

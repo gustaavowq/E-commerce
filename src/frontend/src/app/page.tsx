@@ -6,6 +6,7 @@ import { listFeatured } from '@/services/products'
 import { listBrands } from '@/services/brands'
 import { ProductCard } from '@/components/ProductCard'
 import { BrandStrip } from '@/components/BrandStrip'
+import { NewsletterPopup } from '@/components/NewsletterPopup'
 
 export const revalidate = 60   // ISR: revalida a cada 60s
 
@@ -213,6 +214,9 @@ export default async function HomePage() {
           </div>
         </div>
       </section>
+
+      {/* Newsletter popup (aparece após 30s, persiste 7d no localStorage) */}
+      <NewsletterPopup />
     </>
   )
 }
