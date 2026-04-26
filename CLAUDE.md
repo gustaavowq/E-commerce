@@ -1,76 +1,125 @@
 # 🛒 E-Commerce Multi-Agent System
 
-## Visão Geral
-Este projeto demonstra um time de 7 agentes Senior trabalhando juntos para construir
-uma plataforma de e-commerce completa com dashboard analítico para o lojista.
+> Time de 9 agentes Senior orquestrados pra criar e-commerce completo (loja + painel admin + API + deploy) em **≤ 4 horas** pra qualquer nicho.
 
-Cada agente possui seu próprio AGENT.md com identidade, responsabilidades e regras de comunicação.
+## 🧠 Memória operacional
 
-## Estrutura de Pastas
+**LEIA PRIMEIRO** quando começar projeto novo:
+
+📍 **`memoria/00-INICIO.md`** — índice de toda memória operacional
+   - Decisões pré-aprovadas (stack, auth, deploy)
+   - 10 lições críticas do Miami Store (NÃO repetir)
+   - Playbooks (kickoff, deploy, security, bugbash)
+   - Padrões de código reusáveis
+   - Templates por nicho (moda, eletrônicos, alimentação, beleza, ...)
+
+A memória existe pra **reduzir perguntas redundantes ao cliente**. Tudo que está lá já está decidido — mude só com pedido explícito.
+
+## 🚀 Quando o cliente diz "vamos criar e-commerce de [nicho]"
+
+**Invoque a skill `ecommerce-tech-lead`** (auto-detectada por contexto). Ela executa `memoria/10-PLAYBOOKS/kickoff-novo-ecommerce.md`.
+
+Resumo da sequência:
+1. **Pesquisa o nicho autonomamente** (Fase 0 — WebSearch + WebFetch, 10-25min) e escreve em `projetos/[slug]/PESQUISA-NICHO.md`
+2. **Apresenta proposta validada** ao cliente (Fase 0.5 — não interrogatório)
+3. Cliente confirma + fornece nome/logo/cores/contas
+4. Cria estrutura, posta brief em `outros/shared/messages/`
+5. Dispara as 8 outras skills em paralelo (`ecommerce-backend`, `ecommerce-designer`, etc)
+6. Roda security audit + bug bash
+7. Deploy via `memoria/60-DEPLOY/railway-passo-a-passo.md` + `vercel-passo-a-passo.md`
+8. **Acumula aprendizado:** atualiza `memoria/70-NICHOS/[nicho].md`
+
+**Métrica de sucesso**: ≤ 15 mensagens cliente↔assistente até deploy público.
+
+## Equipe (9 skills do Claude Code)
+
+Cada agente é uma **skill auto-invocável** em `.claude/skills/ecommerce-*/SKILL.md`. Detectada automaticamente por contexto (descrição em frontmatter) ou invocada explicitamente: `/ecommerce-backend`, `/ecommerce-designer`, etc.
+
+| # | Skill | Quando invoca |
+|---|---|---|
+| 00 | [`ecommerce-tech-lead`](.claude/skills/ecommerce-tech-lead/SKILL.md) | "vamos criar e-commerce", pesquisa de nicho, coordenação multi-agente |
+| 01 | [`ecommerce-backend`](.claude/skills/ecommerce-backend/SKILL.md) | Schema Prisma, endpoints, auth, MercadoPago, seed |
+| 02 | [`ecommerce-designer`](.claude/skills/ecommerce-designer/SKILL.md) | Paleta, brand-brief, mood, tipografia |
+| 03 | [`ecommerce-frontend`](.claude/skills/ecommerce-frontend/SKILL.md) | Componentes Next.js loja/painel |
+| 04 | [`ecommerce-data-analyst`](.claude/skills/ecommerce-data-analyst/SKILL.md) | KPIs, dashboard endpoints, alertas |
+| 05 | [`ecommerce-devops`](.claude/skills/ecommerce-devops/SKILL.md) | Docker, Nginx, deploy Railway+Vercel |
+| 06 | [`ecommerce-qa`](.claude/skills/ecommerce-qa/SKILL.md) | Smoke E2E, pentest, bug bash, aprovação deploy |
+| 07 | [`ecommerce-copywriter`](.claude/skills/ecommerce-copywriter/SKILL.md) | Descrições, copy UI, emails, microcopy |
+| 08 | [`ecommerce-growth`](.claude/skills/ecommerce-growth/SKILL.md) | SEO, GA4/Pixel, cupons, newsletter |
+
+Cada SKILL.md lista:
+- Identidade + escopo (frontmatter description = trigger)
+- Decisões pré-aprovadas (não pergunta)
+- Top rules + anti-padrões
+- Checklist de cada bloco de trabalho
+- Ferramentas (WebSearch, Bash, etc)
+- Formato de relatório pra outros agentes
+
+## Estrutura
+
 ```
 ecommerce-agents/
-├── CLAUDE.md                  ← Você está aqui (entry point do projeto)
-├── README.md                  ← Como rodar em outro PC
-├── .env.example               ← Variáveis de ambiente necessárias
+├── CLAUDE.md                      ← este arquivo
+├── README.md                      ← como rodar local
+├── DEPLOY.md                      ← Railway + Vercel passo-a-passo
+├── .env.example
 │
-├── agents/                    ← System prompts e regras de cada agente
-│   ├── 00-tech-lead/          ← Líder e Orquestrador
-│   ├── 01-backend/            ← Senior Backend Developer
-│   ├── 02-designer/           ← Senior UI/UX Designer
-│   ├── 03-frontend/           ← Senior Frontend Developer
-│   ├── 04-data-analyst/       ← Senior Data Analyst
-│   ├── 05-devops/             ← Senior DevOps Engineer
-│   └── 06-qa/                 ← Senior QA Engineer
+├── .claude/skills/                ← 9 skills (ecommerce-*) — fonte única dos agentes
 │
-├── docs/                      ← Documentação técnica e de arquitetura
-│   ├── architecture.md        ← Decisões de arquitetura
-│   └── agent-communication.md ← Como os agentes se comunicam
+├── memoria/                       ← knowledge base reusável (decisões, lições, padrões)
 │
-├── shared/
-│   └── messages/              ← Canal de comunicação entre agentes (arquivos .md)
+├── projetos/                      ← documentação central de cada projeto
+│   └── miami-store/               ← primeiro projeto (referência educativa)
+│       ├── README.md
+│       ├── COMO-FUNCIONA.md       ← lê isso pra entender o projeto sem mergulhar no código
+│       ├── JORNADA.md
+│       └── DECISOES-ESPECIFICAS.md
 │
-└── src/                       ← Código-fonte gerado pelos agentes
-    ├── backend/               ← APIs, banco de dados, lógica de negócio
-    ├── frontend/              ← Loja virtual (cliente)
-    ├── dashboard/             ← Painel admin do lojista
-    └── infra/                 ← Docker, CI/CD, configs de deploy
+├── outros/                        ← shared/messages, docs técnicas, scripts
+│
+└── src/
+    ├── backend/                   ← Express + Prisma
+    ├── frontend/                  ← Next.js loja
+    ├── dashboard/                 ← Next.js painel
+    └── infra/                     ← docker-compose + nginx
 ```
 
-## Como Usar Este Projeto no Claude Code
+Detalhes em `memoria/20-DECISOES/estrutura-pastas.md`.
 
-### 1. Ativar um agente específico
-No terminal com Claude Code, referencie o AGENT.md do agente desejado:
+## Stack canônica (não muda sem pedido explícito)
+
+- **Backend:** Node 20 + Express + TypeScript + Prisma 5 + PostgreSQL 16
+- **Frontend (loja + painel):** Next.js 14 (App Router) + Tailwind + Zustand + TanStack Query
+- **Infra dev:** Docker Compose + Nginx (subdomain routing) + Cloudflare Quick Tunnel (demo)
+- **Deploy prod:** Railway (backend + Postgres) + Vercel (loja + painel)
+- **Imagens:** Cloudinary
+- **Pagamento:** MercadoPago (Pix focus)
+- **Email:** Resend (futuro)
+
+Detalhes em `memoria/20-DECISOES/stack.md`.
+
+## Comunicação entre agentes
+
+Mensagens em `outros/shared/messages/` no formato:
+
 ```
-claude --system-file agents/00-tech-lead/AGENT.md
+DE-{agente}_PARA-{agente}_YYYY-MM-DD-{topico}.md
 ```
 
-### 2. Deixar o Tech Lead orquestrar tudo
-```
-claude agents/00-tech-lead/AGENT.md "Inicie o projeto de e-commerce do zero"
-```
+Cada agente termina bloco de trabalho com **uma** mensagem (não a cada arquivo). Tech Lead consolida, Tech Lead aprova fase, segue.
 
-### 3. Comunicação entre agentes
-Agentes deixam mensagens em `shared/messages/` no formato:
-```
-DE-{agente}_PARA-{agente}_YYYY-MM-DD.md
-```
+## Princípio fundamental
 
-## Time de Agentes
+> "Decida sozinho com base na memória. Pergunte ao cliente **só** o que é específico do nicho/marca dele."
 
-| # | Agente | Foco Principal |
-|---|--------|----------------|
-| 00 | 🧠 Tech Lead | Orquestração, arquitetura, decisões macro |
-| 01 | ⚙️ Backend Dev | APIs, banco de dados, pagamentos |
-| 02 | 🎨 Designer | UI/UX, design system, wireframes |
-| 03 | 💻 Frontend Dev | Loja, carrinho, checkout, painel |
-| 04 | 📊 Data Analyst | KPIs, validação de dados, dashboard |
-| 05 | 🔒 DevOps | Infra, deploy, CI/CD, segurança |
-| 06 | 🧪 QA Engineer | Testes, edge cases, fluxos críticos |
+O Miami Store demorou ~50 mensagens. Próximo deve fazer em ≤ 15 (com pesquisa de nicho front-load).
 
-## Stack Tecnológica (definida pelo Tech Lead)
-- **Backend:** Node.js + Express + PostgreSQL
-- **Frontend:** Next.js + TailwindCSS
-- **Dashboard:** Next.js + Recharts
-- **Infra:** Docker + Docker Compose
-- **Pagamentos:** MercadoPago API
-- **Auth:** JWT + bcrypt
+## Quando atualizar a memória
+
+Toda vez que aprender algo novo (bug que não estava capturado, padrão que funcionou bem, decisão que valeu a pena). Adicionar em:
+
+- Bug novo descoberto → `memoria/30-LICOES/`
+- Padrão novo testado → `memoria/50-PADROES/`
+- Nicho novo abordado → `memoria/70-NICHOS/`
+
+A memória é viva. Quanto mais rica, mais rápido o próximo projeto.

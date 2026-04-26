@@ -77,18 +77,18 @@ Todos os comandos `docker compose` precisam ser rodados **de dentro de `src/infr
 
 ## 📁 Estrutura de pastas
 
-Veja **[docs/project-structure.md](./docs/project-structure.md)** pra mapa completo. Resumo:
+Veja **[CLAUDE.md](./CLAUDE.md)** pra mapa completo. Resumo:
 
 ```
 ecommerce-agents/
-├── agents/        🤖 configs dos agentes Claude (não mexe se não for orquestração)
-├── shared/        🤖 mensagens entre agentes
-├── docs/          📚 documentação do produto
-├── assets/        🎨 referências visuais (Instagram, etc.)
-└── src/           💻 código que vai pra produção
+├── .claude/skills/   9 skills do Claude Code (1 por agente: ecommerce-tech-lead, ecommerce-backend, ...)
+├── memoria/          knowledge base (decisões, lições, playbooks, padrões, nichos)
+├── projetos/         documentação por cliente (miami-store é o 1º)
+├── outros/           shared/messages (canal entre agentes), docs técnicas, scripts
+└── src/              código que vai pra produção
     ├── backend/      Express + Prisma + JWT
-    ├── frontend/     Next.js loja (sprint futura)
-    ├── dashboard/    Next.js painel admin (sprint futura)
+    ├── frontend/     Next.js loja
+    ├── dashboard/    Next.js painel admin
     └── infra/        Docker compose + Nginx
 ```
 
