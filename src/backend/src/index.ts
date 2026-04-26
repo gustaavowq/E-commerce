@@ -45,6 +45,8 @@ app.use(helmet({
   crossOriginResourcePolicy: false,
   crossOriginOpenerPolicy:   false,
   crossOriginEmbedderPolicy: false,
+  // X-Frame-Options é setado pelo nginx (DENY). Tira do Helmet pra não duplicar.
+  frameguard: false,
 }))
 app.use(cors({
   origin:      env.CORS_ORIGIN.split(',').map(s => s.trim()),

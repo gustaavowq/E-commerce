@@ -21,8 +21,17 @@ const prisma = new PrismaClient()
 
 async function seedAdmin() {
   const email    = process.env.SEED_ADMIN_EMAIL    ?? 'admin@miami.store'
-  const password = process.env.SEED_ADMIN_PASSWORD ?? 'miami2026'
+  const password = process.env.SEED_ADMIN_PASSWORD
   const name     = process.env.SEED_ADMIN_NAME     ?? 'Admin Miami Store'
+
+  // SEED_ADMIN_PASSWORD não tem mais default ('miami2026' vazou no pentest
+  // 2026-04-26). Sem env, NÃO cria admin — o operador define a senha forte
+  // antes de rodar o seed.
+  if (!password || password.length < 10) {
+    console.warn('⚠ SEED_ADMIN_PASSWORD ausente ou < 10 chars — admin NÃO criado.')
+    console.warn('  Defina SEED_ADMIN_PASSWORD no .env e rode `npm run prisma:seed` de novo.')
+    return null
+  }
 
   const passwordHash = await bcrypt.hash(password, 12)
 
@@ -33,7 +42,7 @@ async function seedAdmin() {
   })
 
   console.log(`✔ Admin: ${admin.email} (id=${admin.id})`)
-  console.log(`  Senha: ${password}  ⚠️ TROQUE em produção`)
+  console.log(`  Senha: definida via SEED_ADMIN_PASSWORD (não logada).`)
   return admin
 }
 
@@ -312,9 +321,13 @@ async function main() {
   await seedProducts(brands, categories)
   await seedCoupons()
   console.log('\n🎉 Seed concluído.')
-  console.log(`\nLogin do admin:`)
-  console.log(`  email: ${admin.email}`)
-  console.log(`  senha: ${process.env.SEED_ADMIN_PASSWORD ?? 'miami2026'}`)
+  if (admin) {
+    console.log(`\nLogin do admin:`)
+    console.log(`  email: ${admin.email}`)
+    console.log(`  senha: (definida via SEED_ADMIN_PASSWORD)`)
+  } else {
+    console.log('\n(Admin NÃO criado — defina SEED_ADMIN_PASSWORD pra criar.)')
+  }
 }
 
 main()

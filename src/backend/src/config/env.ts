@@ -27,17 +27,22 @@ const schema = z.object({
   // Em prod aponta pro Railway; em dev fica vazio e cai no http://miami.test.
   PUBLIC_API_URL:         z.string().url().optional(),
 
-  MERCADOPAGO_TOKEN:      z.string().optional(),
-  MERCADOPAGO_PUBLIC_KEY: z.string().optional(),
+  MERCADOPAGO_TOKEN:        z.string().optional(),
+  MERCADOPAGO_PUBLIC_KEY:   z.string().optional(),
+  // Secret pra validar HMAC do webhook (configurado em "Suas integrações" no
+  // painel MP). Se vazio, webhook aceita sem verificação (dev). Em prod, sempre.
+  MERCADOPAGO_WEBHOOK_SECRET: z.string().optional(),
 
   SHIPPING_ORIGIN_CEP:    z.string().default('01310-100'),
   SHIPPING_FLAT_RATE:     z.coerce.number().default(15.00),
 
   WHATSAPP_NUMBER:        z.string().optional(),
 
-  // Seed (admin inicial)
+  // Seed (admin inicial). SEED_ADMIN_PASSWORD SEM default — se não vier,
+  // o seed pula a criação do admin e loga warning. Default antigo
+  // ('miami2026') vazou no pentest 2026-04-26.
   SEED_ADMIN_EMAIL:       z.string().email().default('admin@miami.store'),
-  SEED_ADMIN_PASSWORD:    z.string().min(8).default('miami2026'),
+  SEED_ADMIN_PASSWORD:    z.string().min(10).optional(),
   SEED_ADMIN_NAME:        z.string().default('Admin Miami Store'),
 })
 

@@ -354,11 +354,12 @@ authRouter.post('/forgot-password', forgotLimiter, async (req, res, next) => {
     })
 
     // Em prod: aqui chama o serviço de email/whatsapp.
-    // Em dev: log no console + retorna link na response (só dev).
+    // Em dev: SOMENTE log no servidor (NUNCA na response — pentest 2026-04-26
+    // mostrou que isso permitia takeover de conta por qualquer attacker que
+    // soubesse o email da vítima).
     const resetUrl = buildResetUrl(req, rawToken)
     if (isDev) {
-      console.log(`[auth] Reset link pra ${email}: ${resetUrl}`)
-      return ok(res, { ...standardResponse, _devResetUrl: resetUrl })
+      console.log(`[dev] reset url: ${resetUrl}`)
     }
 
     // TODO: integrar com serviço de email (SES/SendGrid) ou WhatsApp Business API

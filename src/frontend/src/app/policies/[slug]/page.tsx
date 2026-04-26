@@ -176,8 +176,17 @@ function MarkdownLite({ source }: { source: string }) {
   return <>{blocks}</>
 }
 
-function inline(s: string): string {
+function escapeHtml(s: string): string {
   return s
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;')
+}
+
+function inline(s: string): string {
+  return escapeHtml(s)
     .replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>')
     .replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2" class="text-primary-700 underline" target="_blank" rel="noopener">$1</a>')
 }
