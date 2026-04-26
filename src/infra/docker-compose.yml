@@ -1,0 +1,187 @@
+# =============================================================================
+# Miami Store — Ambiente de Desenvolvimento
+# Mantido pelo DevOps (Agente 05).
+#
+# Como rodar:
+#   1. Na raiz do repo, copie .env.example -> .env e ajuste valores
+#   2. cd src/infra
+#   3. docker compose up
+#
+# Serviços ativos no Sprint 1:
+#   - postgres (banco)
+#   - backend (API Express + Prisma)
+#   - nginx (proxy reverso, expõe na porta 80)
+#
+# Serviços comentados (serão habilitados em sprints futuros):
+#   - frontend (Next.js loja)
+#   - dashboard (Next.js painel admin)
+# =============================================================================
+
+name: miami-store
+
+# .env mora na raiz do repo. Cada serviço importa via env_file.
+# Isso permite rodar "docker compose up" de dentro de src/infra/ sem precisar
+# do flag --env-file, mantendo um único .env compartilhado pelo monorepo.
+
+x-env: &env-default
+  env_file:
+    - ../../.env
+
+services:
+  # ---------------------------------------------------------------------------
+  # Banco de dados PostgreSQL
+  # ---------------------------------------------------------------------------
+  postgres:
+    <<: *env-default
+    image: postgres:16-alpine
+    container_name: miami-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${DB_USER:-postgres}
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-postgres}
+      POSTGRES_DB: ${DB_NAME:-miami_store}
+      # Locale e timezone para datas em PT-BR
+      LANG: pt_BR.UTF-8
+      TZ: America/Sao_Paulo
+    ports:
+      # Exposto só pra dev (DBeaver, TablePlus). Em prod, NUNCA expor.
+      - "${DB_PORT:-5432}:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${DB_USER:-postgres} -d ${DB_NAME:-miami_store}"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+    networks:
+      - miami-net
+
+  # ---------------------------------------------------------------------------
+  # Backend (Node.js + Express + Prisma)
+  # ---------------------------------------------------------------------------
+  backend:
+    <<: *env-default
+    build:
+      context: ../backend
+      dockerfile: Dockerfile.dev
+    container_name: miami-backend
+    restart: unless-stopped
+    environment:
+      NODE_ENV: development
+      PORT: 3001
+      # Dentro da network do compose, o host do postgres é o nome do serviço
+      DATABASE_URL: "postgresql://${DB_USER:-postgres}:${DB_PASSWORD:-postgres}@postgres:5432/${DB_NAME:-miami_store}?schema=public"
+      JWT_SECRET: ${JWT_SECRET}
+      JWT_EXPIRES_IN: ${JWT_EXPIRES_IN:-7d}
+      MERCADOPAGO_TOKEN: ${MERCADOPAGO_TOKEN}
+      MERCADOPAGO_PUBLIC_KEY: ${MERCADOPAGO_PUBLIC_KEY}
+      TZ: America/Sao_Paulo
+    volumes:
+      # Hot reload: mapeia o código fonte. node_modules fica isolado no container.
+      - ../backend:/app
+      - /app/node_modules
+    expose:
+      - "3001"
+    # Em dev mantemos a porta exposta pra debug (curl/prisma studio do host).
+    # Acesso normal pelo browser é via api.miami.test (nginx).
+    ports:
+      - "${BACKEND_PORT:-3001}:3001"
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - miami-net
+
+  # ---------------------------------------------------------------------------
+  # Nginx (reverse proxy)
+  # ---------------------------------------------------------------------------
+  nginx:
+    image: nginx:1.27-alpine
+    container_name: miami-nginx
+    restart: unless-stopped
+    ports:
+      - "80:80"
+    volumes:
+      - ./nginx/conf.d:/etc/nginx/conf.d:ro
+    depends_on:
+      - backend
+    networks:
+      - miami-net
+
+  # ---------------------------------------------------------------------------
+  # Frontend (Next.js — loja pro cliente final)
+  # ---------------------------------------------------------------------------
+  frontend:
+    <<: *env-default
+    build:
+      context: ../frontend
+      dockerfile: Dockerfile.dev
+    container_name: miami-frontend
+    restart: unless-stopped
+    environment:
+      NODE_ENV: development
+      # Server-side fetch (RSC) usa esta URL pra falar com backend pela rede interna do compose
+      INTERNAL_API_URL: http://backend:3001
+      # Client-side fetch (browser) usa esta — vai pro nginx via api.miami.test
+      NEXT_PUBLIC_API_URL: http://api.miami.test
+      NEXT_PUBLIC_MERCADOPAGO_PUBLIC_KEY: ${MERCADOPAGO_PUBLIC_KEY}
+      NEXT_PUBLIC_WHATSAPP_NUMBER: ${WHATSAPP_NUMBER:-5511999999999}
+      WATCHPACK_POLLING: 'true'
+    volumes:
+      - ../frontend:/app
+      - /app/node_modules
+      - /app/.next
+    expose:
+      - "3000"
+    ports:
+      - "${FRONTEND_PORT:-3000}:3000"
+    depends_on:
+      - backend
+    networks:
+      - miami-net
+
+  # ---------------------------------------------------------------------------
+  # Dashboard (Next.js — painel admin do lojista)
+  # Roda direto na porta 3002 (sem proxy reverso). Cookies funcionam entre
+  # localhost:80 (loja) e localhost:3002 (admin) pq cookies não escopam por porta.
+  # ---------------------------------------------------------------------------
+  dashboard:
+    <<: *env-default
+    build:
+      context: ../dashboard
+      dockerfile: Dockerfile.dev
+    container_name: miami-dashboard
+    restart: unless-stopped
+    environment:
+      NODE_ENV: development
+      # Server-side fetch (RSC) usa rede interna pra falar com backend
+      INTERNAL_API_URL: http://backend:3001
+      # Client-side fetch (browser) usa nginx via subdomínio — cookie compartilhado
+      NEXT_PUBLIC_API_URL: http://api.miami.test
+      WATCHPACK_POLLING: 'true'
+    volumes:
+      - ../dashboard:/app
+      - /app/node_modules
+      - /app/.next
+    expose:
+      - "3002"
+    ports:
+      - "${DASHBOARD_PORT:-3002}:3002"
+    depends_on:
+      - backend
+    networks:
+      - miami-net
+
+# -----------------------------------------------------------------------------
+# Volumes persistentes
+# -----------------------------------------------------------------------------
+volumes:
+  postgres_data:
+    driver: local
+
+# -----------------------------------------------------------------------------
+# Network interna
+# -----------------------------------------------------------------------------
+networks:
+  miami-net:
+    driver: bridge

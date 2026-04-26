@@ -1,0 +1,32 @@
+# =============================================================================
+# Frontend Miami Store — Dockerfile DEV
+# Mantido pelo DevOps (Agente 05).
+#
+# Next.js 14 em modo dev com hot reload. Usa node:20-slim (Debian) por
+# consistência com o backend.
+# =============================================================================
+
+FROM node:20-slim
+
+RUN apt-get update \
+ && apt-get install -y --no-install-recommends tini ca-certificates \
+ && rm -rf /var/lib/apt/lists/*
+
+WORKDIR /app
+
+# Manifests primeiro (cache layer)
+COPY package.json package-lock.json* ./
+RUN npm install
+
+# O resto do código (sobrescrito pelo volume mount em dev)
+COPY . .
+
+ENTRYPOINT ["/usr/bin/tini", "--"]
+
+EXPOSE 3000
+
+# Webpack polling pra hot reload funcionar em volume mount no Windows/macOS
+ENV WEBPACK_POLLING=true
+ENV WATCHPACK_POLLING=true
+
+CMD ["npm", "run", "dev"]

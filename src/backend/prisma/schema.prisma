@@ -1,0 +1,459 @@
+// =============================================================================
+// Miami Store — Schema do banco de dados
+// Mantido pelo Backend (Agente 01) com decisões arquiteturais do Tech Lead.
+// Documentação de referência: docs/architecture.md, docs/brand-brief.md
+// =============================================================================
+
+generator client {
+  provider      = "prisma-client-js"
+  // Garante que o Prisma baixa engines pra Windows (dev local) e Debian
+  // (container Docker). Sem isso, trocar de SO causa "Could not locate the
+  // Query Engine" — o volume anônimo do compose persiste binários da build
+  // anterior.
+  binaryTargets = ["native", "debian-openssl-3.0.x"]
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// -----------------------------------------------------------------------------
+// ENUMS
+// -----------------------------------------------------------------------------
+
+enum Role {
+  CUSTOMER
+  ADMIN
+}
+
+enum OrderStatus {
+  PENDING_PAYMENT  // pedido criado, aguardando pagamento
+  PAID             // pagamento confirmado
+  PREPARING        // em separação
+  SHIPPED          // enviado
+  DELIVERED        // entregue
+  CANCELLED        // cancelado (timeout ou ação do cliente/admin)
+  REFUNDED         // reembolsado
+}
+
+enum PaymentMethod {
+  PIX
+  CREDIT_CARD
+  BOLETO
+}
+
+enum PaymentStatus {
+  PENDING
+  APPROVED
+  REJECTED
+  REFUNDED
+  CANCELLED
+  EXPIRED
+}
+
+enum CouponType {
+  PERCENT      // ex: 10% off
+  FIXED        // ex: R$ 20 off
+  FREE_SHIPPING
+}
+
+// -----------------------------------------------------------------------------
+// USERS & AUTH
+// -----------------------------------------------------------------------------
+
+model User {
+  id           String    @id @default(cuid())
+  email        String    @unique
+  passwordHash String    @map("password_hash")
+  name         String
+  phone        String?
+  cpf          String?   @unique
+  role         Role      @default(CUSTOMER)
+  emailVerifiedAt DateTime? @map("email_verified_at")
+
+  addresses    Address[]
+  orders       Order[]
+  carts        Cart[]
+  reviews      Review[]
+  refreshTokens       RefreshToken[]
+  passwordResetTokens PasswordResetToken[]
+
+  createdAt    DateTime  @default(now()) @map("created_at")
+  updatedAt    DateTime  @updatedAt @map("updated_at")
+
+  @@index([role])
+  @@map("users")
+}
+
+model RefreshToken {
+  id          String    @id @default(cuid())
+  userId      String    @map("user_id")
+  user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  tokenHash   String    @unique @map("token_hash")
+  expiresAt   DateTime  @map("expires_at")
+  revokedAt   DateTime? @map("revoked_at")
+  // Quando rotaciona, marca qual token substituiu este. Se alguém tentar usar
+  // um token revogado E que tem replacedBy → token roubado, revoga TODA a chain.
+  replacedById String?  @map("replaced_by_id")
+  userAgent   String?   @map("user_agent")
+  ip          String?
+  createdAt   DateTime  @default(now()) @map("created_at")
+
+  @@index([userId])
+  @@index([expiresAt])
+  @@map("refresh_tokens")
+}
+
+// Token pra reset de senha. Mesmo padrão dos refresh: guardamos só o HASH no
+// banco, o raw vai pelo email/whatsapp. Single-use (usedAt) e expira em 1h.
+model PasswordResetToken {
+  id         String    @id @default(cuid())
+  userId     String    @map("user_id")
+  user       User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  tokenHash  String    @unique @map("token_hash")
+  expiresAt  DateTime  @map("expires_at")
+  usedAt     DateTime? @map("used_at")
+  createdAt  DateTime  @default(now()) @map("created_at")
+  ip         String?
+  userAgent  String?   @map("user_agent")
+
+  @@index([userId])
+  @@index([expiresAt])
+  @@map("password_reset_tokens")
+}
+
+// -----------------------------------------------------------------------------
+// CATALOG — Brand × Category × Product × Variation
+// -----------------------------------------------------------------------------
+
+model Brand {
+  id          String   @id @default(cuid())
+  slug        String   @unique          // "lacoste", "nike", "tommy"
+  name        String                    // "Lacoste"
+  logoUrl     String?  @map("logo_url")
+  isActive    Boolean  @default(true) @map("is_active")
+  sortOrder   Int      @default(0) @map("sort_order")
+
+  products    Product[]
+
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
+
+  @@index([isActive])
+  @@map("brands")
+}
+
+model Category {
+  id          String   @id @default(cuid())
+  slug        String   @unique          // "polos", "tenis", "bones"
+  name        String                    // "Polos"
+  parentId    String?  @map("parent_id")
+  parent      Category?  @relation("CategoryTree", fields: [parentId], references: [id], onDelete: SetNull)
+  children    Category[] @relation("CategoryTree")
+  isActive    Boolean  @default(true) @map("is_active")
+  sortOrder   Int      @default(0) @map("sort_order")
+
+  products    Product[]
+
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
+
+  @@index([parentId])
+  @@index([isActive])
+  @@map("categories")
+}
+
+model Product {
+  id            String   @id @default(cuid())
+  slug          String   @unique
+  name          String
+  description   String   @db.Text
+  basePrice     Decimal  @map("base_price") @db.Decimal(10, 2)
+  comparePrice  Decimal? @map("compare_price") @db.Decimal(10, 2)  // "preço de"
+  brandId       String   @map("brand_id")
+  brand         Brand    @relation(fields: [brandId], references: [id], onDelete: Restrict)
+  categoryId    String   @map("category_id")
+  category      Category @relation(fields: [categoryId], references: [id], onDelete: Restrict)
+  isActive      Boolean  @default(true) @map("is_active")
+  isFeatured    Boolean  @default(false) @map("is_featured")
+  measureTable  Json?    @map("measure_table")  // tabela de medidas estruturada
+  metaTitle     String?  @map("meta_title")
+  metaDesc      String?  @map("meta_desc")
+
+  variations    ProductVariation[]
+  images        ProductImage[]
+  cartItems     CartItem[]
+  orderItems    OrderItem[]
+  reviews       Review[]
+
+  createdAt     DateTime @default(now()) @map("created_at")
+  updatedAt     DateTime @updatedAt @map("updated_at")
+
+  @@index([brandId])
+  @@index([categoryId])
+  @@index([isActive])
+  @@index([isFeatured])
+  @@map("products")
+}
+
+model ProductVariation {
+  id            String   @id @default(cuid())
+  productId     String   @map("product_id")
+  product       Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+  sku           String   @unique
+  size          String                  // "P", "M", "G", "42", etc.
+  color         String                  // "Vermelho"
+  colorHex      String?  @map("color_hex")  // "#D32F2F" pra renderizar swatch
+  stock         Int      @default(0)
+  priceOverride Decimal? @map("price_override") @db.Decimal(10, 2)
+  isActive      Boolean  @default(true) @map("is_active")
+
+  cartItems     CartItem[]
+  orderItems    OrderItem[]
+
+  createdAt     DateTime @default(now()) @map("created_at")
+  updatedAt     DateTime @updatedAt @map("updated_at")
+
+  @@unique([productId, size, color])
+  @@index([productId])
+  @@index([stock])
+  @@map("product_variations")
+}
+
+model ProductImage {
+  id          String   @id @default(cuid())
+  productId   String   @map("product_id")
+  product     Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+  url         String
+  alt         String?
+  sortOrder   Int      @default(0) @map("sort_order")
+  isPrimary   Boolean  @default(false) @map("is_primary")
+
+  createdAt   DateTime @default(now()) @map("created_at")
+
+  @@index([productId])
+  @@map("product_images")
+}
+
+// -----------------------------------------------------------------------------
+// ADDRESS
+// -----------------------------------------------------------------------------
+
+model Address {
+  id          String   @id @default(cuid())
+  userId      String   @map("user_id")
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  label       String?                   // "Casa", "Trabalho"
+  recipient   String                    // nome de quem recebe
+  zipcode     String                    // CEP, formato 99999-999
+  street      String
+  number      String
+  complement  String?
+  district    String                    // bairro
+  city        String
+  state       String                    // UF (2 letras)
+  country     String   @default("BR")
+  phone       String?
+  isDefault   Boolean  @default(false) @map("is_default")
+
+  orders      Order[]
+
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
+
+  @@index([userId])
+  @@map("addresses")
+}
+
+// -----------------------------------------------------------------------------
+// CART
+// -----------------------------------------------------------------------------
+
+model Cart {
+  id           String     @id @default(cuid())
+  userId       String?    @map("user_id")  // null pra carrinho de visitante (sessão)
+  user         User?      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  sessionId    String?    @map("session_id")  // pra carrinho não-logado, via cookie
+  status       String     @default("active")  // "active" | "abandoned" | "converted"
+  abandonedAt  DateTime?  @map("abandoned_at")
+  convertedAt  DateTime?  @map("converted_at")
+
+  items        CartItem[]
+
+  createdAt    DateTime   @default(now()) @map("created_at")
+  updatedAt    DateTime   @updatedAt @map("updated_at")
+
+  @@index([userId])
+  @@index([sessionId])
+  @@index([status])
+  @@map("carts")
+}
+
+model CartItem {
+  id            String           @id @default(cuid())
+  cartId        String           @map("cart_id")
+  cart          Cart             @relation(fields: [cartId], references: [id], onDelete: Cascade)
+  productId     String           @map("product_id")
+  product       Product          @relation(fields: [productId], references: [id])
+  variationId   String           @map("variation_id")
+  variation     ProductVariation @relation(fields: [variationId], references: [id])
+  quantity      Int              @default(1)
+
+  createdAt     DateTime         @default(now()) @map("created_at")
+  updatedAt     DateTime         @updatedAt @map("updated_at")
+
+  @@unique([cartId, variationId])
+  @@index([cartId])
+  @@map("cart_items")
+}
+
+// -----------------------------------------------------------------------------
+// ORDER
+// -----------------------------------------------------------------------------
+
+model Order {
+  id              String       @id @default(cuid())
+  orderNumber     String       @unique @map("order_number")  // "MS-20260425-0001"
+  userId          String       @map("user_id")
+  user            User         @relation(fields: [userId], references: [id], onDelete: Restrict)
+  status          OrderStatus  @default(PENDING_PAYMENT)
+  addressId       String       @map("address_id")
+  address         Address      @relation(fields: [addressId], references: [id], onDelete: Restrict)
+
+  subtotal        Decimal      @db.Decimal(10, 2)
+  shippingCost    Decimal      @map("shipping_cost") @db.Decimal(10, 2)
+  discount        Decimal      @default(0) @db.Decimal(10, 2)
+  total           Decimal      @db.Decimal(10, 2)
+
+  couponId        String?      @map("coupon_id")
+  coupon          Coupon?      @relation(fields: [couponId], references: [id], onDelete: SetNull)
+
+  notes           String?      @db.Text  // observações do cliente
+
+  shippedAt       DateTime?    @map("shipped_at")
+  deliveredAt     DateTime?    @map("delivered_at")
+  cancelledAt     DateTime?    @map("cancelled_at")
+  trackingCode    String?      @map("tracking_code")
+
+  items           OrderItem[]
+  payments        Payment[]
+
+  createdAt       DateTime     @default(now()) @map("created_at")
+  updatedAt       DateTime     @updatedAt @map("updated_at")
+
+  @@index([userId])
+  @@index([status])
+  @@index([createdAt])
+  @@map("orders")
+}
+
+model OrderItem {
+  id              String           @id @default(cuid())
+  orderId         String           @map("order_id")
+  order           Order            @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  productId       String           @map("product_id")
+  product         Product          @relation(fields: [productId], references: [id], onDelete: Restrict)
+  variationId     String           @map("variation_id")
+  variation       ProductVariation @relation(fields: [variationId], references: [id], onDelete: Restrict)
+
+  // SNAPSHOT — preço congelado no momento da compra, não muda se o produto mudar de preço
+  productName     String           @map("product_name")
+  variationLabel  String           @map("variation_label")  // "Tamanho M / Vermelho"
+  unitPrice       Decimal          @map("unit_price") @db.Decimal(10, 2)
+  quantity        Int
+  subtotal        Decimal          @db.Decimal(10, 2)
+
+  createdAt       DateTime         @default(now()) @map("created_at")
+
+  @@index([orderId])
+  @@map("order_items")
+}
+
+// -----------------------------------------------------------------------------
+// PAYMENT
+// -----------------------------------------------------------------------------
+
+model Payment {
+  id              String        @id @default(cuid())
+  orderId         String        @map("order_id")
+  order           Order         @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  method          PaymentMethod
+  status          PaymentStatus @default(PENDING)
+  amount          Decimal       @db.Decimal(10, 2)
+  installments    Int           @default(1)
+
+  // Dados do gateway (MercadoPago)
+  gatewayProvider String        @default("mercadopago") @map("gateway_provider")
+  gatewayId       String?       @unique @map("gateway_id")  // ID retornado pelo MP
+  gatewayPayload  Json?         @map("gateway_payload")     // resposta completa do MP
+
+  // Específicos do Pix
+  pixQrCode       String?       @map("pix_qr_code") @db.Text
+  pixCopyPaste    String?       @map("pix_copy_paste") @db.Text
+  pixExpiresAt    DateTime?     @map("pix_expires_at")
+
+  approvedAt      DateTime?     @map("approved_at")
+  rejectedAt      DateTime?     @map("rejected_at")
+  refundedAt      DateTime?     @map("refunded_at")
+
+  // Idempotência de webhook
+  webhookEventId  String?       @unique @map("webhook_event_id")
+
+  createdAt       DateTime      @default(now()) @map("created_at")
+  updatedAt       DateTime      @updatedAt @map("updated_at")
+
+  @@index([orderId])
+  @@index([status])
+  @@map("payments")
+}
+
+// -----------------------------------------------------------------------------
+// COUPON
+// -----------------------------------------------------------------------------
+
+model Coupon {
+  id              String      @id @default(cuid())
+  code            String      @unique           // "PIXFIRST", "FRETE10"
+  type            CouponType
+  value           Decimal?    @db.Decimal(10, 2)  // 10 = 10% se PERCENT, R$ 10 se FIXED
+  minOrderValue   Decimal?    @map("min_order_value") @db.Decimal(10, 2)
+  maxUses         Int?        @map("max_uses")
+  usedCount       Int         @default(0) @map("used_count")
+  perUserLimit    Int         @default(1) @map("per_user_limit")
+  validFrom       DateTime    @default(now()) @map("valid_from")
+  validUntil      DateTime?   @map("valid_until")
+  isActive        Boolean     @default(true) @map("is_active")
+
+  orders          Order[]
+
+  createdAt       DateTime    @default(now()) @map("created_at")
+  updatedAt       DateTime    @updatedAt @map("updated_at")
+
+  @@index([code])
+  @@index([isActive])
+  @@map("coupons")
+}
+
+// -----------------------------------------------------------------------------
+// REVIEW (preparado pra fase 2)
+// -----------------------------------------------------------------------------
+
+model Review {
+  id          String   @id @default(cuid())
+  productId   String   @map("product_id")
+  product     Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+  userId      String   @map("user_id")
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  rating      Int                          // 1..5
+  comment     String?  @db.Text
+  isApproved  Boolean  @default(false) @map("is_approved")  // moderação manual
+
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
+
+  @@unique([productId, userId])
+  @@index([productId])
+  @@index([isApproved])
+  @@map("reviews")
+}

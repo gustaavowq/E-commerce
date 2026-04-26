@@ -1,0 +1,223 @@
+'use client'
+
+import Image from 'next/image'
+import { useMemo, useState } from 'react'
+import Link from 'next/link'
+import { Check, Truck, ShieldCheck, Zap, MessageCircle, Ruler } from 'lucide-react'
+import { Button } from '@/components/ui/Button'
+import { AuthenticityBadge } from '@/components/AuthenticityBadge'
+import { useCart } from '@/stores/cart'
+import { formatBRL, discountPercent, installmentLabel, pixPrice } from '@/lib/format'
+import type { ProductDetail, ProductVariation } from '@/services/types'
+import { cn } from '@/lib/utils'
+
+type Props = { product: ProductDetail }
+
+export function ProductDetailView({ product }: Props) {
+  const addToCart = useCart(s => s.addItem)
+
+  const colors = useMemo(() => Array.from(new Map(
+    product.variations.map(v => [v.color, { color: v.color, hex: v.colorHex }] as const),
+  ).values()), [product])
+
+  const [selectedColor, setSelectedColor] = useState<string | null>(colors[0]?.color ?? null)
+  const sizesForColor = useMemo(
+    () => product.variations.filter(v => v.color === selectedColor),
+    [product.variations, selectedColor],
+  )
+  const [selectedVariation, setSelectedVariation] = useState<ProductVariation | null>(sizesForColor[0] ?? null)
+  const [activeImageIdx, setActiveImageIdx] = useState(0)
+  const [added, setAdded] = useState(false)
+
+  const discount   = discountPercent(product.basePrice, product.comparePrice)
+  const pixValue   = pixPrice(product.basePrice)
+  const fallbackImg = `https://placehold.co/720x900/F0F0F0/9CA3AF?text=${encodeURIComponent(product.name)}`
+  const images     = product.images.length ? product.images : [{ id: 'fallback', url: fallbackImg, alt: product.name, sortOrder: 0, isPrimary: true }]
+
+  const onColorChange = (c: string) => {
+    setSelectedColor(c)
+    const first = product.variations.find(v => v.color === c)
+    setSelectedVariation(first ?? null)
+  }
+
+  const onAddToCart = () => {
+    if (!selectedVariation) return
+    addToCart({
+      productId:    product.id,
+      variationId:  selectedVariation.id,
+      productSlug:  product.slug,
+      productName:  product.name,
+      variationLabel: `${selectedVariation.size} / ${selectedVariation.color}`,
+      unitPrice:    selectedVariation.priceOverride ?? product.basePrice,
+      imageUrl:     images[0]?.url ?? null,
+      maxStock:     selectedVariation.stock,
+    })
+    setAdded(true)
+    setTimeout(() => setAdded(false), 2000)
+  }
+
+  return (
+    <div className="grid gap-6 lg:grid-cols-[1fr_minmax(380px,420px)] lg:gap-10">
+      {/* Galeria */}
+      <div>
+        <div className="relative aspect-[4/5] w-full overflow-hidden rounded-lg bg-surface-2">
+          <Image
+            src={images[activeImageIdx]?.url ?? fallbackImg}
+            alt={images[activeImageIdx]?.alt ?? product.name}
+            fill
+            sizes="(max-width: 1024px) 100vw, 60vw"
+            className="object-cover"
+            priority
+            unoptimized
+          />
+          {discount && (
+            <span className="absolute left-3 top-3 rounded-sm bg-accent px-2 py-1 text-xs font-black text-white">
+              -{discount}%
+            </span>
+          )}
+          <div className="absolute right-3 top-3">
+            <AuthenticityBadge />
+          </div>
+        </div>
+        {images.length > 1 && (
+          <div className="mt-3 grid grid-cols-5 gap-2">
+            {images.map((img, idx) => (
+              <button
+                key={img.id}
+                onClick={() => setActiveImageIdx(idx)}
+                className={cn(
+                  'relative aspect-square overflow-hidden rounded-md border-2 transition',
+                  idx === activeImageIdx ? 'border-primary-700' : 'border-transparent hover:border-border-strong',
+                )}
+              >
+                <Image src={img.url} alt={img.alt ?? ''} fill sizes="100px" className="object-cover" unoptimized />
+              </button>
+            ))}
+          </div>
+        )}
+      </div>
+
+      {/* Painel de compra */}
+      <aside className="lg:sticky lg:top-20 lg:self-start">
+        <p className="text-sm font-bold uppercase tracking-wider text-primary-700">{product.brand.name}</p>
+        <h1 className="mt-1 font-display text-2xl text-ink sm:text-3xl">{product.name}</h1>
+
+        {/* Preço */}
+        <div className="mt-4">
+          {product.comparePrice && (
+            <p className="text-sm text-ink-3 line-through">{formatBRL(product.comparePrice)}</p>
+          )}
+          <p className="text-3xl font-bold text-ink">{formatBRL(product.basePrice)}</p>
+          <p className="mt-1 text-sm text-ink-3">{installmentLabel(product.basePrice)}</p>
+
+          <div className="mt-3 flex items-center gap-2 rounded-md border border-primary-700 bg-primary-50 px-3 py-2">
+            <Zap className="h-4 w-4 text-primary-700" />
+            <span className="text-sm font-bold text-primary-700">
+              {formatBRL(pixValue)} no Pix
+            </span>
+            <span className="ml-auto rounded-sm bg-primary-700 px-2 py-0.5 text-xs font-bold text-white">5% OFF</span>
+          </div>
+        </div>
+
+        {/* Cor */}
+        {colors.length > 0 && (
+          <div className="mt-6">
+            <h3 className="text-sm font-semibold text-ink">
+              Cor: <span className="font-normal text-ink-2">{selectedColor}</span>
+            </h3>
+            <div className="mt-2 flex flex-wrap gap-2">
+              {colors.map(c => (
+                <button
+                  key={c.color}
+                  onClick={() => onColorChange(c.color)}
+                  aria-label={c.color}
+                  title={c.color}
+                  className={cn(
+                    'h-10 w-10 rounded-pill border-2 transition',
+                    selectedColor === c.color
+                      ? 'border-primary-700 ring-2 ring-primary-700 ring-offset-1'
+                      : 'border-border hover:border-ink-3',
+                  )}
+                  style={{ backgroundColor: c.hex ?? '#ccc' }}
+                />
+              ))}
+            </div>
+          </div>
+        )}
+
+        {/* Tamanho */}
+        <div className="mt-5">
+          <h3 className="text-sm font-semibold text-ink flex items-center justify-between">
+            <span>Tamanho</span>
+            <button className="inline-flex items-center gap-1 text-xs font-medium text-primary-700 hover:underline">
+              <Ruler className="h-3 w-3" /> Tabela de medidas
+            </button>
+          </h3>
+          <div className="mt-2 flex flex-wrap gap-2">
+            {sizesForColor.map(v => {
+              const isOut = v.stock === 0
+              return (
+                <button
+                  key={v.id}
+                  onClick={() => !isOut && setSelectedVariation(v)}
+                  disabled={isOut}
+                  className={cn(
+                    'min-w-[3rem] rounded-md border-2 px-3 py-2 text-sm font-semibold transition',
+                    selectedVariation?.id === v.id
+                      ? 'border-primary-700 bg-primary-700 text-white'
+                      : isOut
+                        ? 'border-border bg-surface-2 text-ink-4 line-through cursor-not-allowed'
+                        : 'border-border bg-white text-ink hover:border-ink-3',
+                  )}
+                >
+                  {v.size}
+                </button>
+              )
+            })}
+          </div>
+          {selectedVariation && (
+            <p className="mt-2 text-xs text-ink-3">
+              {selectedVariation.stock > 0
+                ? selectedVariation.stock <= 3
+                  ? <span className="text-warning font-semibold">Últimas {selectedVariation.stock} {selectedVariation.stock === 1 ? 'peça' : 'peças'}!</span>
+                  : `${selectedVariation.stock} disponíveis`
+                : <span className="text-error font-semibold">Sem estoque</span>}
+            </p>
+          )}
+        </div>
+
+        {/* CTAs */}
+        <div className="mt-6 flex flex-col gap-2">
+          <Button
+            size="lg"
+            fullWidth
+            disabled={!selectedVariation || selectedVariation.stock === 0}
+            onClick={onAddToCart}
+            leftIcon={added ? <Check className="h-5 w-5" /> : null}
+          >
+            {added ? 'Pronto, no carrinho' : 'Adicionar ao carrinho'}
+          </Button>
+          <Link
+            href="/cart"
+            className="inline-flex h-12 items-center justify-center rounded-md border border-primary-700 px-6 text-base font-semibold text-primary-700 transition hover:bg-primary-50"
+          >
+            Ver carrinho
+          </Link>
+        </div>
+
+        {/* Trust signals */}
+        <ul className="mt-6 space-y-2 text-sm text-ink-2">
+          <li className="flex items-center gap-2"><ShieldCheck className="h-4 w-4 text-primary-700" /> 100% original, vem com a caixa da marca</li>
+          <li className="flex items-center gap-2"><Truck className="h-4 w-4 text-primary-700" /> Frete fixo R$ 15, chega rápido</li>
+          <li className="flex items-center gap-2"><MessageCircle className="h-4 w-4 text-primary-700" /> Dúvida? Chama no Zap</li>
+        </ul>
+
+        {/* Descrição */}
+        <details className="mt-6 rounded-md border border-border bg-white p-4">
+          <summary className="cursor-pointer text-sm font-bold text-ink">Descrição</summary>
+          <p className="mt-3 whitespace-pre-line text-sm leading-relaxed text-ink-2">{product.description}</p>
+        </details>
+      </aside>
+    </div>
+  )
+}

@@ -1,0 +1,67 @@
+# =============================================================================
+# Miami Store — .gitignore raiz
+# =============================================================================
+
+# --- Segredos ---
+.env
+.env.local
+.env.*.local
+!.env.example
+
+# --- Node ---
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+.pnpm-store/
+
+# --- Build outputs ---
+dist/
+build/
+out/
+.next/
+.tsbuildinfo
+
+# --- Coverage ---
+coverage/
+.nyc_output/
+
+# --- Prisma ---
+src/backend/prisma/migrations/migration_lock.toml.local
+src/backend/prisma/dev.db
+src/backend/prisma/dev.db-journal
+
+# --- Editor / OS ---
+.vscode/
+!.vscode/settings.json
+!.vscode/extensions.json
+.idea/
+.DS_Store
+Thumbs.db
+*.swp
+
+# --- Claude Code (preferências locais não vão pro repo) ---
+.claude/settings.local.json
+.claude/projects/
+
+# --- Docker ---
+*.local.yml
+
+# --- Assets baixados (referência interna, NÃO versionar Instagram) ---
+assets/miami-instagram/gallery-dl/
+assets/miami-instagram/instaloader/
+
+# --- Python (instaloader/gallery-dl tooling) ---
+__pycache__/
+*.py[cod]
+.venv/
+
+# --- Logs ---
+*.log
+logs/
+
+# --- Playwright ---
+test-results/
+playwright-report/
+playwright/.cache/
