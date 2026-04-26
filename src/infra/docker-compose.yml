@@ -123,7 +123,8 @@ services:
       # Server-side fetch (RSC) usa esta URL pra falar com backend pela rede interna do compose
       INTERNAL_API_URL: http://backend:3001
       # Client-side fetch (browser) usa esta — vai pro nginx via api.miami.test
-      NEXT_PUBLIC_API_URL: https://referrals-vendor-archived-estimate.trycloudflare.com
+      NEXT_PUBLIC_API_URL: https://called-measuring-relay-alarm.trycloudflare.com
+      NEXT_PUBLIC_DASHBOARD_URL: https://dropped-models-colin-deutsch.trycloudflare.com
       NEXT_PUBLIC_MERCADOPAGO_PUBLIC_KEY: ${MERCADOPAGO_PUBLIC_KEY}
       NEXT_PUBLIC_WHATSAPP_NUMBER: ${WHATSAPP_NUMBER:-5511999999999}
       WATCHPACK_POLLING: 'true'
@@ -157,7 +158,9 @@ services:
       # Server-side fetch (RSC) usa rede interna pra falar com backend
       INTERNAL_API_URL: http://backend:3001
       # Client-side fetch (browser) usa nginx via subdomínio — cookie compartilhado
-      NEXT_PUBLIC_API_URL: https://referrals-vendor-archived-estimate.trycloudflare.com
+      NEXT_PUBLIC_API_URL: https://called-measuring-relay-alarm.trycloudflare.com
+      # URL da loja pra "Ver loja" e redirect de logout
+      NEXT_PUBLIC_STORE_URL: https://tunes-tap-contacts-moral.trycloudflare.com
       WATCHPACK_POLLING: 'true'
     volumes:
       - ../dashboard:/app

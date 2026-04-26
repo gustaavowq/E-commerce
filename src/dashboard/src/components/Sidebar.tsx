@@ -2,7 +2,7 @@
 
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import { LayoutDashboard, ShoppingBag, Package, Users, LogOut, Store, Tag, Settings as SettingsIcon } from 'lucide-react'
+import { LayoutDashboard, ShoppingBag, Package, Users, LogOut, Store, Tag, Settings as SettingsIcon, ExternalLink } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { useAuth } from '@/stores/auth'
 import { logout } from '@/services/auth'
@@ -23,10 +23,17 @@ export function Sidebar() {
   const user     = useAuth(s => s.user)
   const setUser  = useAuth(s => s.setUser)
 
+  const storeUrl = process.env.NEXT_PUBLIC_STORE_URL ?? '/'
+
   async function onLogout() {
     try { await logout() } catch {}
     setUser(null)
-    router.push('/login')
+    // Redireciona pra loja (página inicial) — mesma sessão derrubada nos dois lados
+    if (process.env.NEXT_PUBLIC_STORE_URL) {
+      window.location.href = process.env.NEXT_PUBLIC_STORE_URL
+    } else {
+      router.push('/login')
+    }
   }
 
   return (
@@ -64,13 +71,23 @@ export function Sidebar() {
         })}
       </nav>
 
-      <div className="border-t border-border p-4">
+      <div className="border-t border-border p-4 space-y-1">
         {user && (
           <div className="mb-3 rounded-md bg-surface-2 px-3 py-2 text-xs">
             <p className="font-semibold text-ink">{user.name}</p>
             <p className="truncate text-ink-3">{user.email}</p>
           </div>
         )}
+        <a
+          href={storeUrl}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="group flex w-full items-center gap-2 rounded-md px-3 py-2 text-sm font-medium text-primary-700 transition hover:bg-primary-50"
+        >
+          <Store className="h-4 w-4" />
+          <span className="flex-1 text-left">Ver loja</span>
+          <ExternalLink className="h-3.5 w-3.5 opacity-60 transition group-hover:opacity-100" />
+        </a>
         <button
           onClick={onLogout}
           className="flex w-full items-center gap-2 rounded-md px-3 py-2 text-sm font-medium text-ink-3 transition hover:bg-error/10 hover:text-error"

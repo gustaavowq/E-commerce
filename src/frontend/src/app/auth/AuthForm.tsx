@@ -26,6 +26,7 @@ export function AuthForm({ mode }: { mode: Mode }) {
   const setUser = useAuth(s => s.setUser)
   const [submitting, setSubmitting] = useState(false)
   const [error, setError]   = useState<string | null>(null)
+  const [adminRedirect, setAdminRedirect] = useState(false)
 
   const schema = mode === 'register'
     ? authSchema.extend({
@@ -44,8 +45,25 @@ export function AuthForm({ mode }: { mode: Mode }) {
         ? await apiLogin({ email: values.email, password: values.password })
         : await apiRegister({ email: values.email, password: values.password, name: values.name! })
       setUser(res.user)
-      const next = params.get('next') ?? (res.user.role === 'ADMIN' ? '/admin' : '/')
-      router.push(next)
+
+      const next = params.get('next')
+      if (next) {
+        router.push(next)
+        router.refresh()
+        return
+      }
+
+      // Admin é redirecionado pro painel externo (dashboard Next.js separado).
+      // Cookie é compartilhado entre subdomínios (Domain=.miami.test) então
+      // ele já chega autenticado lá.
+      if (res.user.role === 'ADMIN') {
+        const dashboardUrl = process.env.NEXT_PUBLIC_DASHBOARD_URL ?? '/admin'
+        setAdminRedirect(true)
+        setTimeout(() => { window.location.href = dashboardUrl }, 900)
+        return
+      }
+
+      router.push('/')
       router.refresh()
     } catch (err) {
       setError(ApiError.is(err) ? err.message : 'Erro inesperado')
@@ -98,7 +116,13 @@ export function AuthForm({ mode }: { mode: Mode }) {
             </div>
           )}
 
-          <Button type="submit" fullWidth size="lg" loading={submitting}>
+          {adminRedirect && (
+            <div role="status" className="rounded-md border border-primary-700/30 bg-primary-50 px-3 py-2 text-sm text-primary-700 animate-fade-up">
+              Acesso de administrador detectado. Indo pro painel…
+            </div>
+          )}
+
+          <Button type="submit" fullWidth size="lg" loading={submitting || adminRedirect}>
             {mode === 'login' ? 'Entrar' : 'Criar conta'}
           </Button>
 
