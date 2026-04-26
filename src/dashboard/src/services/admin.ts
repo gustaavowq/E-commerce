@@ -31,6 +31,10 @@ export const adminProducts = {
     patch<AdminVariation>(`/admin/products/${productId}/variations/${variationId}`, body),
   remove: (id: string) => del<null>(`/admin/products/${id}`),
   create: (body: unknown) => post<{ id: string; slug: string; name: string }>('/admin/products', body),
+  addImage: (productId: string, body: { url: string; alt?: string; sortOrder?: number; isPrimary?: boolean; variationColor?: string | null }) =>
+    post<{ id: string; url: string; alt: string | null; sortOrder: number; isPrimary: boolean; variationColor: string | null }>(`/admin/products/${productId}/images`, body),
+  removeImage: (productId: string, imageId: string) =>
+    del<null>(`/admin/products/${productId}/images/${imageId}`),
 }
 
 // ----- Orders -----

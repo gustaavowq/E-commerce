@@ -74,6 +74,16 @@ export const productUpdateSchema = z.object({
 }).strict()
 export type ProductUpdateInput = z.infer<typeof productUpdateSchema>
 
+// Input pra adicionar imagem isolada num produto existente
+export const imageInputSchema = z.object({
+  url:            z.string().min(1).max(2000),  // path relativo ou URL absoluta
+  alt:            z.string().max(200).optional(),
+  sortOrder:      z.coerce.number().int().nonnegative().default(0),
+  isPrimary:      z.boolean().default(false),
+  variationColor: z.string().max(50).nullable().optional(),
+}).strict()
+export type ImageInput = z.infer<typeof imageInputSchema>
+
 // Update de variação individual
 export const variationUpdateSchema = z.object({
   size:          z.string().min(1).max(20).optional(),

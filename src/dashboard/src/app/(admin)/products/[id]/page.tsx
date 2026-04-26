@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
-import { ArrowLeft, Save, Eye, EyeOff, Star, Package } from 'lucide-react'
+import { ArrowLeft, Save, Eye, EyeOff, Star, Package, Trash2, Plus, ImagePlus } from 'lucide-react'
 import { adminProducts, refs } from '@/services/admin'
 import { Button } from '@/components/ui/Button'
 import { Input } from '@/components/ui/Input'
@@ -41,24 +41,123 @@ export default function ProductEditPage({ params }: { params: { id: string } }) 
 
       <VariationsTable productId={product.id} variations={product.variations} onUpdated={() => qc.invalidateQueries({ queryKey: ['admin', 'product', product.id] })} />
 
-      {product.images.length > 0 && (
-        <section className="rounded-lg border border-border bg-white p-5 shadow-sm">
-          <h2 className="mb-3 text-sm font-bold text-ink">Imagens</h2>
-          <div className="grid grid-cols-2 gap-3 sm:grid-cols-4 md:grid-cols-6">
-            {product.images.map(img => (
-              <div key={img.id} className="relative aspect-square overflow-hidden rounded-md border border-border bg-surface-2">
-                <Image src={img.url} alt={img.alt ?? ''} fill sizes="200px" className="object-cover" unoptimized />
-                {img.isPrimary && (
-                  <span className="absolute left-1 top-1 rounded bg-primary-700 px-1.5 py-0.5 text-[9px] font-bold uppercase text-white">
-                    Principal
-                  </span>
-                )}
-              </div>
-            ))}
-          </div>
-        </section>
-      )}
+      <ImagesManager
+        productId={product.id}
+        images={product.images}
+        onChanged={() => qc.invalidateQueries({ queryKey: ['admin', 'product', product.id] })}
+      />
     </div>
+  )
+}
+
+// -----------------------------------------------------------------------------
+// Imagens — listagem + adicionar + remover
+// -----------------------------------------------------------------------------
+function ImagesManager({
+  productId, images, onChanged,
+}: {
+  productId: string
+  images: AdminProductDetail['images']
+  onChanged: () => void
+}) {
+  const [showAdd, setShowAdd] = useState(false)
+  const [url, setUrl]               = useState('')
+  const [alt, setAlt]               = useState('')
+  const [isPrimary, setIsPrimary]   = useState(false)
+  const [error, setError]           = useState<string | null>(null)
+
+  const addM = useMutation({
+    mutationFn: () => adminProducts.addImage(productId, {
+      url:       url.trim(),
+      alt:       alt.trim() || undefined,
+      isPrimary,
+      sortOrder: images.length,
+    }),
+    onSuccess: () => {
+      setUrl(''); setAlt(''); setIsPrimary(false)
+      setShowAdd(false); setError(null)
+      onChanged()
+    },
+    onError: (err) => setError(ApiError.is(err) ? err.message : 'Erro ao adicionar'),
+  })
+
+  const removeM = useMutation({
+    mutationFn: (imageId: string) => adminProducts.removeImage(productId, imageId),
+    onSuccess: onChanged,
+  })
+
+  function submit(e: React.FormEvent) {
+    e.preventDefault()
+    if (!url.trim()) { setError('URL é obrigatória'); return }
+    addM.mutate()
+  }
+
+  return (
+    <section className="rounded-lg border border-border bg-white p-5 shadow-sm">
+      <div className="mb-3 flex items-center justify-between">
+        <h2 className="text-sm font-bold text-ink flex items-center gap-2">
+          <ImagePlus className="h-4 w-4 text-primary-700" /> Imagens ({images.length})
+        </h2>
+        <Button size="sm" variant="secondary" leftIcon={<Plus className="h-3.5 w-3.5" />} onClick={() => setShowAdd(s => !s)}>
+          {showAdd ? 'Cancelar' : 'Adicionar imagem'}
+        </Button>
+      </div>
+
+      {showAdd && (
+        <form onSubmit={submit} className="mb-5 space-y-3 rounded-md border border-border bg-surface-2/40 p-4">
+          <Field label="URL ou caminho relativo (ex: /products/foto.jpg)">
+            <Input
+              value={url}
+              onChange={e => setUrl(e.target.value)}
+              placeholder="/products/tenis-nike.jpg ou https://..."
+              required
+            />
+          </Field>
+          <Field label="Texto alternativo (acessibilidade)">
+            <Input value={alt} onChange={e => setAlt(e.target.value)} placeholder="Tênis Nike Air Max Branco visto de lado" />
+          </Field>
+          <label className="inline-flex items-center gap-2 text-sm">
+            <input
+              type="checkbox"
+              className="h-4 w-4 accent-primary-700"
+              checked={isPrimary}
+              onChange={e => setIsPrimary(e.target.checked)}
+            />
+            Definir como imagem principal
+          </label>
+          {error && <p className="text-sm text-error">{error}</p>}
+          <div>
+            <Button type="submit" size="sm" loading={addM.isPending}>Adicionar</Button>
+          </div>
+        </form>
+      )}
+
+      {images.length === 0 ? (
+        <p className="text-sm text-ink-3">Nenhuma imagem ainda. Clica em "Adicionar imagem" pra incluir uma.</p>
+      ) : (
+        <div className="grid grid-cols-2 gap-3 sm:grid-cols-4 md:grid-cols-6">
+          {images.map(img => (
+            <div key={img.id} className="group relative aspect-square overflow-hidden rounded-md border border-border bg-surface-2">
+              <Image src={img.url} alt={img.alt ?? ''} fill sizes="200px" className="object-cover" unoptimized />
+              {img.isPrimary && (
+                <span className="absolute left-1 top-1 rounded bg-primary-700 px-1.5 py-0.5 text-[9px] font-bold uppercase text-white">
+                  Principal
+                </span>
+              )}
+              <button
+                type="button"
+                onClick={() => removeM.mutate(img.id)}
+                disabled={removeM.isPending}
+                aria-label="Remover imagem"
+                className="absolute right-1 top-1 flex h-7 w-7 items-center justify-center rounded-md bg-error/90 text-white opacity-0 transition group-hover:opacity-100 hover:bg-error"
+              >
+                <Trash2 className="h-3.5 w-3.5" />
+              </button>
+            </div>
+          ))}
+        </div>
+      )}
+    </section>
   )
 }
 

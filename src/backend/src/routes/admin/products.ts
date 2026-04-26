@@ -6,7 +6,7 @@ import { Router } from 'express'
 import { Prisma } from '@prisma/client'
 import { prisma } from '../../lib/prisma.js'
 import { ok, created, errors, noContent } from '../../lib/api-response.js'
-import { productCreateSchema, productUpdateSchema, variationUpdateSchema } from '../../validators/product.js'
+import { productCreateSchema, productUpdateSchema, variationUpdateSchema, imageInputSchema } from '../../validators/product.js'
 
 export const adminProductsRouter: Router = Router()
 
@@ -167,6 +167,47 @@ adminProductsRouter.patch('/:id/variations/:vid', async (req, res, next) => {
       ...updated,
       priceOverride: updated.priceOverride == null ? null : Number(updated.priceOverride),
     })
+  } catch (err) { next(err) }
+})
+
+// POST /api/admin/products/:id/images — adiciona uma imagem ao produto
+adminProductsRouter.post('/:id/images', async (req, res, next) => {
+  try {
+    const body = imageInputSchema.parse(req.body)
+    const product = await prisma.product.findUnique({ where: { id: req.params.id } })
+    if (!product) throw errors.notFound('Produto não encontrado')
+
+    // Se a nova for marcada como Principal, despromove as outras (só uma principal por produto)
+    if (body.isPrimary) {
+      await prisma.productImage.updateMany({
+        where: { productId: product.id, isPrimary: true },
+        data:  { isPrimary: false },
+      })
+    }
+
+    const image = await prisma.productImage.create({
+      data: {
+        productId: product.id,
+        url:       body.url,
+        alt:       body.alt,
+        sortOrder: body.sortOrder,
+        isPrimary: body.isPrimary,
+        variationColor: body.variationColor ?? null,
+      },
+    })
+    return created(res, image)
+  } catch (err) { next(err) }
+})
+
+// DELETE /api/admin/products/:id/images/:imgId — remove imagem
+adminProductsRouter.delete('/:id/images/:imgId', async (req, res, next) => {
+  try {
+    const image = await prisma.productImage.findUnique({ where: { id: req.params.imgId } })
+    if (!image || image.productId !== req.params.id) {
+      throw errors.notFound('Imagem não encontrada')
+    }
+    await prisma.productImage.delete({ where: { id: image.id } })
+    return noContent(res)
   } catch (err) { next(err) }
 })
 
