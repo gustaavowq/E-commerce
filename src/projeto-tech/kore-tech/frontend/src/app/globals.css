@@ -1,0 +1,119 @@
+/*
+  Kore Tech globals.
+  Tokens semanticos (CSS Custom Properties) vem do Designer:
+    projetos/projeto-tech/kore-tech/design/tokens.css
+  @import deve vir antes de @tailwind (regra do PostCSS).
+  Tokens em formato Tailwind ja estao em tailwind.config.ts via preset.
+*/
+@import '../../../../../projetos/projeto-tech/kore-tech/design/tokens.css';
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --background: #0A0E14;
+  --foreground: #E8EEF5;
+}
+
+* {
+  -webkit-tap-highlight-color: transparent;
+}
+
+html {
+  scroll-behavior: smooth;
+  -webkit-text-size-adjust: 100%;
+  background: var(--background);
+  color-scheme: dark;
+}
+
+body {
+  color: var(--foreground);
+  background: var(--background);
+  font-family: var(--font-sans), Inter, system-ui, -apple-system, sans-serif;
+  font-feature-settings: 'cv11', 'ss01';
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Scrollbar dark */
+@media (min-width: 768px) {
+  ::-webkit-scrollbar { width: 10px; height: 10px; }
+  ::-webkit-scrollbar-track { background: #0A0E14; }
+  ::-webkit-scrollbar-thumb { background: #2A3240; border-radius: 4px; }
+  ::-webkit-scrollbar-thumb:hover { background: #00B8D4; }
+}
+
+@layer base {
+  /* Foco visivel padrao */
+  :focus-visible {
+    outline: none;
+    box-shadow: 0 0 0 2px #00E5FF, 0 0 0 4px rgba(0,229,255,0.18);
+    border-radius: 4px;
+  }
+
+  input, select, textarea, button {
+    font-family: inherit;
+  }
+
+  input::placeholder, textarea::placeholder {
+    color: #5A6573;
+  }
+
+  /* H1-H6 default mantem peso forte sobre dark */
+  h1, h2, h3, h4, h5, h6 {
+    color: #E8EEF5;
+  }
+}
+
+@layer utilities {
+  .container-app {
+    @apply mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8;
+  }
+
+  /* Touch target minimo 44px (acessibilidade mobile) */
+  .touch-44 {
+    @apply min-h-[44px] min-w-[44px];
+  }
+
+  /* Texto specs em JetBrains Mono */
+  .font-specs {
+    font-family: var(--font-mono), 'JetBrains Mono', ui-monospace, monospace;
+    font-variant-numeric: tabular-nums;
+    letter-spacing: -0.01em;
+  }
+
+  /* Cyan highlight pra FPS, watts, etc */
+  .text-spec {
+    @apply font-specs text-primary;
+  }
+
+  /* Glow on hover pros CTAs */
+  .cta-glow {
+    box-shadow: 0 0 0 0 rgba(0, 229, 255, 0);
+    transition: box-shadow 220ms ease, transform 220ms ease;
+  }
+  .cta-glow:hover {
+    box-shadow: 0 0 24px rgba(0, 229, 255, 0.45);
+    transform: translateY(-1px);
+  }
+
+  /* Card sutil com border destacando no hover */
+  .card-tech {
+    @apply bg-surface border border-border rounded-lg transition-all duration-200;
+  }
+  .card-tech:hover {
+    @apply border-primary/40 -translate-y-0.5;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(0, 229, 255, 0.1);
+  }
+
+  /* Reducao de motion */
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+      scroll-behavior: auto !important;
+    }
+  }
+}
