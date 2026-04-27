@@ -1,0 +1,35 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 64" width="320" height="64" role="img" aria-label="Kore Tech">
+  <title>Kore Tech</title>
+  <!--
+    Kore Tech logo (placeholder funcional v1)
+    - "KORE TECH" em Inter Bold all-caps com tracking generoso
+    - Acento cyan (#00E5FF) preenchendo a contra-forma do "K" como se fosse
+      um "kernel" / núcleo (kore = núcleo em grego)
+    - Funciona em fundo escuro (#0A0E14) e claro (versão dark do texto opcional)
+    - Ver LOGO-SPEC.md pro que designer humano deve refinar
+  -->
+
+  <!-- Marca: K com kernel cyan -->
+  <g>
+    <!-- K em branco (Inter Bold-style desenhado em path geométrico) -->
+    <!-- Coluna esquerda do K -->
+    <rect x="8" y="14" width="8" height="36" fill="#E8EEF5"/>
+    <!-- Diagonal superior do K -->
+    <path d="M 16 32 L 32 14 L 42 14 L 26 32 Z" fill="#E8EEF5"/>
+    <!-- Diagonal inferior do K -->
+    <path d="M 16 32 L 32 50 L 42 50 L 26 32 Z" fill="#E8EEF5"/>
+    <!-- Kernel cyan no centro do K (contra-forma) -->
+    <circle cx="22" cy="32" r="3.5" fill="#00E5FF"/>
+  </g>
+
+  <!-- Wordmark "KORE TECH" -->
+  <text
+    x="56"
+    y="42"
+    font-family="Inter, -apple-system, sans-serif"
+    font-size="24"
+    font-weight="700"
+    letter-spacing="0.08em"
+    fill="#E8EEF5"
+  >KORE<tspan fill="#8892A0" font-weight="500"> TECH</tspan></text>
+</svg>

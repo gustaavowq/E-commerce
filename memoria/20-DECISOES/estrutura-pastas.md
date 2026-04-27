@@ -1,5 +1,7 @@
 # Decisão: Estrutura de pastas
 
+> ⚠️ **Atualizado 2026-04-26:** introduzida convenção **pasta-mãe por categoria** dentro de `projetos/` e `src/`. Permite ter múltiplos clientes/nichos no mesmo repo sem misturar código. Miami Store fica como legado (raiz de `src/`); novos projetos adotam a convenção. Ver seção "Convenção pasta-mãe" no fim.
+
 ```
 projeto/
 ├── CLAUDE.md                    ← entry point, aponta pra memoria
@@ -22,11 +24,16 @@ projeto/
 ├── memoria/                     ← knowledge base persistente (essa pasta)
 │
 ├── projetos/                    ← documentação por cliente (Miami Store é o 1º)
-│   └── miami-store/
-│       ├── README.md
-│       ├── COMO-FUNCIONA.md
-│       ├── JORNADA.md
-│       └── DECISOES-ESPECIFICAS.md
+│   ├── miami-store/             ← projeto avulso (legado)
+│   │   ├── README.md
+│   │   ├── COMO-FUNCIONA.md
+│   │   ├── JORNADA.md
+│   │   └── DECISOES-ESPECIFICAS.md
+│   └── projeto-tech/            ← pasta-mãe categoria (NOVA convenção)
+│       └── kore-tech/           ← cliente dentro da categoria
+│           ├── PESQUISA-NICHO.md
+│           ├── README.md
+│           └── ...
 │
 ├── outros/                      ← shared/messages, docs técnicas, scripts
 │   ├── shared/messages/         ← canal de comunicação entre agentes
@@ -35,7 +42,7 @@ projeto/
 │   └── scripts/                 ← setup-hosts.ps1, etc
 │
 └── src/
-    ├── backend/                 ← Express + Prisma
+    ├── backend/                 ← MIAMI (legado avulso) — Express + Prisma
     │   ├── Dockerfile           ← prod multi-stage
     │   ├── Dockerfile.dev       ← dev com hot-reload
     │   ├── railway.json         ← config Railway (builder, healthcheck, startCommand)
@@ -135,10 +142,31 @@ projeto/
     │       ├── stores/auth.ts                  ← Zustand
     │       └── services/admin.ts                ← wrapper /api/admin/*
     │
-    └── infra/
-        ├── docker-compose.yml   ← postgres + backend + frontend + dashboard + nginx
-        └── nginx/conf.d/default.conf  ← subdomain routing + headers de segurança
+    ├── infra/                   ← MIAMI (legado avulso)
+    │   ├── docker-compose.yml   ← postgres + backend + frontend + dashboard + nginx
+    │   └── nginx/conf.d/default.conf  ← subdomain routing + headers de segurança
+    │
+    └── projeto-tech/            ← pasta-mãe categoria (NOVA convenção)
+        └── kore-tech/           ← cliente dentro da categoria
+            ├── backend/         ← mesma estrutura interna do backend Miami
+            ├── frontend/        ← mesma estrutura interna do frontend Miami
+            ├── dashboard/       ← mesma estrutura interna do dashboard Miami
+            └── infra/           ← docker-compose + nginx específicos deste cliente
 ```
+
+## Convenção pasta-mãe (a partir de 2026-04-26)
+
+**Quando criar pasta-mãe:** sempre que abrir um novo cliente. O Miami Store está no formato avulso (raiz de `src/` e `projetos/`) por ser o 1º — fica assim, não move. **Daqui em diante:**
+
+1. **Pasta-mãe = categoria/nicho** (kebab-case, sem espaço, sem acento). Exemplos: `projeto-tech`, `projeto-moda`, `projeto-pet`. Nome livre — convenciono `projeto-{slug-da-categoria}` por padrão, mas pode ser só `tech/`, `moda/`, etc se cliente preferir.
+2. **Cliente dentro da pasta-mãe** = slug do cliente (kebab-case). Ex: `kore-tech`, `miami-store-2`, `pet-amigo`.
+3. **Espelho exato:** `projetos/{categoria}/{cliente}/` (docs) ↔ `src/{categoria}/{cliente}/` (código).
+4. **Estrutura interna do cliente em `src/`** = idêntica ao Miami original: `backend/ frontend/ dashboard/ infra/`.
+5. **Cada cliente tem seu próprio `docker-compose.yml` e `infra/nginx`** dentro de `src/{categoria}/{cliente}/infra/`. Nunca compartilhar containers entre clientes.
+
+**Por que não migrei o Miami:** está em produção. Refactor de paths quebra docker-compose, README, deploy. Se for migrar no futuro, faz como tarefa isolada com smoke E2E completo depois.
+
+**Regra que continua valendo:** root tem **exatamente 5 pastas** (`.claude/`, `memoria/`, `projetos/`, `outros/`, `src/`). Pasta-mãe é uma camada DENTRO de `projetos/` e `src/`, não no root.
 
 ## Padrão de nome de arquivo
 
