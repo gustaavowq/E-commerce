@@ -54,6 +54,7 @@ export function Header() {
   const hydrated = useAuth((s) => s.hydrated)
   const wishlistCount = useWishlist((s) => s.ids.length)
   const isAdmin = hydrated && user?.role === 'ADMIN'
+  const dashboardUrl = process.env.NEXT_PUBLIC_DASHBOARD_URL ?? 'https://kore-tech-painel.vercel.app'
   const wrapRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
@@ -171,9 +172,9 @@ export function Header() {
 
         <SearchBar />
 
-        {isAdmin && process.env.NEXT_PUBLIC_DASHBOARD_URL && (
+        {isAdmin && (
           <a
-            href={process.env.NEXT_PUBLIC_DASHBOARD_URL}
+            href={dashboardUrl}
             target="_blank"
             rel="noopener noreferrer"
             aria-label="Abrir painel admin"
@@ -223,10 +224,10 @@ export function Header() {
                 </Link>
               </li>
             ))}
-            {isAdmin && process.env.NEXT_PUBLIC_DASHBOARD_URL && (
+            {isAdmin && (
               <li>
                 <a
-                  href={process.env.NEXT_PUBLIC_DASHBOARD_URL}
+                  href={dashboardUrl}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="flex items-center gap-2 rounded-md bg-primary-soft px-3 py-3 text-base font-bold text-primary"

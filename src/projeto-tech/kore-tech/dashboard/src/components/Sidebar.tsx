@@ -37,16 +37,12 @@ export function Sidebar() {
   const counts   = usePendingCounts()
   const pendingOrders = counts?.pendingActions ?? 0
 
-  const storeUrl = process.env.NEXT_PUBLIC_STORE_URL ?? '/'
+  const storeUrl = process.env.NEXT_PUBLIC_STORE_URL ?? 'https://kore-tech-loja.vercel.app'
 
   async function onLogout() {
     try { await logout() } catch {}
     clear()
-    if (process.env.NEXT_PUBLIC_STORE_URL) {
-      window.location.href = process.env.NEXT_PUBLIC_STORE_URL
-    } else {
-      router.push('/login')
-    }
+    router.push('/login')
   }
 
   return (

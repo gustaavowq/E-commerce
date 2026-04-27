@@ -32,17 +32,13 @@ export function MobileTopBar() {
   const user     = useAuth(s => s.user)
   const clear    = useAuth(s => s.clear)
 
-  const storeUrl = process.env.NEXT_PUBLIC_STORE_URL ?? '/'
+  const storeUrl = process.env.NEXT_PUBLIC_STORE_URL ?? 'https://kore-tech-loja.vercel.app'
 
   async function onLogout() {
     try { await logout() } catch {}
     clear()
     setOpen(false)
-    if (process.env.NEXT_PUBLIC_STORE_URL) {
-      window.location.href = process.env.NEXT_PUBLIC_STORE_URL
-    } else {
-      router.push('/login')
-    }
+    router.push('/login')
   }
 
   return (

@@ -491,6 +491,7 @@ function cpuSeeds(): ProductSeedInput[] {
       compatibility: { socket: 'AM5', tdpW: 105, ramType: 'DDR5', maxRamMhz: 5200 },
       tags: ['amd', 'am5', 'ryzen', 'entry'], isFeatured: true,
       warrantyMonths: 36,
+      imageUrl: 'https://images.unsplash.com/photo-1555617981-dac3880eac6e?auto=format&fit=crop&w=1200&q=80',
       variations: [{ sku: 'cpu-7600x-default', size: 'Padrão', stock: 25 }],
     },
     {
@@ -504,6 +505,7 @@ function cpuSeeds(): ProductSeedInput[] {
       compatibility: { socket: 'AM5', tdpW: 120, ramType: 'DDR5', maxRamMhz: 5200 },
       tags: ['amd', 'am5', 'ryzen', 'x3d', 'gaming'], isFeatured: true,
       warrantyMonths: 36,
+      imageUrl: 'https://images.unsplash.com/photo-1591799264318-7e6ef8ddb7ea?auto=format&fit=crop&w=1200&q=80',
       variations: [{ sku: 'cpu-7800x3d-default', size: 'Padrão', stock: 14 }],
     },
     {
@@ -517,6 +519,7 @@ function cpuSeeds(): ProductSeedInput[] {
       compatibility: { socket: 'AM5', tdpW: 170, ramType: 'DDR5', maxRamMhz: 5200 },
       tags: ['amd', 'am5', 'workstation', 'render'],
       warrantyMonths: 36,
+      imageUrl: 'https://images.unsplash.com/photo-1555617981-dac3880eac6e?auto=format&fit=crop&w=1200&q=80',
       variations: [{ sku: 'cpu-7950x-default', size: 'Padrão', stock: 8 }],
     },
     {
@@ -530,6 +533,7 @@ function cpuSeeds(): ProductSeedInput[] {
       compatibility: { socket: 'LGA1700', tdpW: 125, ramType: 'DDR5', maxRamMhz: 5600 },
       tags: ['intel', 'lga1700', 'core', 'gaming'],
       warrantyMonths: 36,
+      imageUrl: 'https://images.unsplash.com/photo-1591799264318-7e6ef8ddb7ea?auto=format&fit=crop&w=1200&q=80',
       variations: [{ sku: 'cpu-14600k-default', size: 'Padrão', stock: 18 }],
     },
     {
@@ -543,6 +547,7 @@ function cpuSeeds(): ProductSeedInput[] {
       compatibility: { socket: 'LGA1700', tdpW: 253, ramType: 'DDR5', maxRamMhz: 5600 },
       tags: ['intel', 'lga1700', 'core', 'i9', 'workstation'],
       warrantyMonths: 36,
+      imageUrl: 'https://images.unsplash.com/photo-1555617981-dac3880eac6e?auto=format&fit=crop&w=1200&q=80',
       variations: [{ sku: 'cpu-14900k-default', size: 'Padrão', stock: 6 }],
     },
   ]
@@ -564,6 +569,7 @@ function gpuSeeds(): ProductSeedInput[] {
       compatibility: { lengthMm: 245, slots: 2, tdpW: 115, powerConnectors: ['8pin'], minPsuW: 550 },
       weightGrams: 750, dimensionsMm: { length: 245, width: 126, height: 41 },
       tags: ['nvidia', 'rtx', '4060', 'entry'], isFeatured: true,
+      imageUrl: 'https://images.unsplash.com/photo-1591488320449-011701bb6704?auto=format&fit=crop&w=1200&q=80',
       variations: [{ sku: 'gpu-rtx4060-default', size: 'Padrão', stock: 22 }],
     },
     {
@@ -577,6 +583,7 @@ function gpuSeeds(): ProductSeedInput[] {
       compatibility: { lengthMm: 285, slots: 2, tdpW: 220, powerConnectors: ['12vhpwr'], minPsuW: 650 },
       weightGrams: 1100, dimensionsMm: { length: 285, width: 130, height: 50 },
       tags: ['nvidia', 'rtx', '4070', 'super', 'gaming'], isFeatured: true,
+      imageUrl: 'https://images.unsplash.com/photo-1587202372634-32705e3bf49c?auto=format&fit=crop&w=1200&q=80',
       variations: [{ sku: 'gpu-rtx4070s-default', size: 'Padrão', stock: 12 }],
     },
     {
@@ -590,6 +597,7 @@ function gpuSeeds(): ProductSeedInput[] {
       compatibility: { lengthMm: 320, slots: 3, tdpW: 320, powerConnectors: ['12vhpwr'], minPsuW: 750 },
       weightGrams: 1600, dimensionsMm: { length: 320, width: 140, height: 60 },
       tags: ['nvidia', 'rtx', '4080', 'super', '4k'],
+      imageUrl: 'https://images.unsplash.com/photo-1635224909468-de91c812bc35?auto=format&fit=crop&w=1200&q=80',
       variations: [{ sku: 'gpu-rtx4080s-default', size: 'Padrão', stock: 5 }],
     },
     {
@@ -603,6 +611,7 @@ function gpuSeeds(): ProductSeedInput[] {
       compatibility: { lengthMm: 305, slots: 3, tdpW: 285, powerConnectors: ['12vhpwr'], minPsuW: 750 },
       weightGrams: 1500, dimensionsMm: { length: 305, width: 135, height: 55 },
       tags: ['nvidia', 'rtx', '5070', 'blackwell'], isFeatured: true,
+      imageUrl: 'https://images.unsplash.com/photo-1591488320449-011701bb6704?auto=format&fit=crop&w=1200&q=80',
       variations: [{ sku: 'gpu-rtx5070ti-default', size: 'Padrão', stock: 7 }],
     },
     {
@@ -616,6 +625,7 @@ function gpuSeeds(): ProductSeedInput[] {
       compatibility: { lengthMm: 340, slots: 3, tdpW: 360, powerConnectors: ['12vhpwr'], minPsuW: 850 },
       weightGrams: 1800, dimensionsMm: { length: 340, width: 145, height: 65 },
       tags: ['nvidia', 'rtx', '5080', 'blackwell', '4k', 'ia'],
+      imageUrl: 'https://images.unsplash.com/photo-1587202372634-32705e3bf49c?auto=format&fit=crop&w=1200&q=80',
       variations: [{ sku: 'gpu-rtx5080-default', size: 'Padrão', stock: 4 }],
     },
   ]
@@ -636,6 +646,7 @@ function moboSeeds(): ProductSeedInput[] {
       specs: { socket: 'AM5', chipset: 'B650', formFactor: 'ATX', ramSlots: 4, ramType: 'DDR5', maxRamMhz: 6400, m2Slots: 2, pcieGen: 4 },
       compatibility: { socket: 'AM5', chipset: 'B650', ramSlots: 4, ramType: 'DDR5', maxRamMhz: 6400, formFactor: 'ATX', m2Slots: 2 },
       tags: ['asus', 'am5', 'b650', 'atx'],
+      imageUrl: 'https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=1200&q=80',
       variations: [{ sku: 'mobo-tuf-b650-default', size: 'Padrão', stock: 16 }],
     },
     {
@@ -648,6 +659,7 @@ function moboSeeds(): ProductSeedInput[] {
       specs: { socket: 'AM5', chipset: 'X670E', formFactor: 'ATX', ramSlots: 4, ramType: 'DDR5', maxRamMhz: 6600, m2Slots: 4, pcieGen: 5 },
       compatibility: { socket: 'AM5', chipset: 'X670E', ramSlots: 4, ramType: 'DDR5', maxRamMhz: 6600, formFactor: 'ATX', m2Slots: 4 },
       tags: ['msi', 'am5', 'x670e', 'atx'],
+      imageUrl: 'https://images.unsplash.com/photo-1601737487795-dab272f52420?auto=format&fit=crop&w=1200&q=80',
       variations: [{ sku: 'mobo-x670e-tomahawk-default', size: 'Padrão', stock: 9 }],
     },
     {
@@ -660,6 +672,7 @@ function moboSeeds(): ProductSeedInput[] {
       specs: { socket: 'LGA1700', chipset: 'Z790', formFactor: 'ATX', ramSlots: 4, ramType: 'DDR5', maxRamMhz: 7800, m2Slots: 5, pcieGen: 5 },
       compatibility: { socket: 'LGA1700', chipset: 'Z790', ramSlots: 4, ramType: 'DDR5', maxRamMhz: 7800, formFactor: 'ATX', m2Slots: 5 },
       tags: ['asus', 'lga1700', 'z790', 'rog'],
+      imageUrl: 'https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=1200&q=80',
       variations: [{ sku: 'mobo-z790-e-default', size: 'Padrão', stock: 7 }],
     },
     {
@@ -672,6 +685,7 @@ function moboSeeds(): ProductSeedInput[] {
       specs: { socket: 'LGA1700', chipset: 'B760', formFactor: 'mATX', ramSlots: 2, ramType: 'DDR5', maxRamMhz: 5600, m2Slots: 2, pcieGen: 4 },
       compatibility: { socket: 'LGA1700', chipset: 'B760', ramSlots: 2, ramType: 'DDR5', maxRamMhz: 5600, formFactor: 'mATX', m2Slots: 2 },
       tags: ['gigabyte', 'lga1700', 'b760', 'matx', 'budget'],
+      imageUrl: 'https://images.unsplash.com/photo-1601737487795-dab272f52420?auto=format&fit=crop&w=1200&q=80',
       variations: [{ sku: 'mobo-b760m-aorus-default', size: 'Padrão', stock: 14 }],
     },
     {
@@ -684,6 +698,7 @@ function moboSeeds(): ProductSeedInput[] {
       specs: { socket: 'AM5', chipset: 'X670E', formFactor: 'E-ATX', ramSlots: 4, ramType: 'DDR5', maxRamMhz: 6800, m2Slots: 5, pcieGen: 5 },
       compatibility: { socket: 'AM5', chipset: 'X670E', ramSlots: 4, ramType: 'DDR5', maxRamMhz: 6800, formFactor: 'E-ATX', m2Slots: 5 },
       tags: ['asus', 'rog', 'am5', 'x670e', 'e-atx', 'workstation'],
+      imageUrl: 'https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=1200&q=80',
       variations: [{ sku: 'mobo-crosshair-x670e-default', size: 'Padrão', stock: 3 }],
     },
   ]
@@ -704,6 +719,7 @@ function ramSeeds(): ProductSeedInput[] {
       specs: { capacityGb: 32, sticks: 2, type: 'DDR5', mhz: 6000, cl: 30, voltage: 1.35 },
       compatibility: { type: 'DDR5', mhz: 6000, gb: 32, sticks: 2 },
       tags: ['corsair', 'ddr5', '32gb', 'dual-channel'], isFeatured: true,
+      imageUrl: 'https://images.unsplash.com/photo-1562976540-1502c2145186?auto=format&fit=crop&w=1200&q=80',
       variations: [{ sku: 'ram-vengeance-32gb-6000-default', size: '32GB (2x16)', stock: 28 }],
     },
     {
@@ -716,6 +732,7 @@ function ramSeeds(): ProductSeedInput[] {
       specs: { capacityGb: 32, sticks: 2, type: 'DDR5', mhz: 5600, cl: 36, voltage: 1.25 },
       compatibility: { type: 'DDR5', mhz: 5600, gb: 32, sticks: 2 },
       tags: ['kingston', 'ddr5', '32gb'],
+      imageUrl: 'https://images.unsplash.com/photo-1591489630450-26c2f5f8a86d?auto=format&fit=crop&w=1200&q=80',
       variations: [{ sku: 'ram-fury-32gb-5600-default', size: '32GB (2x16)', stock: 22 }],
     },
     {
@@ -728,6 +745,7 @@ function ramSeeds(): ProductSeedInput[] {
       specs: { capacityGb: 64, sticks: 2, type: 'DDR5', mhz: 6000, cl: 30, voltage: 1.35 },
       compatibility: { type: 'DDR5', mhz: 6000, gb: 64, sticks: 2 },
       tags: ['corsair', 'ddr5', '64gb', 'workstation'],
+      imageUrl: 'https://images.unsplash.com/photo-1562976540-1502c2145186?auto=format&fit=crop&w=1200&q=80',
       variations: [{ sku: 'ram-vengeance-64gb-6000-default', size: '64GB (2x32)', stock: 9 }],
     },
     {
@@ -740,6 +758,7 @@ function ramSeeds(): ProductSeedInput[] {
       specs: { capacityGb: 128, sticks: 4, type: 'DDR5', mhz: 5600, cl: 40, voltage: 1.25 },
       compatibility: { type: 'DDR5', mhz: 5600, gb: 128, sticks: 4 },
       tags: ['corsair', 'ddr5', '128gb', 'workstation', 'ia'],
+      imageUrl: 'https://images.unsplash.com/photo-1591489630450-26c2f5f8a86d?auto=format&fit=crop&w=1200&q=80',
       variations: [{ sku: 'ram-dominator-128gb-default', size: '128GB (4x32)', stock: 3 }],
     },
     {
@@ -752,6 +771,7 @@ function ramSeeds(): ProductSeedInput[] {
       specs: { capacityGb: 32, sticks: 2, type: 'DDR5', mhz: 7200, cl: 38, voltage: 1.45 },
       compatibility: { type: 'DDR5', mhz: 7200, gb: 32, sticks: 2 },
       tags: ['kingston', 'ddr5', '32gb', 'high-speed'],
+      imageUrl: 'https://images.unsplash.com/photo-1562976540-1502c2145186?auto=format&fit=crop&w=1200&q=80',
       variations: [{ sku: 'ram-renegade-32gb-7200-default', size: '32GB (2x16)', stock: 6 }],
     },
   ]
@@ -772,6 +792,7 @@ function psuSeeds(): ProductSeedInput[] {
       specs: { wattage: 550, certification: '80+ Gold', modular: 'full' },
       compatibility: { wattage: 550, certification: '80+ Gold', modular: 'full', connectors: { gpu_8pin: 2, gpu_12vhpwr: 0 } },
       tags: ['corsair', 'psu', '550w', 'gold'],
+      imageUrl: 'https://images.unsplash.com/photo-1591488320449-011701bb6704?auto=format&fit=crop&w=1200&q=80',
       variations: [{ sku: 'psu-rm550x-default', size: 'Padrão', stock: 19 }],
     },
     {
@@ -784,6 +805,7 @@ function psuSeeds(): ProductSeedInput[] {
       specs: { wattage: 750, certification: '80+ Gold', modular: 'full' },
       compatibility: { wattage: 750, certification: '80+ Gold', modular: 'full', connectors: { gpu_8pin: 4, gpu_12vhpwr: 1 } },
       tags: ['corsair', 'psu', '750w', 'gold'], isFeatured: true,
+      imageUrl: 'https://images.unsplash.com/photo-1635224909468-de91c812bc35?auto=format&fit=crop&w=1200&q=80',
       variations: [{ sku: 'psu-rm750x-default', size: 'Padrão', stock: 14 }],
     },
     {
@@ -796,6 +818,7 @@ function psuSeeds(): ProductSeedInput[] {
       specs: { wattage: 850, certification: '80+ Gold', modular: 'full' },
       compatibility: { wattage: 850, certification: '80+ Gold', modular: 'full', connectors: { gpu_8pin: 4, gpu_12vhpwr: 1 } },
       tags: ['evga', 'psu', '850w', 'gold'],
+      imageUrl: 'https://images.unsplash.com/photo-1591488320449-011701bb6704?auto=format&fit=crop&w=1200&q=80',
       variations: [{ sku: 'psu-evga-850g6-default', size: 'Padrão', stock: 8 }],
     },
     {
@@ -808,6 +831,7 @@ function psuSeeds(): ProductSeedInput[] {
       specs: { wattage: 1000, certification: '80+ Platinum', modular: 'full' },
       compatibility: { wattage: 1000, certification: '80+ Platinum', modular: 'full', connectors: { gpu_8pin: 6, gpu_12vhpwr: 2 } },
       tags: ['corsair', 'psu', '1000w', 'platinum', 'workstation'],
+      imageUrl: 'https://images.unsplash.com/photo-1635224909468-de91c812bc35?auto=format&fit=crop&w=1200&q=80',
       variations: [{ sku: 'psu-hx1000i-default', size: 'Padrão', stock: 5 }],
     },
   ]
@@ -828,6 +852,7 @@ function caseSeeds(): ProductSeedInput[] {
       specs: { formFactor: 'mATX/ITX', maxGpuLengthMm: 330, maxCoolerHeightMm: 153, fanSlots: 4 },
       compatibility: { formFactor: 'mATX', maxGpuLengthMm: 330, maxCoolerHeightMm: 153, fanSlots: 4 },
       tags: ['cooler-master', 'case', 'compact', 'matx'],
+      imageUrl: 'https://images.unsplash.com/photo-1593640408182-31c70c8268f5?auto=format&fit=crop&w=1200&q=80',
       variations: [{ sku: 'case-nr200p-default', size: 'Padrão', color: 'Preto', stock: 11 }],
     },
     {
@@ -840,6 +865,7 @@ function caseSeeds(): ProductSeedInput[] {
       specs: { formFactor: 'ATX', maxGpuLengthMm: 392, maxCoolerHeightMm: 180, fanSlots: 7 },
       compatibility: { formFactor: 'ATX', maxGpuLengthMm: 392, maxCoolerHeightMm: 180, fanSlots: 7 },
       tags: ['lian-li', 'case', 'atx', 'airflow'], isFeatured: true,
+      imageUrl: 'https://images.unsplash.com/photo-1547082299-de196ea013d6?auto=format&fit=crop&w=1200&q=80',
       variations: [{ sku: 'case-lancool-216-default', size: 'Padrão', color: 'Preto', stock: 9 }],
     },
     {
@@ -852,6 +878,7 @@ function caseSeeds(): ProductSeedInput[] {
       specs: { formFactor: 'ATX', maxGpuLengthMm: 365, maxCoolerHeightMm: 185, fanSlots: 7 },
       compatibility: { formFactor: 'ATX', maxGpuLengthMm: 365, maxCoolerHeightMm: 185, fanSlots: 7 },
       tags: ['nzxt', 'case', 'atx', 'premium'],
+      imageUrl: 'https://images.unsplash.com/photo-1593640408182-31c70c8268f5?auto=format&fit=crop&w=1200&q=80',
       variations: [{ sku: 'case-nzxt-h7-default', size: 'Padrão', color: 'Branco', stock: 6 }],
     },
     {
@@ -864,6 +891,7 @@ function caseSeeds(): ProductSeedInput[] {
       specs: { formFactor: 'E-ATX', maxGpuLengthMm: 460, maxCoolerHeightMm: 167, fanSlots: 10 },
       compatibility: { formFactor: 'E-ATX', maxGpuLengthMm: 460, maxCoolerHeightMm: 167, fanSlots: 10 },
       tags: ['lian-li', 'case', 'e-atx', 'workstation', 'premium'],
+      imageUrl: 'https://images.unsplash.com/photo-1547082299-de196ea013d6?auto=format&fit=crop&w=1200&q=80',
       variations: [{ sku: 'case-o11-evo-xl-default', size: 'Padrão', color: 'Preto', stock: 4 }],
     },
   ]
@@ -884,6 +912,7 @@ function coolerSeeds(): ProductSeedInput[] {
       specs: { type: 'air', heightMm: 158, supportsTdpW: 150, sockets: ['AM5', 'AM4', 'LGA1700'] },
       compatibility: { sockets: ['AM5', 'AM4', 'LGA1700'], heightMm: 158, supportsTdpW: 150, type: 'air' },
       tags: ['cooler-master', 'cooler', 'air', 'budget'],
+      imageUrl: 'https://images.unsplash.com/photo-1591488320449-011701bb6704?auto=format&fit=crop&w=1200&q=80',
       variations: [{ sku: 'cooler-hyper212-default', size: 'Padrão', stock: 20 }],
     },
     {
@@ -896,6 +925,7 @@ function coolerSeeds(): ProductSeedInput[] {
       specs: { type: 'aio', radiatorMm: 360, supportsTdpW: 280, sockets: ['AM5', 'AM4', 'LGA1700'] },
       compatibility: { sockets: ['AM5', 'AM4', 'LGA1700'], heightMm: 30, supportsTdpW: 280, type: 'aio', radiatorMm: 360 },
       tags: ['nzxt', 'cooler', 'aio', '360', 'rgb'], isFeatured: true,
+      imageUrl: 'https://images.unsplash.com/photo-1635224909468-de91c812bc35?auto=format&fit=crop&w=1200&q=80',
       variations: [{ sku: 'cooler-kraken-elite-360-default', size: '360mm', color: 'Preto', stock: 7 }],
     },
   ]
@@ -916,6 +946,7 @@ function monitorSeeds(): ProductSeedInput[] {
       specs: { sizeInches: 27, panel: 'IPS', resolution: '2560x1440', refreshHz: 240, responseMs: 1, hdrLevel: 'HDR400' },
       compatibility: {},
       tags: ['lg', 'monitor', '27', '240hz', '1440p'], isFeatured: true,
+      imageUrl: 'https://images.unsplash.com/photo-1527443224154-c4a3942d3acf?auto=format&fit=crop&w=1200&q=80',
       variations: [{ sku: 'mon-lg-27-240hz-default', size: '27"', color: 'Preto', stock: 8 }],
     },
     {
@@ -928,6 +959,7 @@ function monitorSeeds(): ProductSeedInput[] {
       specs: { sizeInches: 24.5, panel: 'TN', resolution: '1920x1080', refreshHz: 360, responseMs: 0.5 },
       compatibility: {},
       tags: ['benq', 'monitor', '24', '360hz', '1080p', 'esports'],
+      imageUrl: 'https://images.unsplash.com/photo-1593305841991-05c297ba4575?auto=format&fit=crop&w=1200&q=80',
       variations: [{ sku: 'mon-benq-xl2566k-default', size: '24.5"', color: 'Preto', stock: 5 }],
     },
     {
@@ -940,6 +972,7 @@ function monitorSeeds(): ProductSeedInput[] {
       specs: { sizeInches: 32, panel: 'IPS', resolution: '3840x2160', refreshHz: 144, responseMs: 1, hdrLevel: 'HDR600' },
       compatibility: {},
       tags: ['lg', 'monitor', '32', '4k', '144hz'],
+      imageUrl: 'https://images.unsplash.com/photo-1527443224154-c4a3942d3acf?auto=format&fit=crop&w=1200&q=80',
       variations: [{ sku: 'mon-lg-32-4k-default', size: '32"', color: 'Preto', stock: 6 }],
     },
     {
@@ -952,6 +985,7 @@ function monitorSeeds(): ProductSeedInput[] {
       specs: { sizeInches: 34, panel: 'IPS', resolution: '3440x1440', refreshHz: 165, responseMs: 1, hdrLevel: 'HDR400' },
       compatibility: {},
       tags: ['lg', 'monitor', '34', 'ultrawide', '165hz'],
+      imageUrl: 'https://images.unsplash.com/photo-1593305841991-05c297ba4575?auto=format&fit=crop&w=1200&q=80',
       variations: [{ sku: 'mon-lg-34-uw-default', size: '34" Ultrawide', color: 'Preto', stock: 4 }],
     },
     {
@@ -964,6 +998,7 @@ function monitorSeeds(): ProductSeedInput[] {
       specs: { sizeInches: 27, panel: 'OLED', resolution: '2560x1440', refreshHz: 240, responseMs: 0.03, hdrLevel: 'HDR True Black 400' },
       compatibility: {},
       tags: ['asus', 'rog', 'monitor', '27', 'oled', '240hz'],
+      imageUrl: 'https://images.unsplash.com/photo-1527443224154-c4a3942d3acf?auto=format&fit=crop&w=1200&q=80',
       variations: [{ sku: 'mon-asus-pg27aqdm-default', size: '27" OLED', color: 'Preto', stock: 3 }],
     },
   ]
@@ -984,6 +1019,7 @@ function peripheralSeeds(): ProductSeedInput[] {
       specs: { dpi: 32000, weightGrams: 60, wireless: true, batteryHours: 95 },
       compatibility: {},
       tags: ['logitech', 'mouse', 'wireless', 'esports'], isFeatured: true,
+      imageUrl: 'https://images.unsplash.com/photo-1527814050087-3793815479db?auto=format&fit=crop&w=1200&q=80',
       variations: [{ sku: 'mouse-superlight2-default', size: 'Padrão', color: 'Preto', stock: 18 }],
     },
     {
@@ -996,6 +1032,7 @@ function peripheralSeeds(): ProductSeedInput[] {
       specs: { dpi: 30000, weightGrams: 63, wireless: true, batteryHours: 90 },
       compatibility: {},
       tags: ['razer', 'mouse', 'wireless', 'ergonomic'],
+      imageUrl: 'https://images.unsplash.com/photo-1615663245857-ac93bb7c39e7?auto=format&fit=crop&w=1200&q=80',
       variations: [{ sku: 'mouse-deathadder-v3-default', size: 'Padrão', color: 'Preto', stock: 14 }],
     },
     {
@@ -1008,6 +1045,7 @@ function peripheralSeeds(): ProductSeedInput[] {
       specs: { layout: 'TKL', switchType: 'GX Brown', wireless: true, rgb: true },
       compatibility: {},
       tags: ['logitech', 'teclado', 'mecanico', 'tkl'],
+      imageUrl: 'https://images.unsplash.com/photo-1587829741301-dc798b83add3?auto=format&fit=crop&w=1200&q=80',
       variations: [{ sku: 'kbd-g-pro-x-tkl-default', size: 'TKL', color: 'Preto', stock: 9 }],
     },
     {
@@ -1020,6 +1058,7 @@ function peripheralSeeds(): ProductSeedInput[] {
       specs: { wireless: true, surround: '7.1', driverMm: 50, batteryHours: 70 },
       compatibility: {},
       tags: ['razer', 'headset', 'wireless', '7.1'],
+      imageUrl: 'https://images.unsplash.com/photo-1599669454699-248893623440?auto=format&fit=crop&w=1200&q=80',
       variations: [{ sku: 'hs-blackshark-v2-pro-default', size: 'Padrão', color: 'Preto', stock: 7 }],
     },
     {
@@ -1032,6 +1071,7 @@ function peripheralSeeds(): ProductSeedInput[] {
       specs: { dpi: 25600, weightGrams: 106, wireless: true, batteryHours: 130, buttons: 13 },
       compatibility: {},
       tags: ['logitech', 'mouse', 'wireless', 'mmo'],
+      imageUrl: 'https://images.unsplash.com/photo-1527814050087-3793815479db?auto=format&fit=crop&w=1200&q=80',
       variations: [{ sku: 'mouse-g502-x-plus-default', size: 'Padrão', color: 'Preto', stock: 11 }],
     },
   ]
@@ -1064,6 +1104,7 @@ function pcSeeds(): ProductSeedInput[] {
       benchmarkFps: { 'valorant_1080p_high': 280, 'cs2_1080p_high': 300, 'fortnite_1080p_perf': 320, 'apex_1080p_high': 240 },
       tags: ['pc-pronto', 'valorant', 'esports', 'amd'], isFeatured: true,
       warrantyMonths: 12,
+      imageUrl: 'https://images.unsplash.com/photo-1587202372634-32705e3bf49c?auto=format&fit=crop&w=1200&q=80',
       variations: [
         { sku: 'pc-valorant-pro-bronze',  size: 'Bronze (config base)',                                stock: 5 },
         { sku: 'pc-valorant-pro-prata',   size: 'Prata (RAM 64GB)',         priceOverride: 10299.00,    stock: 3 },
@@ -1092,6 +1133,7 @@ function pcSeeds(): ProductSeedInput[] {
       benchmarkFps: { 'fortnite_1440p_epic': 165, 'fortnite_1080p_perf': 360, 'apex_1440p_high': 165 },
       tags: ['pc-pronto', 'fortnite', 'amd'], isFeatured: true,
       warrantyMonths: 12,
+      imageUrl: 'https://images.unsplash.com/photo-1593640408182-31c70c8268f5?auto=format&fit=crop&w=1200&q=80',
       variations: [
         { sku: 'pc-fortnite-edge-bronze', size: 'Bronze',                                stock: 4 },
         { sku: 'pc-fortnite-edge-prata',  size: 'Prata (RAM 64GB)', priceOverride: 9199.00,  stock: 3 },
@@ -1119,6 +1161,7 @@ function pcSeeds(): ProductSeedInput[] {
       benchmarkFps: { 'cs2_1440p_high': 220, 'cs2_1080p_high': 320, 'valorant_1440p_high': 240 },
       tags: ['pc-pronto', 'cs2', 'esports', 'amd'],
       warrantyMonths: 12,
+      imageUrl: 'https://images.unsplash.com/photo-1547082299-de196ea013d6?auto=format&fit=crop&w=1200&q=80',
       variations: [
         { sku: 'pc-cs2-tactical-bronze', size: 'Bronze',                                stock: 3 },
         { sku: 'pc-cs2-tactical-prata',  size: 'Prata (RAM 64GB + 2TB)', priceOverride: 11199.00, stock: 2 },
@@ -1146,6 +1189,7 @@ function pcSeeds(): ProductSeedInput[] {
       benchmarkFps: { 'davinci_4k_timeline': 60, 'premiere_4k_playback': 30, 'blender_classroom_render_s': 45 },
       tags: ['pc-pronto', 'workstation', 'edicao', '4k'], isFeatured: true,
       warrantyMonths: 12,
+      imageUrl: 'https://images.unsplash.com/photo-1587202372634-32705e3bf49c?auto=format&fit=crop&w=1200&q=80',
       variations: [
         { sku: 'pc-creator-4k-bronze', size: 'Bronze',                                  stock: 2 },
         { sku: 'pc-creator-4k-ouro',   size: 'Ouro (RAM 128GB)', priceOverride: 22999.00, stock: 1 },
@@ -1173,6 +1217,7 @@ function pcSeeds(): ProductSeedInput[] {
       benchmarkFps: { 'valorant_1080p_high_stream': 240, 'apex_1440p_high_stream': 130, 'gta5_1440p_high_stream': 100 },
       tags: ['pc-pronto', 'streaming', 'intel'],
       warrantyMonths: 12,
+      imageUrl: 'https://images.unsplash.com/photo-1593640408182-31c70c8268f5?auto=format&fit=crop&w=1200&q=80',
       variations: [
         { sku: 'pc-streamer-arena-bronze', size: 'Bronze',                                stock: 3 },
       ],
@@ -1199,6 +1244,7 @@ function pcSeeds(): ProductSeedInput[] {
       benchmarkFps: { 'llama_7b_tokens_per_sec': 110, 'llama_70b_tokens_per_sec': 22, 'sdxl_1024_steps_per_sec': 6.5 },
       tags: ['pc-pronto', 'workstation', 'ia', 'llama'], isFeatured: true,
       warrantyMonths: 12,
+      imageUrl: 'https://images.unsplash.com/photo-1547082299-de196ea013d6?auto=format&fit=crop&w=1200&q=80',
       variations: [
         { sku: 'pc-llama-forge-prata', size: 'Prata',                                   stock: 1 },
         { sku: 'pc-llama-forge-ouro',  size: 'Ouro (RAM 128GB + 4TB)', priceOverride: 33999.00, stock: 1 },
@@ -1226,6 +1272,7 @@ function pcSeeds(): ProductSeedInput[] {
       benchmarkFps: { 'blender_classroom_render_s': 20, 'unreal_lumen_viewport': 60, 'cinebench_r24_multi': 1850 },
       tags: ['pc-pronto', 'workstation', '3d', 'blender'],
       warrantyMonths: 12,
+      imageUrl: 'https://images.unsplash.com/photo-1587202372634-32705e3bf49c?auto=format&fit=crop&w=1200&q=80',
       variations: [
         { sku: 'pc-blender-rig-bronze', size: 'Bronze', stock: 2 },
       ],
@@ -1252,6 +1299,7 @@ function pcSeeds(): ProductSeedInput[] {
       benchmarkFps: { 'valorant_1080p_high': 220, 'fortnite_1080p_high': 144, 'apex_1080p_high': 150, 'cs2_1080p_high': 200 },
       tags: ['pc-pronto', 'entry', 'amd', 'custo-beneficio'], isFeatured: true,
       warrantyMonths: 12,
+      imageUrl: 'https://images.unsplash.com/photo-1593640408182-31c70c8268f5?auto=format&fit=crop&w=1200&q=80',
       variations: [
         { sku: 'pc-starter-bronze', size: 'Bronze',                              stock: 6 },
         { sku: 'pc-starter-prata',  size: 'Prata (RAM 64GB)', priceOverride: 6299.00, stock: 4 },

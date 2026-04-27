@@ -20,7 +20,9 @@ const nextConfig = {
 
   env: {
     NEXT_PUBLIC_API_URL: process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4001',
-    NEXT_PUBLIC_DASHBOARD_URL: process.env.NEXT_PUBLIC_DASHBOARD_URL || 'http://localhost:3002',
+    NEXT_PUBLIC_DASHBOARD_URL:
+      process.env.NEXT_PUBLIC_DASHBOARD_URL ||
+      (process.env.NODE_ENV === 'production' ? 'https://kore-tech-painel.vercel.app' : 'http://localhost:3002'),
     NEXT_PUBLIC_WHATSAPP_NUMBER: process.env.NEXT_PUBLIC_WHATSAPP_NUMBER || '5511999999999',
     NEXT_PUBLIC_WHATSAPP_DEFAULT_MESSAGE:
       process.env.NEXT_PUBLIC_WHATSAPP_DEFAULT_MESSAGE || 'Quero tirar uma duvida sobre um build.',

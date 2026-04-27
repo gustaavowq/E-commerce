@@ -94,7 +94,7 @@ export default function EditProductPage() {
     qc.setQueryData(['admin', 'products', 'detail', params.id], { ...product, images: next })
   }
 
-  const storeUrl = process.env.NEXT_PUBLIC_STORE_URL
+  const storeUrl = process.env.NEXT_PUBLIC_STORE_URL ?? 'https://kore-tech-loja.vercel.app'
 
   if (productQ.isLoading) {
     return (

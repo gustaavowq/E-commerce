@@ -1,7 +1,7 @@
 import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
 import Link from 'next/link'
-import { ArrowLeft, ShieldCheck, Truck, Zap } from 'lucide-react'
+import { ArrowLeft, ShieldCheck, Truck, Zap, Clock } from 'lucide-react'
 import { getProductBySlug, listRelated } from '@/services/products'
 import { ProductImage } from '@/components/ProductImage'
 import { ProductCard } from '@/components/ProductCard'
@@ -16,19 +16,23 @@ import { ProductPdpActions } from './ProductPdpActions'
 export const revalidate = 60
 
 type Params = { params: { slug: string } }
+type FetchResult = { state: 'ok'; product: ProductDetail } | { state: 'not-found' } | { state: 'unavailable' }
 
-async function fetchSafe(slug: string): Promise<ProductDetail | null> {
+async function fetchSafe(slug: string): Promise<FetchResult> {
   try {
-    return await getProductBySlug(slug)
+    const product = await getProductBySlug(slug)
+    return { state: 'ok', product }
   } catch (err) {
-    if (ApiError.is(err) && err.status === 404) return null
-    throw err
+    if (ApiError.is(err) && err.status === 404) return { state: 'not-found' }
+    if (process.env.NODE_ENV !== 'production') console.error('[pdp] fetch falhou:', err)
+    return { state: 'unavailable' }
   }
 }
 
 export async function generateMetadata({ params }: Params): Promise<Metadata> {
-  const product = await fetchSafe(params.slug)
-  if (!product) return { title: 'Produto nao encontrado' }
+  const result = await fetchSafe(params.slug)
+  if (result.state !== 'ok') return { title: 'Produto · Kore Tech' }
+  const product = result.product
   return {
     title: product.metaTitle ?? product.name,
     description: product.metaDesc ?? product.description.slice(0, 160),
@@ -48,8 +52,35 @@ function specsToRows(specs: ProductSpecs): Array<{ label: string; value: string 
 }
 
 export default async function ProductPage({ params }: Params) {
-  const product = await fetchSafe(params.slug)
-  if (!product) notFound()
+  const result = await fetchSafe(params.slug)
+  if (result.state === 'not-found') notFound()
+  if (result.state === 'unavailable') {
+    return (
+      <main className="container-app py-10 sm:py-16">
+        <Link href="/produtos" className="mb-6 inline-flex items-center gap-1 text-xs font-semibold text-text-secondary hover:text-primary">
+          <ArrowLeft className="h-3 w-3" /> Voltar pro catálogo
+        </Link>
+        <div className="rounded-lg border border-border bg-surface p-8 sm:p-12 text-center">
+          <div className="mx-auto inline-flex h-12 w-12 items-center justify-center rounded-full border border-border bg-bg">
+            <Clock className="h-5 w-5 text-primary" aria-hidden />
+          </div>
+          <h1 className="mt-4 font-display text-2xl font-bold text-text">Produto temporariamente indisponível</h1>
+          <p className="mx-auto mt-2 max-w-md text-sm text-text-secondary">
+            Estamos atualizando o catálogo. Recarregue em instantes ou volte para a lista de produtos.
+          </p>
+          <div className="mt-6 flex flex-wrap justify-center gap-2">
+            <Link href="/produtos">
+              <Button variant="primary">Ver outros produtos</Button>
+            </Link>
+            <Link href="/montar">
+              <Button variant="outline">Montar pelo builder</Button>
+            </Link>
+          </div>
+        </div>
+      </main>
+    )
+  }
+  const product = result.product
 
   // Se for PC montado, redireciona conceitualmente pra rota /pcs (mas como acessou /produtos, mantemos)
   const inStock = product.totalStock > 0

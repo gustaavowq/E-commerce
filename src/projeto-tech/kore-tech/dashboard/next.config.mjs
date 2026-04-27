@@ -1,6 +1,11 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   reactStrictMode: true,
+
+  env: {
+    NEXT_PUBLIC_STORE_URL: process.env.NEXT_PUBLIC_STORE_URL || 'https://kore-tech-loja.vercel.app',
+  },
+
   images: {
     remotePatterns: [
       { protocol: 'https', hostname: '**' },
