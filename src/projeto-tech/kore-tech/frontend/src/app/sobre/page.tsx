@@ -63,7 +63,7 @@ export default function SobrePage() {
           <div className="max-w-3xl">
             <p className="font-specs text-xs font-bold uppercase tracking-widest text-primary">Como nasceu</p>
             <h2 className="mt-2 font-display text-2xl font-bold text-text sm:text-3xl">
-              Comecou com a duvida: "Esse PC roda mesmo o que prometeram?"
+              Comecou com a duvida: &ldquo;Esse PC roda mesmo o que prometeram?&rdquo;
             </h2>
             <div className="mt-5 space-y-4 text-sm text-text-secondary sm:text-base">
               <p>
@@ -77,7 +77,7 @@ export default function SobrePage() {
                 voce ve quanto roda antes de pagar.
               </p>
               <p>
-                Lista de espera nao e gambiarra. E sistema. Quando uma GPU some, voce ativa o "me avise" e a gente
+                Lista de espera nao e gambiarra. E sistema. Quando uma GPU some, voce ativa o &ldquo;me avise&rdquo; e a gente
                 segura 24h pra voce no momento que volta. Sem inflar fila com bots, sem prioridade pra quem grita mais
                 alto.
               </p>

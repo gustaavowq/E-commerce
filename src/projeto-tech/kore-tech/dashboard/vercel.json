@@ -7,17 +7,5 @@
   "regions": ["gru1"],
   "github": {
     "silent": true
-  },
-  "_comment": [
-    "Demo ficticia: NAO subir pra Vercel real ainda.",
-    "Quando deployar:",
-    "  1. Importar este diretorio (src/projeto-tech/kore-tech/dashboard) na Vercel",
-    "  2. Setar Root Directory = src/projeto-tech/kore-tech/dashboard",
-    "  3. Setar env vars: NEXT_PUBLIC_API_URL=https://<railway>.up.railway.app,",
-    "     NEXT_PUBLIC_SITE_URL=https://<vercel-frontend>.vercel.app",
-    "  4. Atualizar CSP connect-src em next.config.mjs com host real do backend (licao #05)",
-    "  5. Atualizar CORS_ORIGIN no Railway pra incluir esse dominio Vercel",
-    "  6. Cookie funciona entre admin e loja se setar COOKIE_DOMAIN=.kore.tech (ou apex real)",
-    "     no backend Railway"
-  ]
+  }
 }
