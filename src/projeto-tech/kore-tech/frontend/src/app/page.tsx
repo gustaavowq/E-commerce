@@ -1,41 +1,18 @@
 // Home Kore Tech — fetch resiliente: se backend offline, fallback gracioso (sem 500).
 import Link from 'next/link'
-import { ArrowRight, Wrench, BellRing, ShieldCheck, Zap, Cpu, MonitorPlay } from 'lucide-react'
+import Image from 'next/image'
+import { ArrowRight, Wrench } from 'lucide-react'
 import { ProductCard } from '@/components/ProductCard'
 import { PCBuildCard } from '@/components/PCBuildCard'
 import { Button } from '@/components/ui/Button'
-import { listFeatured, listByPersona } from '@/services/products'
+import { Reveal } from '@/components/Reveal'
+import { listFeatured } from '@/services/products'
 import { listReadyPcs } from '@/services/builds'
 import type { ProductListItem } from '@/services/types'
 
 export const revalidate = 60
 
-const FEATURED_PERSONAS = [
-  {
-    slug: 'valorant-240fps',
-    name: 'Valorant 240 FPS',
-    sub: 'Mira firme, lag baixo, peripheral pro',
-    targetFps: { valorant: 240, cs2: 220 },
-  },
-  {
-    slug: 'fortnite-competitivo',
-    name: 'Fortnite competitivo',
-    sub: 'Build no zero, edit fluido',
-    targetFps: { fortnite: 165, valorant: 240 },
-  },
-  {
-    slug: 'edicao-4k',
-    name: 'Edicao de video 4K',
-    sub: 'Premiere e DaVinci sem travar',
-    targetFps: { premiere_4k: 60, davinci_4k: 50 },
-  },
-  {
-    slug: 'ia-local',
-    name: 'IA local com Llama',
-    sub: 'Modelos 7B/70B rodando offline',
-    targetFps: { llama_7b_tps: 80, llama_70b_tps: 12 },
-  },
-] as const
+const HERO_IMAGE = 'https://images.unsplash.com/photo-1587202372634-32705e3bf49c?auto=format&fit=crop&w=1600&q=85'
 
 async function safeListFeatured(): Promise<ProductListItem[]> {
   try {
@@ -46,18 +23,9 @@ async function safeListFeatured(): Promise<ProductListItem[]> {
   }
 }
 
-async function safeListReadyPcs(persona?: string): Promise<ProductListItem[]> {
+async function safeListReadyPcs(): Promise<ProductListItem[]> {
   try {
-    const res = await listReadyPcs(3, persona)
-    return res.data ?? []
-  } catch {
-    return []
-  }
-}
-
-async function safeListByPersona(slug: string): Promise<ProductListItem[]> {
-  try {
-    const res = await listByPersona(slug, 3)
+    const res = await listReadyPcs(4)
     return res.data ?? []
   } catch {
     return []
@@ -65,264 +33,255 @@ async function safeListByPersona(slug: string): Promise<ProductListItem[]> {
 }
 
 export default async function HomePage() {
-  const [featured, allReadyPcs, ...personaPcs] = await Promise.all([
-    safeListFeatured(),
-    safeListReadyPcs(),
-    ...FEATURED_PERSONAS.map((p) => safeListByPersona(p.slug)),
-  ])
+  const [featured, readyPcs] = await Promise.all([safeListFeatured(), safeListReadyPcs()])
 
   return (
     <>
-      {/* Hero */}
-      <section className="relative overflow-hidden border-b border-border bg-bg">
-        <div aria-hidden className="pointer-events-none absolute -left-32 top-0 h-[28rem] w-[28rem] rounded-full bg-primary/15 blur-3xl" />
-        <div aria-hidden className="pointer-events-none absolute -right-20 -bottom-20 h-96 w-96 rounded-full bg-primary/10 blur-3xl" />
+      {/* ───────── Hero ───────── */}
+      <section className="relative isolate overflow-hidden border-b border-border">
+        <div aria-hidden className="pointer-events-none absolute inset-0 mesh-bg" />
+        <div aria-hidden className="pointer-events-none absolute inset-0 grid-pattern opacity-60" />
+        <div
+          aria-hidden
+          className="pointer-events-none absolute -left-32 top-10 h-[36rem] w-[36rem] rounded-full bg-primary/12 blur-3xl animate-aurora-slow"
+        />
+        <div
+          aria-hidden
+          className="pointer-events-none absolute -right-24 bottom-0 h-[28rem] w-[28rem] rounded-full bg-primary/8 blur-3xl animate-aurora-slow"
+          style={{ animationDelay: '-7s' }}
+        />
 
-        <div className="container-app relative grid items-center gap-10 py-12 sm:py-20 lg:grid-cols-[1.1fr_1fr]">
+        <div className="container-app relative grid min-h-[80vh] items-center gap-12 py-16 sm:py-24 lg:grid-cols-[1.05fr_1fr] lg:gap-16">
           <div>
-            <p className="font-specs text-xs font-bold uppercase tracking-widest text-primary animate-fade-up">
-              Builder com checagem automatica de compatibilidade
+            <p className="font-specs text-[11px] font-bold uppercase tracking-[0.22em] text-primary animate-fade-up">
+              PCs gamer · builder com checagem automática
             </p>
-            <h1 className="mt-3 font-display text-4xl font-bold leading-tight text-text sm:text-5xl lg:text-6xl animate-fade-up" style={{ animationDelay: '80ms' }}>
-              Monte certo.
+            <h1
+              className="mt-5 font-display text-5xl font-bold leading-[1.02] tracking-tight sm:text-6xl lg:text-7xl xl:text-[5.5rem] animate-fade-up-lg"
+              style={{ animationDelay: '120ms' }}
+            >
+              <span className="hero-title-gradient">Monte certo.</span>
               <br />
-              <span className="text-primary">Jogue alto.</span>
+              <span className="text-text">Jogue alto.</span>
             </h1>
-            <p className="mt-5 max-w-xl text-base text-text-secondary sm:text-lg animate-fade-up" style={{ animationDelay: '160ms' }}>
-              Builds prontos por jogo, com FPS estimado real. Componentes com checagem de socket, fonte e gabinete em tempo real. Lista de espera anti-paper-launch.
+            <p
+              className="mt-7 max-w-xl text-base leading-relaxed text-text-secondary sm:text-lg lg:text-xl animate-fade-up"
+              style={{ animationDelay: '260ms' }}
+            >
+              Builds prontos por jogo, com FPS estimado real. Cada peça passa por checagem
+              automática de socket, fonte e gabinete antes de ir pro carrinho.
             </p>
-            <div className="mt-7 flex flex-wrap items-center gap-3 animate-fade-up" style={{ animationDelay: '240ms' }}>
+            <div
+              className="mt-9 flex flex-wrap items-center gap-3 animate-fade-up"
+              style={{ animationDelay: '380ms' }}
+            >
               <Link href="/montar">
                 <Button variant="primary" size="lg" className="cta-glow">
                   <Wrench className="h-4 w-4" /> Abrir o builder
                 </Button>
               </Link>
-              <Link href="/builds/valorant-240fps">
-                <Button variant="outline" size="lg">
-                  Ver build Valorant <ArrowRight className="h-4 w-4" />
+              <Link href="/builds">
+                <Button variant="ghost" size="lg">
+                  Ver builds prontos <ArrowRight className="h-4 w-4" />
                 </Button>
               </Link>
             </div>
-            <p className="mt-4 text-xs text-text-muted">
-              Pix com 5% off · Parcele em 12x sem juros · Frete asseguro+
+            <p
+              className="mt-6 font-specs text-[11px] uppercase tracking-widest text-text-muted animate-fade-up"
+              style={{ animationDelay: '500ms' }}
+            >
+              Pix 5% off · 12x sem juros · Garantia DOA 7 dias
             </p>
           </div>
 
-          <div className="relative overflow-hidden rounded-xl border border-border-strong bg-surface p-6 sm:p-8 animate-scale-in">
-            <div className="grid grid-cols-3 gap-3">
-              {[
-                { label: 'Valorant', fps: 240 },
-                { label: 'Fortnite', fps: 165 },
-                { label: 'CS2', fps: 220 },
-                { label: 'Cyberpunk', fps: 90 },
-                { label: 'Edicao 4K', fps: 60 },
-                { label: 'Llama 7B', fps: 80 },
-              ].map((m) => (
-                <div key={m.label} className="rounded-md border border-border bg-bg/60 px-3 py-3">
-                  <p className="text-[10px] font-semibold uppercase tracking-wide text-text-secondary">{m.label}</p>
-                  <p className="font-specs text-2xl font-bold text-primary leading-none">{m.fps}</p>
-                  <p className="font-specs text-[10px] text-text-muted">FPS estimado</p>
-                </div>
+          {/* Hero visual */}
+          <div className="relative animate-scale-in" style={{ animationDelay: '320ms' }}>
+            <div className="relative aspect-[4/5] overflow-hidden rounded-2xl border border-border-strong bg-surface shadow-xl sm:aspect-[5/6] lg:aspect-[4/5]">
+              <Image
+                src={HERO_IMAGE}
+                alt="PC gamer montado com iluminação RGB"
+                fill
+                priority
+                sizes="(max-width: 1024px) 100vw, 560px"
+                className="object-cover animate-float"
+                unoptimized
+              />
+              <div aria-hidden className="absolute inset-0 bg-gradient-to-t from-bg via-bg/20 to-transparent" />
+              <div className="absolute inset-x-0 bottom-0 p-6 sm:p-8">
+                <p className="font-specs text-[10px] font-bold uppercase tracking-widest text-primary">FPS curado</p>
+                <p className="mt-2 font-display text-2xl font-bold text-text sm:text-3xl">
+                  240 FPS no Valorant
+                </p>
+                <p className="mt-1 text-xs text-text-secondary sm:text-sm">
+                  Ryzen 7 7800X3D · RTX 4070 SUPER · 32GB DDR5
+                </p>
+              </div>
+              <div
+                aria-hidden
+                className="pointer-events-none absolute inset-0 overflow-hidden rounded-2xl"
+              >
+                <div className="absolute inset-y-0 -left-1/3 w-1/3 bg-gradient-to-r from-transparent via-primary/15 to-transparent animate-shimmer" />
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ───────── Builds em destaque ───────── */}
+      {readyPcs.length > 0 && (
+        <section className="border-b border-border bg-bg">
+          <div className="container-app py-20 sm:py-28">
+            <Reveal as="header" className="mb-10 flex items-end justify-between gap-6">
+              <div>
+                <p className="font-specs text-[11px] font-bold uppercase tracking-[0.22em] text-primary">
+                  Builds prontos
+                </p>
+                <h2 className="mt-3 font-display text-3xl font-bold tracking-tight text-text sm:text-4xl lg:text-5xl">
+                  PCs montados, com FPS curado.
+                </h2>
+              </div>
+              <Link
+                href="/builds"
+                className="hidden shrink-0 items-center gap-1 text-sm font-semibold text-primary transition hover:gap-2 sm:inline-flex"
+              >
+                Ver todos <ArrowRight className="h-4 w-4" />
+              </Link>
+            </Reveal>
+
+            <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4">
+              {readyPcs.slice(0, 4).map((pc, i) => (
+                <Reveal key={pc.id} delay={i * 90}>
+                  <PCBuildCard product={pc} />
+                </Reveal>
               ))}
-            </div>
-            <div className="mt-5 rounded-md border border-primary/40 bg-primary-soft p-3">
-              <p className="flex items-center gap-2 text-xs font-bold uppercase tracking-wide text-primary">
-                <Zap className="h-3.5 w-3.5" /> Builder calcula automatico
-              </p>
-              <p className="mt-1 text-xs text-text-secondary">
-                Socket, fonte, gabinete, RAM. Voce escolhe a peca, a gente garante compativel.
-              </p>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* USP strip */}
-      <section className="border-b border-border bg-surface">
-        <div className="container-app grid grid-cols-1 gap-4 py-6 sm:grid-cols-3">
-          {[
-            {
-              icon: Wrench,
-              title: 'Builder com 50+ checks',
-              text: 'Compatibilidade de socket, fonte, gabinete em tempo real',
-            },
-            {
-              icon: BellRing,
-              title: 'Lista de espera ativa',
-              text: 'Te avisamos quando GPU/CPU volta. Reserva 24h pra primeiros',
-            },
-            {
-              icon: ShieldCheck,
-              title: 'Garantia DOA + Pix 5% off',
-              text: '7 dias troca sem perguntas. Pix da 5% de desconto',
-            },
-          ].map((it, i) => (
-            <div
-              key={i}
-              className="group flex items-start gap-3 rounded-md border border-border bg-bg/40 p-3 transition hover:border-primary/40 hover:bg-bg/60 animate-fade-up"
-              style={{ animationDelay: `${100 + i * 80}ms` }}
-            >
-              <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-md bg-primary-soft text-primary transition-transform group-hover:scale-110">
-                <it.icon className="h-5 w-5" />
-              </div>
-              <div>
-                <p className="text-sm font-bold text-text">{it.title}</p>
-                <p className="text-xs text-text-secondary">{it.text}</p>
-              </div>
-            </div>
-          ))}
-        </div>
-      </section>
-
-      {/* Personas em destaque */}
-      <section className="container-app py-10 sm:py-14">
-        <div className="mb-7 flex items-end justify-between">
-          <div>
-            <p className="font-specs text-xs font-bold uppercase tracking-widest text-primary">Builds por uso</p>
-            <h2 className="mt-2 font-display text-2xl font-bold text-text sm:text-3xl">Pra que voce vai usar?</h2>
-            <p className="mt-1 text-sm text-text-secondary">
-              Escolha por jogo ou tarefa. A gente entrega FPS estimado e build pronto.
-            </p>
-          </div>
-          <Link href="/builds" className="hidden text-sm font-semibold text-primary hover:underline sm:inline-flex">
-            Ver todos
-          </Link>
-        </div>
-        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
-          {FEATURED_PERSONAS.map((p, i) => (
-            <Link
-              key={p.slug}
-              href={`/builds/${p.slug}`}
-              className="group flex flex-col gap-3 rounded-lg border border-border bg-surface p-5 transition-all hover:-translate-y-1 hover:border-primary/40 hover:shadow-glow-soft animate-fade-up"
-              style={{ animationDelay: `${i * 60}ms` }}
-            >
-              <div className="flex h-11 w-11 items-center justify-center rounded-md bg-primary-soft text-primary transition-colors group-hover:bg-primary group-hover:text-bg">
-                {p.slug === 'edicao-4k' ? (
-                  <MonitorPlay className="h-5 w-5" />
-                ) : p.slug === 'ia-local' ? (
-                  <Cpu className="h-5 w-5" />
-                ) : (
-                  <Zap className="h-5 w-5" />
-                )}
-              </div>
-              <div>
-                <h3 className="text-base font-bold text-text">{p.name}</h3>
-                <p className="text-xs text-text-secondary">{p.sub}</p>
-              </div>
-              <div className="grid grid-cols-2 gap-1.5 pt-2">
-                {Object.entries(p.targetFps).map(([game, fps]) => (
-                  <div key={game} className="rounded bg-bg/60 px-2 py-1">
-                    <p className="text-[10px] uppercase text-text-muted">{game}</p>
-                    <p className="font-specs text-sm text-primary">{fps} FPS</p>
-                  </div>
-                ))}
-              </div>
-              <span className="mt-auto inline-flex items-center gap-1 pt-2 text-xs font-semibold text-primary">
-                Ver build <ArrowRight className="h-3 w-3 transition-transform group-hover:translate-x-1" />
-              </span>
-            </Link>
-          ))}
-        </div>
-      </section>
-
-      {/* Builds prontos por persona */}
-      {personaPcs.some((arr) => arr.length > 0) && (
-        <section className="border-y border-border bg-surface/50 py-10 sm:py-14">
-          <div className="container-app">
-            <div className="mb-7">
-              <p className="font-specs text-xs font-bold uppercase tracking-widest text-primary">Builds prontos</p>
-              <h2 className="mt-2 font-display text-2xl font-bold text-text sm:text-3xl">PCs montados, com FPS curado</h2>
-              <p className="mt-1 text-sm text-text-secondary">Pegue como esta ou use como ponto de partida no builder.</p>
-            </div>
-
-            <div className="grid grid-cols-1 gap-5 lg:grid-cols-2">
-              {FEATURED_PERSONAS.slice(0, 2).map((p, idx) => {
-                const pcs = personaPcs[idx] ?? []
-                if (pcs.length === 0) return null
-                return (
-                  <div key={p.slug} className="rounded-lg border border-border bg-surface p-4 sm:p-6">
-                    <div className="mb-4 flex items-center justify-between">
-                      <h3 className="text-base font-bold text-text">Para {p.name}</h3>
-                      <Link href={`/builds/${p.slug}`} className="text-xs font-semibold text-primary hover:underline">
-                        Ver landing
-                      </Link>
-                    </div>
-                    <div className="grid grid-cols-1 gap-3">
-                      {pcs.slice(0, 1).map((pc) => (
-                        <PCBuildCard key={pc.id} product={pc} />
-                      ))}
-                    </div>
-                  </div>
-                )
-              })}
             </div>
           </div>
         </section>
       )}
 
-      {/* Componentes em destaque */}
-      <section className="container-app py-10 sm:py-14">
-        <div className="mb-6 flex items-end justify-between">
-          <div>
-            <p className="font-specs text-xs font-bold uppercase tracking-widest text-primary">Componentes</p>
-            <h2 className="mt-2 font-display text-2xl font-bold text-text sm:text-3xl">Em destaque na semana</h2>
-            <p className="mt-1 text-sm text-text-secondary">Pecas mais buscadas e melhores precos.</p>
-          </div>
-          <Link href="/produtos" className="text-sm font-semibold text-primary hover:underline">
-            Ver tudo
-          </Link>
-        </div>
-        {featured.length > 0 ? (
-          <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 sm:gap-4 lg:grid-cols-4">
-            {featured.map((p, i) => (
-              <ProductCard key={p.id} product={p} index={i} />
-            ))}
-          </div>
-        ) : allReadyPcs.length > 0 ? (
-          <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 sm:gap-4 lg:grid-cols-4">
-            {allReadyPcs.map((p, i) => (
-              <ProductCard key={p.id} product={p} index={i} />
-            ))}
-          </div>
-        ) : (
-          <div className="rounded-lg border border-dashed border-border bg-surface/40 p-8 text-center">
-            <Cpu className="mx-auto h-10 w-10 text-text-muted" />
-            <p className="mt-3 text-sm text-text-secondary">Catalogo carrega quando o backend estiver online.</p>
-            <p className="mt-1 text-xs text-text-muted">
-              Demo: <code className="font-specs">cd src/projeto-tech/kore-tech && docker compose up</code>
+      {/* ───────── Banner builder ───────── */}
+      <section className="relative overflow-hidden border-b border-border">
+        <div aria-hidden className="absolute inset-0 mesh-bg opacity-80" />
+        <div
+          aria-hidden
+          className="pointer-events-none absolute -right-32 top-0 h-[28rem] w-[28rem] rounded-full bg-primary/10 blur-3xl animate-aurora-slow"
+        />
+
+        <div className="container-app relative grid items-center gap-10 py-20 sm:py-28 lg:grid-cols-[1fr_1.1fr]">
+          <Reveal>
+            <p className="font-specs text-[11px] font-bold uppercase tracking-[0.22em] text-primary">
+              Builder
             </p>
-          </div>
-        )}
+            <h2 className="mt-3 font-display text-3xl font-bold tracking-tight text-text sm:text-4xl lg:text-5xl">
+              50+ checagens automáticas
+              <br />
+              <span className="text-text-secondary">antes de você fechar o pedido.</span>
+            </h2>
+            <p className="mt-6 max-w-lg text-base leading-relaxed text-text-secondary sm:text-lg">
+              Escolhe a CPU. A lista filtra placas-mãe compatíveis. Adicionou GPU pesada?
+              A gente sugere fonte que aguenta. Gabinete pequeno? Mostra só o que cabe.
+            </p>
+            <div className="mt-8 flex flex-wrap gap-3">
+              <Link href="/montar">
+                <Button variant="primary" size="lg" className="cta-glow">
+                  <Wrench className="h-4 w-4" /> Abrir o builder
+                </Button>
+              </Link>
+              <Link href="/produtos">
+                <Button variant="ghost" size="lg">
+                  Explorar componentes <ArrowRight className="h-4 w-4" />
+                </Button>
+              </Link>
+            </div>
+          </Reveal>
+
+          <Reveal delay={120}>
+            <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
+              {[
+                { label: 'Socket', value: 'AM5 · LGA1700' },
+                { label: 'Fonte', value: '550W → 1000W' },
+                { label: 'Gabinete', value: 'mATX → E-ATX' },
+                { label: 'RAM', value: 'DDR5 5200-7200' },
+                { label: 'GPU', value: 'até 460mm' },
+                { label: 'Cooler', value: 'air · AIO 360' },
+              ].map((s) => (
+                <div
+                  key={s.label}
+                  className="rounded-md border border-border bg-surface/60 p-4 backdrop-blur-sm transition-colors hover:border-primary/40"
+                >
+                  <p className="text-[10px] font-bold uppercase tracking-wide text-text-muted">{s.label}</p>
+                  <p className="mt-1 font-specs text-sm font-bold text-primary sm:text-base">{s.value}</p>
+                </div>
+              ))}
+            </div>
+          </Reveal>
+        </div>
       </section>
 
-      {/* CTA dupla */}
-      <section className="container-app grid gap-4 py-12 sm:py-16 lg:grid-cols-2">
-        <div className="relative overflow-hidden rounded-xl border border-primary/30 bg-gradient-to-br from-primary-soft to-bg p-7 sm:p-10">
-          <h3 className="font-display text-xl font-bold text-text sm:text-2xl">Builder de PC, do iniciante ao pro</h3>
-          <p className="mt-2 text-sm text-text-secondary">
-            Escolhe a primeira peca, o resto da lista filtra automatico. Adicionou GPU pesada? A gente sugere fonte que aguenta.
-          </p>
-          <div className="mt-5">
-            <Link href="/montar">
-              <Button variant="primary" size="md" className="cta-glow">
-                <Wrench className="h-4 w-4" /> Comecar montagem
-              </Button>
+      {/* ───────── Componentes em destaque ───────── */}
+      <section className="border-b border-border bg-bg">
+        <div className="container-app py-20 sm:py-28">
+          <Reveal as="header" className="mb-10 flex items-end justify-between gap-6">
+            <div>
+              <p className="font-specs text-[11px] font-bold uppercase tracking-[0.22em] text-primary">
+                Componentes
+              </p>
+              <h2 className="mt-3 font-display text-3xl font-bold tracking-tight text-text sm:text-4xl lg:text-5xl">
+                Em destaque na semana.
+              </h2>
+            </div>
+            <Link
+              href="/produtos"
+              className="hidden shrink-0 items-center gap-1 text-sm font-semibold text-primary transition hover:gap-2 sm:inline-flex"
+            >
+              Ver tudo <ArrowRight className="h-4 w-4" />
             </Link>
-          </div>
-        </div>
+          </Reveal>
 
-        <div className="relative overflow-hidden rounded-xl border border-border bg-surface p-7 sm:p-10">
-          <h3 className="font-display text-xl font-bold text-text sm:text-2xl">GPU sumiu do mercado?</h3>
-          <p className="mt-2 text-sm text-text-secondary">
-            Ativa lista de espera. Te avisamos por email/WhatsApp quando entrar e reservamos 24h pra voce.
-          </p>
-          <div className="mt-5">
-            <Link href="/produtos?category=gpu">
-              <Button variant="outline" size="md">
-                Ver placas de video <ArrowRight className="h-4 w-4" />
-              </Button>
-            </Link>
-          </div>
+          {featured.length > 0 ? (
+            <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 sm:gap-5 lg:grid-cols-4">
+              {featured.map((p, i) => (
+                <Reveal key={p.id} delay={(i % 4) * 80}>
+                  <ProductCard product={p} index={i} />
+                </Reveal>
+              ))}
+            </div>
+          ) : (
+            <Reveal>
+              <div className="rounded-lg border border-dashed border-border bg-surface/40 p-10 text-center">
+                <p className="text-sm text-text-secondary">
+                  Catálogo carrega quando o backend estiver online.
+                </p>
+              </div>
+            </Reveal>
+          )}
+        </div>
+      </section>
+
+      {/* ───────── CTA final ───────── */}
+      <section className="relative overflow-hidden">
+        <div aria-hidden className="absolute inset-0 bg-gradient-to-br from-primary/15 via-bg to-bg" />
+        <div className="container-app relative py-20 sm:py-28">
+          <Reveal className="mx-auto max-w-3xl text-center">
+            <h2 className="font-display text-3xl font-bold tracking-tight text-text sm:text-4xl lg:text-5xl">
+              Pronto pra montar o seu?
+            </h2>
+            <p className="mx-auto mt-5 max-w-xl text-base leading-relaxed text-text-secondary sm:text-lg">
+              Builder em três passos. Compatibilidade garantida. FPS estimado real.
+            </p>
+            <div className="mt-9 flex flex-wrap justify-center gap-3">
+              <Link href="/montar">
+                <Button variant="primary" size="lg" className="cta-glow">
+                  <Wrench className="h-4 w-4" /> Começar a montar
+                </Button>
+              </Link>
+              <Link href="/builds">
+                <Button variant="outline" size="lg">
+                  Ver builds prontos <ArrowRight className="h-4 w-4" />
+                </Button>
+              </Link>
+            </div>
+          </Reveal>
         </div>
       </section>
     </>

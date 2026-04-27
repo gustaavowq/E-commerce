@@ -136,6 +136,55 @@ body {
     box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(0, 229, 255, 0.1);
   }
 
+  /* Glow soft (corrige referência inexistente em PCBuildCard) */
+  .shadow-glow-soft {
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.55), 0 0 0 1px rgba(0, 229, 255, 0.18), 0 0 32px rgba(0, 229, 255, 0.08);
+  }
+  .hover\:shadow-glow-soft:hover {
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.55), 0 0 0 1px rgba(0, 229, 255, 0.18), 0 0 32px rgba(0, 229, 255, 0.08);
+  }
+
+  /* Reveal on scroll — controlado pelo componente <Reveal> via data-visible */
+  .reveal {
+    opacity: 0;
+    transform: translateY(28px);
+    transition: opacity 700ms cubic-bezier(0.16, 1, 0.3, 1), transform 700ms cubic-bezier(0.16, 1, 0.3, 1);
+    will-change: opacity, transform;
+  }
+  .reveal[data-visible='true'] {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  /* Mesh gradient animado pra hero */
+  .mesh-bg {
+    background:
+      radial-gradient(at 20% 25%, rgba(0, 229, 255, 0.18) 0px, transparent 45%),
+      radial-gradient(at 78% 65%, rgba(0, 229, 255, 0.12) 0px, transparent 50%),
+      radial-gradient(at 50% 95%, rgba(77, 184, 196, 0.10) 0px, transparent 55%);
+  }
+
+  /* Cyan stripe acentuando o título do hero */
+  .hero-title-gradient {
+    background: linear-gradient(120deg, #00E5FF 0%, #4DB8C4 35%, #E8EEF5 80%);
+    background-size: 200% 200%;
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    animation: gradient-pan 9s ease infinite;
+  }
+
+  /* Padrão de grid técnico no fundo */
+  .grid-pattern {
+    background-image:
+      linear-gradient(rgba(0, 229, 255, 0.06) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(0, 229, 255, 0.06) 1px, transparent 1px);
+    background-size: 48px 48px;
+    background-position: -1px -1px;
+    mask-image: radial-gradient(ellipse 80% 60% at 50% 40%, #000 30%, transparent 80%);
+    -webkit-mask-image: radial-gradient(ellipse 80% 60% at 50% 40%, #000 30%, transparent 80%);
+  }
+
   /* Reducao de motion */
   @media (prefers-reduced-motion: reduce) {
     *, *::before, *::after {
@@ -144,5 +193,6 @@ body {
       transition-duration: 0.01ms !important;
       scroll-behavior: auto !important;
     }
+    .reveal { opacity: 1; transform: none; }
   }
 }
