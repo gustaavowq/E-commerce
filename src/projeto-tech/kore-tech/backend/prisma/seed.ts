@@ -455,12 +455,20 @@ async function upsertProduct(input: ProductSeedInput, refs: SeedRefs) {
     })
   }
 
-  // Imagem (uma só por enquanto, primária). Idempotente: se já existe pra este slug, ignora.
+  // Imagem primária. Idempotente: se já existe, atualiza URL/alt (pra refletir trocas de
+  // imageUrl em re-runs do seed — caso contrário URLs novas seriam ignoradas).
   const imageUrl = input.imageUrl ?? buildPlaceholderImage(input.slug)
   const existingImage = await prisma.productImage.findFirst({
     where: { productId: product.id, isPrimary: true },
   })
-  if (!existingImage) {
+  if (existingImage) {
+    if (existingImage.url !== imageUrl || existingImage.alt !== input.name) {
+      await prisma.productImage.update({
+        where: { id: existingImage.id },
+        data:  { url: imageUrl, alt: input.name },
+      })
+    }
+  } else {
     await prisma.productImage.create({
       data: {
         productId: product.id,
