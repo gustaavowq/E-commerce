@@ -1400,7 +1400,7 @@ async function seedCoupons() {
 // MAIN
 // =============================================================================
 async function main() {
-  console.log('🌱 Kore Tech — seed iniciando...\n')
+  console.log('🌱 Kore Tech — seed iniciando... [build 2026-04-27 v2 unsplash]\n')
 
   await seedAdmin()
   await seedStoreSettings()
