@@ -1,0 +1,204 @@
+# =============================================================================
+# Kore Tech — Ambiente de Desenvolvimento (independente do Miami)
+# Mantido pelo DevOps (Agente 05).
+#
+# Como rodar:
+#   1. Na raiz do projeto kore-tech (src/projeto-tech/kore-tech/),
+#      copie .env.example -> .env e ajuste valores
+#   2. cd src/projeto-tech/kore-tech/infra
+#   3. docker compose up -d
+#
+# Portas no HOST (deslocadas pra rodar em paralelo com Miami):
+#   postgres   5433  (Miami usa 5432)
+#   backend    4001
+#   frontend   3001
+#   dashboard  3002
+#   nginx      8081
+#
+# Subdomínios .test (precisa editar hosts file uma vez — ver README):
+#   127.0.0.1 loja.kore.test admin.kore.test api.kore.test
+#
+# Acesso (com hosts file ajustado):
+#   http://loja.kore.test:8081     -> Loja
+#   http://admin.kore.test:8081    -> Painel admin
+#   http://api.kore.test:8081      -> API
+#
+# Acesso direto (sem hosts file, debug):
+#   http://localhost:3001  -> Loja
+#   http://localhost:3002  -> Painel
+#   http://localhost:4001  -> API
+# =============================================================================
+
+name: kore-tech
+
+# .env mora na raiz do PROJETO (src/projeto-tech/kore-tech/.env), não na raiz do
+# monorepo. Caminho relativo a src/projeto-tech/kore-tech/infra/ = ../.env.
+# Se aparecer um .env DENTRO de infra/, o Compose carrega ele preferencialmente
+# e sobrescreve — apaga (lição #06 do Miami).
+
+x-env: &env-default
+  env_file:
+    - ../.env
+
+services:
+  # ---------------------------------------------------------------------------
+  # PostgreSQL 16 — banco do projeto Kore Tech
+  # ---------------------------------------------------------------------------
+  postgres:
+    <<: *env-default
+    image: postgres:16-alpine
+    container_name: kore-tech-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${DB_USER:-kore}
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-kore}
+      POSTGRES_DB: ${DB_NAME:-kore_tech}
+      LANG: pt_BR.UTF-8
+      TZ: America/Sao_Paulo
+    ports:
+      # Exposto SÓ em dev (DBeaver/TablePlus). Em prod, NUNCA expor.
+      - "${DB_PORT:-5433}:5432"
+    volumes:
+      - kore_tech_postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${DB_USER:-kore} -d ${DB_NAME:-kore_tech}"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+    networks:
+      - kore-tech-net
+
+  # ---------------------------------------------------------------------------
+  # Backend (Express + Prisma)  —  interno 4001
+  # ---------------------------------------------------------------------------
+  backend:
+    <<: *env-default
+    build:
+      context: ../backend
+      dockerfile: Dockerfile.dev
+    container_name: kore-tech-backend
+    restart: unless-stopped
+    environment:
+      NODE_ENV: development
+      PORT: 4001
+      # Dentro da network do compose, o host do postgres é o nome do serviço
+      DATABASE_URL: "postgresql://${DB_USER:-kore}:${DB_PASSWORD:-kore}@postgres:5432/${DB_NAME:-kore_tech}?schema=public"
+      JWT_SECRET: ${JWT_SECRET}
+      JWT_EXPIRES_IN: ${JWT_EXPIRES_IN:-7d}
+      COOKIE_DOMAIN: ${COOKIE_DOMAIN:-}
+      CORS_ORIGIN: ${CORS_ORIGIN}
+      SEED_ADMIN_EMAIL: ${SEED_ADMIN_EMAIL:-admin@kore.tech}
+      SEED_ADMIN_PASSWORD: ${SEED_ADMIN_PASSWORD}
+      MP_ACCESS_TOKEN: ${MP_ACCESS_TOKEN}
+      MP_WEBHOOK_SECRET: ${MP_WEBHOOK_SECRET}
+      CLOUDINARY_URL: ${CLOUDINARY_URL}
+      RESEND_API_KEY: ${RESEND_API_KEY}
+      RESEND_FROM: ${RESEND_FROM}
+      TZ: America/Sao_Paulo
+    volumes:
+      # Hot reload: mapeia o código fonte. node_modules/.next ficam isolados.
+      - ../backend:/app
+      - /app/node_modules
+    expose:
+      - "4001"
+    ports:
+      - "${BACKEND_PORT:-4001}:4001"
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - kore-tech-net
+
+  # ---------------------------------------------------------------------------
+  # Frontend (Next.js — loja)  —  interno 3001
+  # ---------------------------------------------------------------------------
+  frontend:
+    <<: *env-default
+    build:
+      context: ../frontend
+      dockerfile: Dockerfile.dev
+    container_name: kore-tech-frontend
+    restart: unless-stopped
+    environment:
+      NODE_ENV: development
+      # SSR/RSC fala com backend pela rede interna do compose
+      INTERNAL_API_URL: http://backend:4001
+      # Browser fala com a API via nginx (subdomínio) OU diretamente em localhost:4001
+      NEXT_PUBLIC_API_URL: ${NEXT_PUBLIC_API_URL:-http://localhost:4001}
+      NEXT_PUBLIC_SITE_URL: ${NEXT_PUBLIC_SITE_URL:-http://localhost:3001}
+      NEXT_PUBLIC_DASHBOARD_URL: ${NEXT_PUBLIC_DASHBOARD_URL:-http://localhost:3002}
+      NEXT_PUBLIC_WHATSAPP_NUMBER: ${NEXT_PUBLIC_WHATSAPP_NUMBER:-5511999999999}
+      WATCHPACK_POLLING: 'true'
+    volumes:
+      - ../frontend:/app
+      - /app/node_modules
+      - /app/.next
+    expose:
+      - "3001"
+    ports:
+      - "${FRONTEND_PORT:-3001}:3001"
+    depends_on:
+      - backend
+    networks:
+      - kore-tech-net
+
+  # ---------------------------------------------------------------------------
+  # Dashboard (Next.js — painel admin)  —  interno 3002
+  # ---------------------------------------------------------------------------
+  dashboard:
+    <<: *env-default
+    build:
+      context: ../dashboard
+      dockerfile: Dockerfile.dev
+    container_name: kore-tech-dashboard
+    restart: unless-stopped
+    environment:
+      NODE_ENV: development
+      INTERNAL_API_URL: http://backend:4001
+      NEXT_PUBLIC_API_URL: ${NEXT_PUBLIC_API_URL:-http://localhost:4001}
+      NEXT_PUBLIC_SITE_URL: ${NEXT_PUBLIC_SITE_URL:-http://localhost:3001}
+      WATCHPACK_POLLING: 'true'
+    volumes:
+      - ../dashboard:/app
+      - /app/node_modules
+      - /app/.next
+    expose:
+      - "3002"
+    ports:
+      - "${DASHBOARD_PORT:-3002}:3002"
+    depends_on:
+      - backend
+    networks:
+      - kore-tech-net
+
+  # ---------------------------------------------------------------------------
+  # Nginx (reverse proxy — subdomínios .test)  —  HOST 8081 -> 80
+  # ---------------------------------------------------------------------------
+  nginx:
+    image: nginx:1.27-alpine
+    container_name: kore-tech-nginx
+    restart: unless-stopped
+    ports:
+      - "${NGINX_PORT:-8081}:80"
+    volumes:
+      - ./nginx/conf.d:/etc/nginx/conf.d:ro
+    depends_on:
+      - backend
+      - frontend
+      - dashboard
+    networks:
+      - kore-tech-net
+
+# -----------------------------------------------------------------------------
+# Volumes persistentes (nome qualificado pra não conflitar com Miami)
+# -----------------------------------------------------------------------------
+volumes:
+  kore_tech_postgres_data:
+    driver: local
+
+# -----------------------------------------------------------------------------
+# Network interna (isolada do Miami)
+# -----------------------------------------------------------------------------
+networks:
+  kore-tech-net:
+    driver: bridge
