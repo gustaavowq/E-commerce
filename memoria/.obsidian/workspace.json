@@ -11,10 +11,14 @@
             "id": "3613108156b21be8",
             "type": "leaf",
             "state": {
-              "type": "graph",
-              "state": {},
-              "icon": "lucide-git-fork",
-              "title": "Visualização em gráfico"
+              "type": "markdown",
+              "state": {
+                "file": "30-LICOES/14-zustand-persist-race.md",
+                "mode": "source",
+                "source": false
+              },
+              "icon": "lucide-file",
+              "title": "14-zustand-persist-race"
             }
           }
         ]
