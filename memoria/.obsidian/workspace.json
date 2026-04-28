@@ -179,8 +179,13 @@
       "bases:Criar nova base": false
     }
   },
-  "active": "3519c92cfc801e53",
+  "active": "3613108156b21be8",
   "lastOpenFiles": [
+    "30-LICOES/23-sub-agents-token-limit.md",
+    "30-LICOES/22-css-layer-com-import.md",
+    "50-PADROES/validar-visual-antes-de-fechar.md",
+    "30-LICOES/21-truncate-precisa-block.md",
+    "Sem título.canvas",
     "crie um link.md",
     "00-INICIO.md.tmp.3884.1777347602721",
     "50-PADROES/seed-imagens-upsert.md",
@@ -194,7 +199,6 @@
     "50-PADROES/auth-flow.md",
     "50-PADROES/docker-compose-template.md",
     "30-LICOES/01-jwt-secret-placeholder.md",
-    "Sem título.canvas",
     "00-INICIO.md",
     "50-PADROES/prisma-models-base.md",
     "10-PLAYBOOKS/bug-bash-ux.md",
@@ -205,10 +209,6 @@
     "20-DECISOES/estrutura-pastas.md",
     "20-DECISOES/seguranca-padrao.md",
     "30-LICOES/09-vercel-application-preset.md",
-    "20-DECISOES/stack.md",
-    "30-LICOES/08-tsbuildinfo-gitignore.md",
-    "30-LICOES/07-cookie-domain-railway.md",
-    "30-LICOES/06-env-files-multiplos.md",
     "70-NICHOS",
     "60-DEPLOY",
     "50-PADROES",

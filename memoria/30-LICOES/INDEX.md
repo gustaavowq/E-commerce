@@ -32,6 +32,9 @@
 | 19 | [[19-repo-dedicado-por-projeto]] | LATENTE — monorepo subpath é frágil |
 | 20 | [[20-validar-shape-backend]] | META-LIÇÃO — engloba 11/12/13 |
 | 21 | [[21-truncate-precisa-block]] | ~2 commits — `truncate` em `<span>` ignora ellipsis silenciosamente |
+| 22 | [[22-css-layer-com-import]] | ~3 commits — `@layer utilities` quebra quando arquivo importado via `@import` (PostCSS isolado) |
+| 23 | [[23-sub-agents-token-limit]] | LATENTE — sub-agents podem hit limite mid-task; recover via git stash |
+| 24 | [[24-redesign-visual-sozinho-nao-impressiona]] | META — admin precisa funcionalidades novas (Cmd+K, sort, insights), não só polish |
 
 ## Padrão de leitura
 
@@ -41,7 +44,7 @@ Cada lição tem:
 - **Fix** (código exato)
 - **Prevenção** (como NÃO repetir)
 
-## Top 4 lições META que valem ouro
+## Top 5 lições META que valem ouro
 
 1. **[[20-validar-shape-backend]]** — engloba boa parte dos bugs
    crash. Type ≠ prova. Sempre curl o endpoint antes de tipar.
@@ -54,3 +57,7 @@ Cada lição tem:
    visual do #1: bug de UI exige conferir com olho (preview/prod)
    antes de declarar fechado. Código que parece certo ≠ ellipsis
    rendendo. (Caso fundador: [[21-truncate-precisa-block]]).
+5. **[[24-redesign-visual-sozinho-nao-impressiona]]** — em admin/painel,
+   redesign visual SEM features novas é invisível. Pacote mínimo pra
+   "wow": Cmd+K palette + Smart Insights + sortable DataTable + period
+   comparison nos charts. Ver [[../50-PADROES/painel-admin-tier-1]].

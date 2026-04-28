@@ -55,6 +55,7 @@ Quando o cliente disser "vamos criar e-commerce de **[nicho]**", o Tech Lead:
 - **Login redirect inteligente** — toda ação que exige login passa por `/auth/login?redirect=<path>`. Ver [[50-PADROES/login-redirect-pattern]].
 - **Seed upsert real** — não `if (!existing)` ignorando trocas. Atualiza imagem/variation se diverge. Ver [[50-PADROES/seed-imagens-upsert]].
 - **Validar visual antes de fechar fix de UI** — bug de overflow/truncate/animação/posicionamento exige olho em devtools/preview antes do "tá pronto". Não confiar em "o código parece certo". Ver [[50-PADROES/validar-visual-antes-de-fechar]].
+- **Painel admin = visual + funcionalidades** — polish puro não impressiona; precisa Cmd+K palette + Smart Insights + DataTable sortable + period comparison. Ver [[50-PADROES/painel-admin-tier-1]] (checklist completo de painel tier-1).
 
 ## Stack canônica (não muda sem pedido explícito)
 
