@@ -35,6 +35,7 @@
 | 22 | [[22-css-layer-com-import]] | ~3 commits — `@layer utilities` quebra quando arquivo importado via `@import` (PostCSS isolado) |
 | 23 | [[23-sub-agents-token-limit]] | LATENTE — sub-agents podem hit limite mid-task; recover via git stash |
 | 24 | [[24-redesign-visual-sozinho-nao-impressiona]] | META — admin precisa funcionalidades novas (Cmd+K, sort, insights), não só polish |
+| 25 | [[25-vercel-deploy-quota]] | ~6h espera — Vercel free tier tem 100 deploys/dia, batch de agents bate quota |
 
 ## Padrão de leitura
 
