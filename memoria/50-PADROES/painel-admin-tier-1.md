@@ -120,11 +120,65 @@ Em todo novo e-commerce do framework, painel admin DEVE ter:
 - [ ] SmartInsights (4 cards auto-gerados)
 - [ ] RevenueChart com period overlay (atual + anterior tracejado)
 - [ ] TopCategorias com bar viz ordenável
-- [ ] DataTable v2 sortable + animateRows
+- [ ] DataTable v2 sortable + animateRows + onRowClick (pra slide-over)
 - [ ] Command palette Cmd+K
 - [ ] Skeleton shimmer (não pulse genérico)
 - [ ] Page transitions via template.tsx
 - [ ] Live-dot pulse pra status indicators
+- [ ] **HourlyHeatmap** 7×24 com insight de pico automático
+- [ ] **CohortRetentionChart** D30/60/90 com insight de melhor cohort
+- [ ] **SlideOver Stripe-style** pra detalhe de pedido (e idealmente cliente/produto), 480px direita, sync `?selected=ID`, ESC + click-fora fecha
+- [ ] **FilterChips** stackable removíveis em todas listas (products, orders, customers)
+- [ ] Sonner toast (substitui Toast custom em painéis novos)
+- [ ] EmptyState com tone variants + admin-copy library (`src/lib/admin-copy.ts`)
+
+## Componentes Wave 3 (validados em 2026-04-28)
+
+### 11. HourlyHeatmap
+- Grid 7 linhas (dias) × 24 colunas (horas)
+- Cor proporcional ao volume (escala cyan: low → high)
+- Tooltip on hover com valores (ex: "Quarta · 14h · 8 pedidos · R$ 2.840")
+- Header com horas só de 4 em 4 pra não poluir
+- **Insight automático acima** detectando pico (ex: "Pico: terças entre 20h-22h, 38% dos pedidos")
+- onMouseEnter dispara `track('heatmap_explored')`
+- Skeleton shimmer + EmptyState com ADMIN_COPY
+
+### 12. CohortRetentionChart
+- Tabela visual coortes mensais (linhas) × D30/D60/D90 (colunas)
+- Coluna "Cohort size" antes das células
+- Cor por percentil: ≥20% verde / 10-20% cyan / <10% laranja / 0% surface
+- Hover row com `bg-surface-3`
+- **Insight automático**: detecta melhor cohort (ex: "Cohort de Fev/26 retém melhor: 28% volta em 30 dias")
+- Range mínimo 90d mesmo se period selecionado for menor (cohort precisa janela longa)
+
+### 13. OrderDetailSlideOver Stripe-style
+- Fixed right-0 top-0 h-screen w-[480px], `bg-bg`
+- Backdrop `bg-black/40 backdrop-blur-sm`
+- Spring entry stiffness=380 damping=40, x: 480→0
+- Header sticky: número + StatusBadge + close (X) + external-link pra rota completa
+- Body 4 seções: Cliente / Itens / Pagamento / Endereço
+- Footer sticky: Select de status (auto-mutate no change) + botão "Cancelar" (vermelho via ConfirmDialog)
+- Sync com URL via `?selected=ORDER_ID` (deep-link funciona)
+- ESC global + click backdrop fecham
+- Reusa endpoints de `/orders/[id]/page.tsx` (mesma queryKey pra invalidação compartilhada)
+- DataTable expandido com prop `onRowClick` (additive, não-breaking)
+
+### 14. FilterChips reusable
+- AnimatePresence inner (chips entry/exit) + outer (linha some quando 0 chips)
+- Chip: `inline-flex h-7 items-center gap-1.5 rounded-pill bg-surface-2 px-2.5 text-xs`
+- Botão X com hover bg-surface-3
+- "Limpar filtros" à direita com lucide XCircle
+- Transition 200ms ease-kore + scale 0.9→1
+- Each chip = `{ key, label, value, onRemove }`
+- `useReducedMotion` short-circuit
+
+## Padrão de coordenação multi-agent (lição Wave 3)
+
+Pra wave de N features paralelas no mesmo repo:
+- Despacha agents que tocam em arquivos DISJUNTOS
+- Quando 2 agents podem tocar mesmo arquivo, pede ao último que pushar fazer `git pull --rebase` antes de retry
+- `git add <files-específicos>` por agent — nunca `git add -A` (preserva trabalho de outros)
+- Item cross-file (ex: FilterChips em 3 listas) é melhor distribuído: 2 listas pro agent-componente, 1 lista pro main thread após convergência
 
 ## Padrões relacionados
 - [[validar-visual-antes-de-fechar]] — testar com olho humano
