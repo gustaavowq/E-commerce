@@ -1,10 +1,21 @@
 # 🧠 Memória Operacional — E-Commerce Multi-Agent
 
 > Aprendizado consolidado dos projetos **Miami Store** (lições 1-10) +
-> **Kore Tech** (lições 11-20) + framework reusável pra qualquer
+> **Kore Tech** (lições 11-26) + framework reusável pra qualquer
 > próximo e-commerce.
 >
-> Última atualização: 2026-04-28 (pós Kore Tech).
+> Última atualização: 2026-04-28 (pós Kore Tech mobile audit + saga Dados Inválidos).
+
+## 🔥 LEITURAS OBRIGATÓRIAS pra qualquer projeto novo
+
+Antes de começar QUALQUER coisa, ler na ordem:
+
+1. **[[10-PLAYBOOKS/NOVO-ECOMMERCE]]** — playbook v2.0 com regras não-negociáveis
+2. **[[50-PADROES/MOBILE-FIRST]]** — anti-Lovable, 27 pontos de audit
+3. **[[50-PADROES/UX-UI-QUALIDADE]]** — distância máxima do Lovable (botões, forms, erros)
+4. **[[50-PADROES/DESIGN-PROFISSIONAL]]** — depth pack + active underline (Awwwards-tier)
+5. **[[30-LICOES/ERROS-CRITICOS]]** — top dos críticos + saga Dados Inválidos
+6. **[[VALOR-ENTREGUE]]** — case Kore Tech (R$ 38k-70k em 2 dias)
 
 ## Como usar essa memória
 
