@@ -17,7 +17,7 @@
 | 09 | [[09-vercel-application-preset]] | ~10 min — Vercel reseta preset ao mudar Root Directory |
 | 10 | [[10-suggested-variables-railway]] | CRÍTICO — Railway sugere placeholders inseguros |
 
-## Kore Tech (lições 11–20)
+## Kore Tech (lições 11–21)
 
 | # | Lição | Custo de descoberta |
 |---|---|---|
@@ -31,6 +31,7 @@
 | 18 | [[18-seed-imagens-upsert]] | ~30 min — URL nova de imagem ignorada em re-runs |
 | 19 | [[19-repo-dedicado-por-projeto]] | LATENTE — monorepo subpath é frágil |
 | 20 | [[20-validar-shape-backend]] | META-LIÇÃO — engloba 11/12/13 |
+| 21 | [[21-truncate-precisa-block]] | ~2 commits — `truncate` em `<span>` ignora ellipsis silenciosamente |
 
 ## Padrão de leitura
 
@@ -40,7 +41,7 @@ Cada lição tem:
 - **Fix** (código exato)
 - **Prevenção** (como NÃO repetir)
 
-## Top 3 lições META que valem ouro
+## Top 4 lições META que valem ouro
 
 1. **[[20-validar-shape-backend]]** — engloba boa parte dos bugs
    crash. Type ≠ prova. Sempre curl o endpoint antes de tipar.
@@ -49,3 +50,7 @@ Cada lição tem:
    source, paths longos, build cache).
 3. **[[14-zustand-persist-race]]** — flag `hydrated` é obrigatória em
    stores persist se houver redirect baseado no estado.
+4. **[[../50-PADROES/validar-visual-antes-de-fechar]]** — análogo
+   visual do #1: bug de UI exige conferir com olho (preview/prod)
+   antes de declarar fechado. Código que parece certo ≠ ellipsis
+   rendendo. (Caso fundador: [[21-truncate-precisa-block]]).

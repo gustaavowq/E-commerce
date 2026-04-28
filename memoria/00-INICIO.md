@@ -47,12 +47,14 @@ Quando o cliente disser "vamos criar e-commerce de **[nicho]**", o Tech Lead:
 8. **Repo dedicado por projeto > monorepo subpath** — auto-deploy Vercel/Railway funciona trivialmente. Ver [[30-LICOES/19-repo-dedicado-por-projeto]].
 9. **Zustand persist é assíncrono — flag `hydrated` é obrigatória** se houver redirect baseado no estado. Ver [[30-LICOES/14-zustand-persist-race]] + [[50-PADROES/zustand-persist-pattern]].
 10. **MercadoPago Pix tem 3 pré-requisitos** — env name + token PRODUCTION + chave Pix cadastrada na conta. Sem os 3, QR não gera. Ver [[30-LICOES/15-mercadopago-pix-pre-requisitos]].
+11. **Bug visual = validar com olho antes de declarar fechado** — `truncate` em `<span>` ignora ellipsis silenciosamente; CSS tem armadilhas que o código parece certo. Ver [[50-PADROES/validar-visual-antes-de-fechar]] + [[30-LICOES/21-truncate-precisa-block]].
 
 ### Padrões aprovados pelo cliente (Kore Tech)
 
 - **Animações respondem a ação** — sem cursor glow seguindo viewport, sem scroll-jacking, sem parallax forçado. Ver [[50-PADROES/motion-policies]].
 - **Login redirect inteligente** — toda ação que exige login passa por `/auth/login?redirect=<path>`. Ver [[50-PADROES/login-redirect-pattern]].
 - **Seed upsert real** — não `if (!existing)` ignorando trocas. Atualiza imagem/variation se diverge. Ver [[50-PADROES/seed-imagens-upsert]].
+- **Validar visual antes de fechar fix de UI** — bug de overflow/truncate/animação/posicionamento exige olho em devtools/preview antes do "tá pronto". Não confiar em "o código parece certo". Ver [[50-PADROES/validar-visual-antes-de-fechar]].
 
 ## Stack canônica (não muda sem pedido explícito)
 
