@@ -3,7 +3,10 @@
 > "Todo projeto novo nasce com mobile-first, audit obrigatório, zero toast genérico,
 > zero design Lovable. Awwwards-tier ou nada."
 
-Versão 2.0 do playbook após Kore Tech (2026-04-28). Substitui [kickoff-novo-ecommerce.md](./kickoff-novo-ecommerce.md) como **fonte primária**.
+> ⚠️ **Para EXECUÇÃO ordenada com gates**, ver **[[../05-PROCESSO/PROCESSO-MESTRE]]** (orquestrador).
+> Este playbook continua sendo referência narrativa das 8 fases.
+
+Versão 2.0 do playbook após Kore Tech (2026-04-28). Substitui [kickoff-novo-ecommerce.md](./kickoff-novo-ecommerce.md) como **fonte narrativa**. O **orquestrador** real com gates objetivos é [[../05-PROCESSO/PROCESSO-MESTRE]] + [[../05-PROCESSO/GATES]].
 
 ## ⚠️ REGRAS NÃO-NEGOCIÁVEIS
 

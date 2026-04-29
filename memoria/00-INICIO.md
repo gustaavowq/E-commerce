@@ -1,21 +1,35 @@
 # 🧠 Memória Operacional — E-Commerce Multi-Agent
 
 > Aprendizado consolidado dos projetos **Miami Store** (lições 1-10) +
-> **Kore Tech** (lições 11-26) + framework reusável pra qualquer
+> **Kore Tech** (lições 11-27) + framework reusável pra qualquer
 > próximo e-commerce.
 >
-> Última atualização: 2026-04-28 (pós Kore Tech mobile audit + saga Dados Inválidos).
+> Última atualização: 2026-04-29 (pós Kore Tech finalizado + processo industrial 05-PROCESSO).
+
+## 🚦 PROCESSO REDONDO — orquestrador único
+
+**Todo projeto novo começa por aqui:**
+
+1. **[[05-PROCESSO/PROCESSO-MESTRE]]** — visão das 8 fases + responsáveis + cross-links
+2. **[[05-PROCESSO/GATES]]** — critérios objetivos de saída (sem ✅ não passa)
+3. **[[05-PROCESSO/FASE-2-DESIGN]]**, **[[05-PROCESSO/FASE-3-BACKEND]]**, **[[05-PROCESSO/FASE-4-FRONTEND]]**, **[[05-PROCESSO/FASE-6-AUDITS]]** — denso, com snippets + checklist + anti-padrões
+4. **[[05-PROCESSO/DASHBOARD-TEMPLATE]]** — copia pra `projetos/[slug]/STATUS.md` no kickoff
+
+**Regra de ouro:** Tech-lead lê `PROCESSO-MESTRE` → despacha skills → valida `GATES` antes de cada avanço. Pular gate = `// DEBT: gate X.Y skipped` no commit + sweep antes do gate 8.
 
 ## 🔥 LEITURAS OBRIGATÓRIAS pra qualquer projeto novo
 
 Antes de começar QUALQUER coisa, ler na ordem:
 
-1. **[[10-PLAYBOOKS/NOVO-ECOMMERCE]]** — playbook v2.0 com regras não-negociáveis
-2. **[[50-PADROES/MOBILE-FIRST]]** — anti-Lovable, 27 pontos de audit
-3. **[[50-PADROES/UX-UI-QUALIDADE]]** — distância máxima do Lovable (botões, forms, erros)
-4. **[[50-PADROES/DESIGN-PROFISSIONAL]]** — depth pack + active underline (Awwwards-tier)
-5. **[[30-LICOES/ERROS-CRITICOS]]** — top dos críticos + saga Dados Inválidos
-6. **[[VALOR-ENTREGUE]]** — case Kore Tech (R$ 38k-70k em 2 dias)
+1. **[[05-PROCESSO/PROCESSO-MESTRE]]** — orquestrador (NOVO)
+2. **[[05-PROCESSO/GATES]]** — régua objetiva (NOVO)
+3. **[[10-PLAYBOOKS/NOVO-ECOMMERCE]]** — playbook v2.0 (referência narrativa)
+4. **[[50-PADROES/MOBILE-FIRST]]** — anti-Lovable, 27 pontos de audit
+5. **[[50-PADROES/UX-UI-QUALIDADE]]** — distância máxima do Lovable
+6. **[[50-PADROES/DESIGN-PROFISSIONAL]]** — depth pack cinematic
+7. **[[50-PADROES/auth-pattern-completo]]** — auth backend+frontend consolidado (NOVO)
+8. **[[30-LICOES/ERROS-CRITICOS]]** — top dos críticos + saga Dados Inválidos
+9. **[[VALOR-ENTREGUE]]** — case Kore Tech (R$ 38k-70k em 3 dias)
 
 ## Como usar essa memória
 
@@ -33,6 +47,7 @@ Quando o cliente disser "vamos criar e-commerce de **[nicho]**", o Tech Lead:
 
 | Pasta | Quando consultar |
 |---|---|
+| [[05-PROCESSO]] | **Orquestrador**. Fases, gates, dashboard de projeto, docs densos por fase |
 | [[10-PLAYBOOKS]] | Sequências de execução prontas (kickoff, deploy, security, bugbash) |
 | [[20-DECISOES]] | Stack, padrões de auth, deploy, env vars, estrutura de pastas |
 | [[30-LICOES]] | Bugs e armadilhas que já enfrentamos (NÃO repetir) |
