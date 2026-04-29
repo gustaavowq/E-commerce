@@ -42,9 +42,11 @@ Thumbs.db
 *.swp
 
 # --- Claude Code (preferências locais não vão pro repo, mas skills sim) ---
-.claude/
-!.claude/skills/
-!.claude/skills/**
+# Truque: ignorar CONTEÚDO de .claude/ (não a pasta inteira) pra exceções
+# de skills/ funcionarem. Se ignorar `.claude/`, git nem entra na pasta.
+/.claude/*
+!/.claude/skills/
+!/.claude/skills/**
 
 # --- Apps locais que o user instalou na pasta (NÃO commit binários) ---
 # (legado: a regra cobria outros/Obsidian/ — pasta extinta em 2026-04-29)

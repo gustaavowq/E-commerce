@@ -37,6 +37,24 @@
 | 24 | [[24-redesign-visual-sozinho-nao-impressiona]] | META — admin precisa funcionalidades novas (Cmd+K, sort, insights), não só polish |
 | 25 | [[25-vercel-deploy-quota]] | ~6h espera — Vercel free tier tem 100 deploys/dia, batch de agents bate quota |
 | 26 | [[26-dados-invalidos-silencioso]] | CRÍTICO — 3h de fixes errados. "Dados inválidos" sem detalhe quando frontend manda campo write com shape de read. `.strict()` + formErrors descartado pelo middleware = invisível. |
+| 27 | [[27-scroll-behavior-smooth-mata-mouse-roda]] | UX — `scroll-behavior: smooth` global mata mouse de roda. Nunca em html/body. |
+| 28 | [[28-botao-nao-pega-click]] | UX CRÍTICO — botão parece clicar e não clica. Hitbox/overlay/motion sem pointer-events/`<button>` em `<a>`. |
+| 29 | [[29-auth-cross-device]] | CRÍTICO — auth funciona no PC do dev, falha no PC do cliente. Cookie SameSite/trust proxy/CSP/in-app browser. Caso fundador: patrão. |
+| 30 | [[30-diagnosticar-antes-de-fixar]] | META — bug repetido 2x após "fix" = diagnóstico errado. Pare, despache QA. |
+| 31 | [[31-tipos-write-read-separados]] | CRUD — sempre `XxxWritePayload` separado de `XxxDetail`. Nunca `Partial<Detail>` em PATCH. |
+| 32 | [[32-iteracao-em-camadas-curtas]] | META — 1 fix = 1 commit = 1 push = 1 validação. Sem batches gigantes. |
+| 33 | [[33-design-tipo-lovable-vetado]] | DESIGN — sem hero "Build the future", sem 3 USP cards, sem cursor glow. POV não template. |
+
+## Padrões 50-PADROES novos (2026-04-29)
+
+- [[../50-PADROES/anti-animacoes-invasivas]] — lista negra de animações que viram vibe IA.
+- [[../50-PADROES/copy-anti-IA]] — sem travessão, sem "Build the future", regras duras de voz.
+- [[../50-PADROES/demo-seed-completo]] — todo produto com foto/estoque/preço/specs.
+
+## Playbooks 10-PLAYBOOKS novos
+
+- [[../10-PLAYBOOKS/auth-cross-device-smoke]] — matriz obrigatória pré-deploy.
+- [[../10-PLAYBOOKS/kickoff-iteracao]] — bug-bash em prod ANTES de codar feature nova.
 
 ## Padrão de leitura
 
@@ -46,20 +64,22 @@ Cada lição tem:
 - **Fix** (código exato)
 - **Prevenção** (como NÃO repetir)
 
-## Top 5 lições META que valem ouro
+## Top 7 lições META que valem ouro
 
 1. **[[20-validar-shape-backend]]** — engloba boa parte dos bugs
    crash. Type ≠ prova. Sempre curl o endpoint antes de tipar.
-2. **[[19-repo-dedicado-por-projeto]]** — repo dedicado por projeto
+2. **[[30-diagnosticar-antes-de-fixar]]** — bug repetido 2x = diagnóstico
+   errado. Pare de empilhar fixes. Despache QA pra reproduzir.
+3. **[[32-iteracao-em-camadas-curtas]]** — 1 fix = 1 commit = 1 push = 1
+   validação. Cada camada testável e revertível.
+4. **[[19-repo-dedicado-por-projeto]]** — repo dedicado por projeto
    resolve 4 problemas simultaneamente (Vercel auto-deploy, Railway
    source, paths longos, build cache).
-3. **[[14-zustand-persist-race]]** — flag `hydrated` é obrigatória em
+5. **[[14-zustand-persist-race]]** — flag `hydrated` é obrigatória em
    stores persist se houver redirect baseado no estado.
-4. **[[../50-PADROES/validar-visual-antes-de-fechar]]** — análogo
+6. **[[../50-PADROES/validar-visual-antes-de-fechar]]** — análogo
    visual do #1: bug de UI exige conferir com olho (preview/prod)
-   antes de declarar fechado. Código que parece certo ≠ ellipsis
-   rendendo. (Caso fundador: [[21-truncate-precisa-block]]).
-5. **[[24-redesign-visual-sozinho-nao-impressiona]]** — em admin/painel,
-   redesign visual SEM features novas é invisível. Pacote mínimo pra
-   "wow": Cmd+K palette + Smart Insights + sortable DataTable + period
-   comparison nos charts. Ver [[../50-PADROES/painel-admin-tier-1]].
+   antes de declarar fechado. (Caso fundador: [[21-truncate-precisa-block]]; ver também [[28-botao-nao-pega-click]]).
+7. **[[33-design-tipo-lovable-vetado]]** — design é POV, não template.
+   Sem hero "Build the future", sem 3 USP cards icônicos, sem cursor
+   glow. Apple/Linear references.
