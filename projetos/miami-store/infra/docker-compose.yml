@@ -3,8 +3,8 @@
 # Mantido pelo DevOps (Agente 05).
 #
 # Como rodar:
-#   1. Na raiz do repo, copie .env.example -> .env e ajuste valores
-#   2. cd src/infra
+#   1. Em projetos/miami-store/, copie .env.example -> .env e ajuste valores
+#   2. cd projetos/miami-store/infra
 #   3. docker compose up
 #
 # Serviços ativos no Sprint 1:
@@ -19,13 +19,13 @@
 
 name: miami-store
 
-# .env mora na raiz do repo. Cada serviço importa via env_file.
-# Isso permite rodar "docker compose up" de dentro de src/infra/ sem precisar
-# do flag --env-file, mantendo um único .env compartilhado pelo monorepo.
+# .env mora em projetos/miami-store/ (junto do código da loja, não no root).
+# Isso permite rodar "docker compose up" de dentro de projetos/miami-store/infra/
+# sem precisar do flag --env-file, mantendo um único .env por projeto.
 
 x-env: &env-default
   env_file:
-    - ../../.env
+    - ../.env
 
 services:
   # ---------------------------------------------------------------------------

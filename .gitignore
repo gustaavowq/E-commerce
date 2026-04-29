@@ -28,9 +28,9 @@ coverage/
 .nyc_output/
 
 # --- Prisma ---
-src/backend/prisma/migrations/migration_lock.toml.local
-src/backend/prisma/dev.db
-src/backend/prisma/dev.db-journal
+projetos/miami-store/backend/prisma/migrations/migration_lock.toml.local
+projetos/miami-store/backend/prisma/dev.db
+projetos/miami-store/backend/prisma/dev.db-journal
 
 # --- Editor / OS ---
 .vscode/
@@ -53,8 +53,8 @@ outros/Obsidian/
 *.local.yml
 
 # --- Assets baixados (referência interna, NÃO versionar Instagram) ---
-assets/miami-instagram/gallery-dl/
-assets/miami-instagram/instaloader/
+projetos/miami-store/assets/miami-instagram/gallery-dl/
+projetos/miami-store/assets/miami-instagram/instaloader/
 
 # --- Python (instaloader/gallery-dl tooling) ---
 __pycache__/
