@@ -14,12 +14,13 @@ ecommerce-agents/
 │
 ├── .claude/skills/       ← 9 skills (1 por agente Senior)
 ├── memoria/              ← decisões, lições, playbooks, padrões, nichos
-├── outros/               ← shared/messages, docs técnicas, scripts
 └── projetos/
     └── miami-store/      ← projeto auto-contido
         ├── README.md         ← como rodar este projeto
         ├── DEPLOY.md         ← Railway + Vercel passo-a-passo
         ├── .env / .env.example
+        ├── messages/         ← canal entre agentes (DE-X_PARA-Y_*.md)
+        ├── scripts/          ← scripts auxiliares (setup-hosts.ps1)
         ├── backend/          ← Express + Prisma + JWT
         ├── frontend/         ← Next.js 14 (loja)
         ├── dashboard/        ← Next.js 14 (painel admin)

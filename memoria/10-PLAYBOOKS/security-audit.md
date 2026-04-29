@@ -50,7 +50,7 @@ Igual fizemos no Miami Store. Cada agente cobre uma frente.
 
 ## Brief pro time
 
-Mensagem em `outros/shared/messages/DE-techlead_PARA-todos_<data>-security-audit.md`:
+Mensagem em `projetos/[slug]/messages/DE-techlead_PARA-todos_<data>-security-audit.md`:
 
 ```markdown
 # Security audit pré-deploy

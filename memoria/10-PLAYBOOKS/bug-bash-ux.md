@@ -12,7 +12,7 @@
 
 ## Brief pro investigador
 
-Mensagem em `outros/shared/messages/DE-techlead_PARA-frontend-qa_<data>-bug-bash.md`:
+Mensagem em `projetos/[slug]/messages/DE-techlead_PARA-frontend-qa_<data>-bug-bash.md`:
 
 ```markdown
 # Varredura UX — loja + painel

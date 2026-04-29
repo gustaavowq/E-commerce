@@ -32,7 +32,7 @@ Antes de criar/atualizar `services/X.ts`:
    curl https://<backend>/products/<slug> | jq
    ```
 2. **Cole o JSON num comentário acima do type** (ou em
-   `outros/api-shapes/[endpoint].json`):
+   `projetos/[slug]/api-shapes/[endpoint].json`):
    ```ts
    // Shape retornado por GET /products/:slug (validado 2026-04-28):
    // { id: string, slug: string, category: { id, slug, name },

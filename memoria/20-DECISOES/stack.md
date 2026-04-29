@@ -77,7 +77,7 @@ projeto/
 │
 ├── projetos/               ← docs por cliente (miami-store é o 1º)
 │
-├── outros/shared/messages/ ← canal de comunicação entre agentes
+├── projetos/[slug]/messages/ ← canal de comunicação entre agentes
 │
 └── src/
     ├── backend/             ← Express + Prisma

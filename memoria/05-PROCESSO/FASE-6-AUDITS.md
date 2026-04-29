@@ -52,7 +52,7 @@ Gate de saída: [[GATES#Gate 6 — Audits 3 vetores]].
 - [ ] **0 críticos**
 - [ ] **0 altos**
 - [ ] Médios documentados em `30-LICOES/` ou aceitos com justificativa
-- [ ] Relatório consolidado em `outros/shared/messages/DE-qa_PARA-techlead_AAAA-MM-DD-pentest.md`
+- [ ] Relatório consolidado em `projetos/[slug]/messages/DE-qa_PARA-techlead_AAAA-MM-DD-pentest.md`
 
 ### Audit 2 — Mobile 27-pt
 
@@ -91,7 +91,7 @@ NÃO escreve código. Só reporta.
 ```
 
 #### Critérios (gate 6.2)
-- [ ] Audit rodado, output em `outros/shared/messages/DE-qa_PARA-techlead_AAAA-MM-DD-mobile-27pt.md`
+- [ ] Audit rodado, output em `projetos/[slug]/messages/DE-qa_PARA-techlead_AAAA-MM-DD-mobile-27pt.md`
 - [ ] **0 críticos**
 - [ ] Top 5 altos atacados antes de deploy
 - [ ] Validação visual em mobile real OU DevTools "Toggle device toolbar" 375px
@@ -124,7 +124,7 @@ Reuso de [[../10-PLAYBOOKS/bug-bash-ux]]. Smoke completo em loja + painel.
 - [ ] **Toast genérico "Dados inválidos"** sem detalhe = bug
 
 #### Critérios (gate 6.3)
-- [ ] Relatório em `outros/shared/messages/DE-qa_PARA-techlead_AAAA-MM-DD-bug-bash.md`
+- [ ] Relatório em `projetos/[slug]/messages/DE-qa_PARA-techlead_AAAA-MM-DD-bug-bash.md`
 - [ ] **0 críticos**
 - [ ] Altos atacados ou aceitos com justificativa documentada
 
@@ -135,7 +135,7 @@ Reuso de [[GATES#Gate 6 — Audits 3 vetores]].
 - [ ] Pentest 3 vetores verde
 - [ ] Mobile 27-pt verde
 - [ ] Bug-bash UX verde
-- [ ] 3 relatórios em `outros/shared/messages/`
+- [ ] 3 relatórios em `projetos/[slug]/messages/`
 - [ ] Tech-lead consolidou e marcou débitos pendentes
 
 ## 🤖 Como despachar audits em paralelo

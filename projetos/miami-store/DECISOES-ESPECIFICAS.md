@@ -110,7 +110,7 @@ Admin painel:
 
 - [`memoria/`](../../memoria/00-INICIO.md) — toda memória reusável
 - [`.claude/skills/ecommerce-*/`](../../.claude/skills/) — 9 skills do Claude Code (agentes)
-- [`outros/shared/messages/`](../../outros/shared/messages/) — comunicação entre agentes (mensagens do projeto)
+- [`projetos/[slug]/messages/`](../../projetos/[slug]/messages/) — comunicação entre agentes (mensagens do projeto)
 
 ## O que é única do Miami Store (NÃO copia direto pro próximo)
 

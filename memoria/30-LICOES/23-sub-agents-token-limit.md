@@ -7,7 +7,7 @@ Sub-agent dispatchado via Task tool retorna sumário curto:
 You've hit your limit · resets 2:40am (America/Sao_Paulo)
 ```
 
-E não posta a mensagem final esperada em `outros/shared/messages/`. **Mas pode ter deixado código no working tree** antes de bater o limite.
+E não posta a mensagem final esperada em `projetos/[slug]/messages/`. **Mas pode ter deixado código no working tree** antes de bater o limite.
 
 ## Causa raiz
 

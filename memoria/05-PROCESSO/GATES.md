@@ -205,7 +205,7 @@ Detalhes em [[FASE-4-FRONTEND]].
 
 ## Gate 6 — Audits 3 vetores
 
-**Output:** 3 relatórios verdes em `outros/shared/messages/`.
+**Output:** 3 relatórios verdes em `projetos/[slug]/messages/`.
 
 ### Audit 1: Security (pentest OWASP)
 - [ ] **3 pentesters paralelos despachados** (backend, frontend, infra)

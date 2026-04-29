@@ -226,7 +226,7 @@ Add-Content -Path "$env:windir\System32\drivers\etc\hosts" -Value "127.0.0.1 {{s
 echo "127.0.0.1 {{slug}}.test admin.{{slug}}.test api.{{slug}}.test" | sudo tee -a /etc/hosts
 ```
 
-Script automatizado em `outros/scripts/setup-hosts.ps1` (Miami Store).
+Script automatizado em `projetos/[slug]/scripts/setup-hosts.ps1` (Miami Store).
 
 ### `.env` na raiz
 

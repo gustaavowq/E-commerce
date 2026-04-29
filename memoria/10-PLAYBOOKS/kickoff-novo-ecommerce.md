@@ -102,9 +102,9 @@ Tech Lead executa **sem perguntar**:
 7. Schema Prisma base ([[50-PADROES/prisma-models-base]]) + customizações do [[70-NICHOS|template do nicho]]
 8. Frontend boilerplate: Next.js 14 + Tailwind + cores da marca + Header com nav (Início/Loja/Sobre/Contato)
 9. Dashboard boilerplate: mesmo Next.js + Sidebar + páginas vazias por enquanto
-10. Cria `outros/shared/messages/` com mensagem inicial do Tech Lead pro time
+10. Cria `projetos/[slug]/messages/` com mensagem inicial do Tech Lead pro time
 
-## Fase 2 — Brief pra equipe (1 mensagem em `outros/shared/messages/`)
+## Fase 2 — Brief pra equipe (1 mensagem em `projetos/[slug]/messages/`)
 
 Template:
 
@@ -160,7 +160,7 @@ Stack, auth, deploy, segurança, estrutura — ver memoria/20-DECISOES.
 
 Cada agente trabalha em paralelo no seu escopo. Tech Lead:
 - Não interrompe
-- Lê mensagens em `outros/shared/messages/` quando recebem update
+- Lê mensagens em `projetos/[slug]/messages/` quando recebem update
 - Resolve bloqueios cross-time imediatamente
 
 ## Fase 4 — Integração + bug bash (~30min)

@@ -23,7 +23,7 @@ Resumo da sequência:
 1. **Pesquisa o nicho autonomamente** (Fase 0 — WebSearch + WebFetch, 10-25min) e escreve em `projetos/[slug]/PESQUISA-NICHO.md`
 2. **Apresenta proposta validada** ao cliente (Fase 0.5 — não interrogatório)
 3. Cliente confirma + fornece nome/logo/cores/contas
-4. Cria estrutura em `projetos/[slug]/` (docs + código), posta brief em `outros/shared/messages/`
+4. Cria estrutura em `projetos/[slug]/` (docs + código), posta brief em `projetos/[slug]/messages/`
 5. Dispara as 8 outras skills em paralelo (`ecommerce-backend`, `ecommerce-designer`, etc)
 6. Roda security audit + bug bash
 7. Deploy via `memoria/60-DEPLOY/railway-passo-a-passo.md` + `vercel-passo-a-passo.md`
@@ -57,7 +57,7 @@ Cada SKILL.md lista:
 
 ## Estrutura
 
-**Regra de ouro:** root tem só 3 arquivos (`.gitignore`, `README.md`, `CLAUDE.md` — exigidos pelas ferramentas) + 4 pastas. **Tudo de cada projeto vive dentro de `projetos/[slug]/`** — código, docs, `.env`, `DEPLOY.md`, brand-brief, jornada. Não existe `src/` no root.
+**Regra de ouro:** root tem só 3 arquivos (`.gitignore`, `README.md`, `CLAUDE.md` — exigidos pelas ferramentas) + 3 pastas. **Tudo de cada projeto vive dentro de `projetos/[slug]/`** — código, docs, `.env`, `DEPLOY.md`, brand-brief, jornada, mensagens entre agentes. Não existe `src/` ou `outros/` no root.
 
 ```
 ecommerce-agents/
@@ -67,7 +67,6 @@ ecommerce-agents/
 │
 ├── .claude/skills/               ← 9 skills (ecommerce-*) — fonte única dos agentes
 ├── memoria/                      ← knowledge base reusável (decisões, lições, padrões)
-├── outros/                       ← shared/messages, docs técnicas, scripts
 └── projetos/
     └── miami-store/              ← cada projeto = uma pasta auto-contida
         ├── README.md             ← visão geral do projeto
@@ -78,8 +77,11 @@ ecommerce-agents/
         ├── .env                  ← segredos (não commitado)
         ├── .env.example          ← template
         ├── brand-brief.md
+        ├── api-contracts.md      ← contratos de API
         ├── design/               ← logo, tokens
         ├── assets/
+        ├── messages/             ← canal entre agentes (DE-X_PARA-Y_*.md)
+        ├── scripts/              ← setup-hosts.ps1 etc
         ├── backend/              ← Express + Prisma + JWT
         ├── frontend/             ← Next.js 14 (loja)
         ├── dashboard/            ← Next.js 14 (painel admin)
@@ -102,7 +104,7 @@ Detalhes em `memoria/20-DECISOES/stack.md`.
 
 ## Comunicação entre agentes
 
-Mensagens em `outros/shared/messages/` no formato:
+Mensagens em `projetos/[slug]/messages/` no formato:
 
 ```
 DE-{agente}_PARA-{agente}_YYYY-MM-DD-{topico}.md

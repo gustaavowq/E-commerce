@@ -47,7 +47,7 @@ Thumbs.db
 !.claude/skills/**
 
 # --- Apps locais que o user instalou na pasta (NÃO commit binários) ---
-outros/Obsidian/
+# (legado: a regra cobria outros/Obsidian/ — pasta extinta em 2026-04-29)
 
 # --- Docker ---
 *.local.yml

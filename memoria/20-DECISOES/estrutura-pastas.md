@@ -23,12 +23,6 @@ ecommerce-agents/
 │
 ├── memoria/                     ← knowledge base persistente (essa pasta)
 │
-├── outros/                      ← shared/messages, docs técnicas, scripts
-│   ├── shared/messages/         ← canal de comunicação entre agentes
-│   │   └── DE-{agente}_PARA-{agente}_YYYY-MM-DD-{topico}.md
-│   ├── docs/                    ← contratos de API, ADRs
-│   └── scripts/                 ← setup-hosts.ps1, etc
-│
 └── projetos/                    ← um projeto por subpasta, auto-contido
     └── miami-store/
         ├── README.md            ← visão geral, status, URLs
@@ -39,8 +33,11 @@ ecommerce-agents/
         ├── .env                 ← segredos do projeto (gitignored)
         ├── .env.example
         ├── brand-brief.md
+        ├── api-contracts.md     ← contratos REST do backend
         ├── design/              ← logo, tokens, mood
         ├── assets/              ← imagens da marca
+        ├── messages/            ← canal entre agentes (DE-X_PARA-Y_*.md)
+        ├── scripts/             ← setup-hosts.ps1, etc
         │
         ├── backend/             ← Express + Prisma
         │   ├── Dockerfile           ← prod multi-stage
@@ -80,9 +77,9 @@ ecommerce-agents/
 
 ## Princípios
 
-1. **Root mínimo.** Só os 3 arquivos exigidos pelas ferramentas (`.gitignore`, `README.md`, `CLAUDE.md`) + 4 pastas (`.claude/`, `memoria/`, `outros/`, `projetos/`). Nada solto.
-2. **Projeto auto-contido.** Tudo do projeto vive dentro da pasta dele — incluindo `.env`, `DEPLOY.md`, brand-brief. Quem clica em `projetos/miami-store/` vê o projeto inteiro.
-3. **Framework reusável fora do projeto.** Skills (`.claude/skills/`), memória (`memoria/`) e canais (`outros/shared/messages/`) servem qualquer projeto.
+1. **Root mínimo.** Só os 3 arquivos exigidos pelas ferramentas (`.gitignore`, `README.md`, `CLAUDE.md`) + 3 pastas (`.claude/`, `memoria/`, `projetos/`). Nada solto.
+2. **Projeto auto-contido.** Tudo do projeto vive dentro da pasta dele — incluindo `.env`, `DEPLOY.md`, brand-brief, mensagens entre agentes, scripts auxiliares. Quem clica em `projetos/miami-store/` vê o projeto inteiro.
+3. **Framework reusável fora do projeto.** Skills (`.claude/skills/`) e memória (`memoria/`) servem qualquer projeto. Mensagens entre agentes ficam dentro de cada projeto (`projetos/[slug]/messages/`), porque são logs daquele projeto específico.
 4. **Docker-compose por projeto.** Cada `projetos/[slug]/infra/docker-compose.yml` é independente — nunca compartilhar containers entre projetos.
 
 ## Como criar projeto novo
