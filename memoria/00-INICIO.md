@@ -1,10 +1,11 @@
 # 🧠 Memória Operacional — E-Commerce Multi-Agent
 
 > Aprendizado consolidado dos projetos **Miami Store** (lições 1-10) +
-> **Kore Tech** (lições 11-27) + framework reusável pra qualquer
-> próximo e-commerce.
+> **Kore Tech** (lições 11-27, projeto apagado 2026-04-29 — aprendizado preservado)
+> + framework reusável pra qualquer próximo e-commerce.
 >
-> Última atualização: 2026-04-29 (pós Kore Tech finalizado + processo industrial 05-PROCESSO).
+> Última atualização: 2026-04-29 (pós Kore Tech apagado a pedido do user; processo
+> industrial 05-PROCESSO consolidado; histórico completo em [[HISTORICO-KORE-TECH]]).
 
 ## 🚦 PROCESSO REDONDO — orquestrador único
 
@@ -30,6 +31,7 @@ Antes de começar QUALQUER coisa, ler na ordem:
 7. **[[50-PADROES/auth-pattern-completo]]** — auth backend+frontend consolidado (NOVO)
 8. **[[30-LICOES/ERROS-CRITICOS]]** — top dos críticos + saga Dados Inválidos
 9. **[[VALOR-ENTREGUE]]** — case Kore Tech (R$ 38k-70k em 3 dias)
+10. **[[HISTORICO-KORE-TECH]]** — linha do tempo do processo Kore Tech (projeto apagado 2026-04-29, aprendizado preservado)
 
 ## Como usar essa memória
 

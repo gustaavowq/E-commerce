@@ -1,5 +1,13 @@
 # 💰 VALOR ENTREGUE — Kore Tech case study
 
+> ⚠️ **STATUS**: Projeto Kore Tech foi **completamente apagado em 2026-04-29**
+> a pedido de Gustavo (Vercel + Railway + GitHub + arquivos locais). As URLs
+> mencionadas abaixo (`kore-tech-loja.vercel.app`, `kore-tech-painel.vercel.app`,
+> `amused-connection-production-4fcd.up.railway.app`) **não existem mais**.
+> Esse arquivo continua valendo como **referência de valor entregue / estimativa
+> de mercado** pra próximos projetos. Pra ver a linha do tempo do processo, ler
+> [[HISTORICO-KORE-TECH]].
+
 > "Loja gamer + painel admin + backend completo, deployados em prod, em 2 dias com time de agents IA. Estimativa de mercado: R$ 38.000 - R$ 70.000."
 
 ## 📅 Timeline real

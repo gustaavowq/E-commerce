@@ -161,4 +161,4 @@ Tudo entre é decisão autônoma com base na memória. Se memória conflita ou �
 - [[../00-INICIO]] — índice raiz
 - [[../10-PLAYBOOKS/NOVO-ECOMMERCE]] — playbook v2.0 (este doc é o orquestrador)
 - [[../VALOR-ENTREGUE]] — case Kore Tech
-- [[../../projetos/kore-tech/JORNADA-COMPLETA]] — timeline + bugs + inovações Kore
+- [[../HISTORICO-KORE-TECH]] — timeline + bugs + inovações Kore (projeto apagado 2026-04-29, aprendizado preservado)
