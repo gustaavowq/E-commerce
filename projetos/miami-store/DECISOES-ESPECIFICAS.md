@@ -69,7 +69,7 @@ whatsapp:     #25D366
 6. Conjunto Lacoste Tactel
 7. Camiseta Lacoste Jacaré Estampado
 
-Todos com fotos reais em `src/frontend/public/products/`.
+Todos com fotos reais em `projetos/miami-store/frontend/public/products/`.
 
 ## Cupons seed (2)
 

@@ -7,7 +7,7 @@
 ### Helmet (config testada)
 
 ```ts
-// src/backend/src/index.ts
+// projetos/miami-store/backend/src/index.ts
 app.use(helmet({
   contentSecurityPolicy: false,         // CSP gerenciado pelo Next/nginx, não Helmet
   crossOriginResourcePolicy: false,     // CORP=same-origin quebra fetch cross-origin
@@ -69,7 +69,7 @@ const body = productCreateSchema.parse(req.body)   // throws ZodError → 422 au
 ### Webhook MercadoPago HMAC
 
 ```ts
-// src/backend/src/routes/webhooks.ts
+// projetos/miami-store/backend/src/routes/webhooks.ts
 const signature = req.header('x-signature')
 const requestId = req.header('x-request-id')
 const expected = crypto.createHmac('sha256', env.MERCADOPAGO_WEBHOOK_SECRET)

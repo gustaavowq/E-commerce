@@ -8,7 +8,7 @@
 
 📍 **`memoria/00-INICIO.md`** — índice de toda memória operacional
    - Decisões pré-aprovadas (stack, auth, deploy)
-   - 10 lições críticas do Miami Store (NÃO repetir)
+   - Lições críticas dos projetos anteriores (NÃO repetir)
    - Playbooks (kickoff, deploy, security, bugbash)
    - Padrões de código reusáveis
    - Templates por nicho (moda, eletrônicos, alimentação, beleza, ...)
@@ -23,7 +23,7 @@ Resumo da sequência:
 1. **Pesquisa o nicho autonomamente** (Fase 0 — WebSearch + WebFetch, 10-25min) e escreve em `projetos/[slug]/PESQUISA-NICHO.md`
 2. **Apresenta proposta validada** ao cliente (Fase 0.5 — não interrogatório)
 3. Cliente confirma + fornece nome/logo/cores/contas
-4. Cria estrutura, posta brief em `outros/shared/messages/`
+4. Cria estrutura em `projetos/[slug]/` (docs + código), posta brief em `outros/shared/messages/`
 5. Dispara as 8 outras skills em paralelo (`ecommerce-backend`, `ecommerce-designer`, etc)
 6. Roda security audit + bug bash
 7. Deploy via `memoria/60-DEPLOY/railway-passo-a-passo.md` + `vercel-passo-a-passo.md`
@@ -57,31 +57,33 @@ Cada SKILL.md lista:
 
 ## Estrutura
 
+**Regra de ouro:** root tem só 3 arquivos (`.gitignore`, `README.md`, `CLAUDE.md` — exigidos pelas ferramentas) + 4 pastas. **Tudo de cada projeto vive dentro de `projetos/[slug]/`** — código, docs, `.env`, `DEPLOY.md`, brand-brief, jornada. Não existe `src/` no root.
+
 ```
 ecommerce-agents/
-├── CLAUDE.md                      ← este arquivo
-├── README.md                      ← como rodar local
-├── DEPLOY.md                      ← Railway + Vercel passo-a-passo
-├── .env.example
+├── CLAUDE.md                     ← este arquivo (Claude Code lê do root)
+├── README.md                     ← capa do framework (GitHub mostra do root)
+├── .gitignore                    ← regras git (lê do root)
 │
-├── .claude/skills/                ← 9 skills (ecommerce-*) — fonte única dos agentes
-│
-├── memoria/                       ← knowledge base reusável (decisões, lições, padrões)
-│
-├── projetos/                      ← documentação central de cada projeto
-│   └── miami-store/               ← primeiro projeto (referência educativa)
-│       ├── README.md
-│       ├── COMO-FUNCIONA.md       ← lê isso pra entender o projeto sem mergulhar no código
-│       ├── JORNADA.md
-│       └── DECISOES-ESPECIFICAS.md
-│
-├── outros/                        ← shared/messages, docs técnicas, scripts
-│
-└── src/
-    ├── backend/                   ← Express + Prisma
-    ├── frontend/                  ← Next.js loja
-    ├── dashboard/                 ← Next.js painel
-    └── infra/                     ← docker-compose + nginx
+├── .claude/skills/               ← 9 skills (ecommerce-*) — fonte única dos agentes
+├── memoria/                      ← knowledge base reusável (decisões, lições, padrões)
+├── outros/                       ← shared/messages, docs técnicas, scripts
+└── projetos/
+    └── miami-store/              ← cada projeto = uma pasta auto-contida
+        ├── README.md             ← visão geral do projeto
+        ├── COMO-FUNCIONA.md      ← explicação didática
+        ├── JORNADA.md            ← cronologia
+        ├── DECISOES-ESPECIFICAS.md
+        ├── DEPLOY.md             ← passo-a-passo Railway + Vercel
+        ├── .env                  ← segredos (não commitado)
+        ├── .env.example          ← template
+        ├── brand-brief.md
+        ├── design/               ← logo, tokens
+        ├── assets/
+        ├── backend/              ← Express + Prisma + JWT
+        ├── frontend/             ← Next.js 14 (loja)
+        ├── dashboard/            ← Next.js 14 (painel admin)
+        └── infra/                ← docker-compose + nginx
 ```
 
 Detalhes em `memoria/20-DECISOES/estrutura-pastas.md`.

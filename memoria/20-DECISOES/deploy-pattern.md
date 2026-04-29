@@ -46,7 +46,7 @@ Em prod com domínio próprio compartilhado (`*.miamistore.com.br`), middleware 
 
 ### 3. railway.json define startCommand
 
-`src/backend/railway.json`:
+`projetos/miami-store/backend/railway.json`:
 
 ```json
 {
@@ -106,12 +106,12 @@ Sem isso, browser bloqueia fetch antes de sair. "Erro inesperado" no login. Ver 
 
 2. **Loja no Vercel** (ver [[../60-DEPLOY/vercel-passo-a-passo]])
    - Add New Project → repo
-   - **Root Directory: `src/frontend`** (clicar Edit, navegar)
+   - **Root Directory: `projetos/miami-store/frontend`** (clicar Edit, navegar)
    - Application Preset: Next.js (clicar manualmente — Vercel reseta ao mudar Root)
    - Env vars: `NEXT_PUBLIC_API_URL`, `INTERNAL_API_URL`, `NEXT_PUBLIC_DASHBOARD_URL`, `NEXT_PUBLIC_WHATSAPP_NUMBER`
    - Deploy → copiar URL
 
-3. **Painel no Vercel** (mesmo processo, root `src/dashboard`)
+3. **Painel no Vercel** (mesmo processo, root `projetos/miami-store/dashboard`)
    - Env vars: `NEXT_PUBLIC_API_URL`, `INTERNAL_API_URL`, `NEXT_PUBLIC_STORE_URL`
 
 4. **Voltar no Railway** e atualizar `CORS_ORIGIN` com URLs Vercel reais (separadas por vírgula, sem espaço, sem `/` no fim)

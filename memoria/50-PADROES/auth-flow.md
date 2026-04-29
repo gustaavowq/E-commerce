@@ -4,7 +4,7 @@
 
 ## Backend
 
-### `src/backend/src/lib/jwt.ts`
+### `projetos/miami-store/backend/src/lib/jwt.ts`
 
 ```ts
 import jwt from 'jsonwebtoken'
@@ -40,7 +40,7 @@ export function expiresInToMs(s: string): number {
 }
 ```
 
-### `src/backend/src/lib/password.ts`
+### `projetos/miami-store/backend/src/lib/password.ts`
 
 ```ts
 import bcrypt from 'bcryptjs'
@@ -54,7 +54,7 @@ export async function verifyPassword(password: string, hash: string): Promise<bo
 }
 ```
 
-### `src/backend/src/middleware/auth.ts`
+### `projetos/miami-store/backend/src/middleware/auth.ts`
 
 ```ts
 import type { Request, Response, NextFunction } from 'express'
@@ -95,7 +95,7 @@ export async function loadCurrentUser(req: Request, _res: Response, next: NextFu
 }
 ```
 
-### `src/backend/src/routes/auth.ts` — login + register + refresh
+### `projetos/miami-store/backend/src/routes/auth.ts` — login + register + refresh
 
 ```ts
 import { Router, type Request, type Response } from 'express'
@@ -309,7 +309,7 @@ authRouter.post('/reset-password', authLimiter, async (req, res, next) => {
 })
 ```
 
-### `src/backend/src/validators/auth.ts`
+### `projetos/miami-store/backend/src/validators/auth.ts`
 
 ```ts
 import { z } from 'zod'
@@ -354,7 +354,7 @@ export const resetPasswordSchema = z.object({
 
 ## Frontend (Loja Next.js)
 
-### `src/frontend/src/stores/auth.ts`
+### `projetos/miami-store/frontend/src/stores/auth.ts`
 
 ```ts
 'use client'
@@ -376,7 +376,7 @@ export const useAuth = create<AuthState>()((set) => ({
 }))
 ```
 
-### `src/frontend/src/app/providers.tsx` — hydrate via /auth/me
+### `projetos/miami-store/frontend/src/app/providers.tsx` — hydrate via /auth/me
 
 ```tsx
 'use client'
@@ -399,7 +399,7 @@ export function Providers({ children }: { children: ReactNode }) {
 }
 ```
 
-### `src/frontend/src/lib/api.ts` — fetch wrapper com credentials
+### `projetos/miami-store/frontend/src/lib/api.ts` — fetch wrapper com credentials
 
 ```ts
 const baseUrl = process.env.NEXT_PUBLIC_API_URL ?? '/api'

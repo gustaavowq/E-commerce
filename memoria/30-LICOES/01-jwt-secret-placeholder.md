@@ -11,7 +11,7 @@ curl -H "Authorization: Bearer $forjado" /api/admin/customers → 200 + lista de
 
 ## Causa raiz
 
-`src/backend/src/config/env.ts:11` tinha:
+`projetos/miami-store/backend/src/config/env.ts:11` tinha:
 ```ts
 JWT_SECRET: z.string().default('troque_isso_em_producao_use_openssl_rand_base64_48')
 ```
@@ -37,4 +37,4 @@ Se o operador subisse prod sem `JWT_SECRET` na env, o backend usava o default. E
 - ✅ Em `env.ts`, todas as envs sensíveis usam `.min(N)` sem default
 - ✅ Pre-deploy checklist obriga gerar JWT_SECRET fresh
 - ✅ `.env.example` mostra `JWT_SECRET=<openssl rand -base64 48>` literal — fica óbvio
-- ✅ CI/teste: rodar `grep -r "troque_isso\|change_me\|default_only" src/backend/src/config/` deve retornar 0 matches
+- ✅ CI/teste: rodar `grep -r "troque_isso\|change_me\|default_only" projetos/miami-store/backend/src/config/` deve retornar 0 matches

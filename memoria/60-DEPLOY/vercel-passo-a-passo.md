@@ -12,11 +12,11 @@
 
 - Backend já deployado no Railway com URL pública (ver [railway-passo-a-passo](railway-passo-a-passo.md))
 - URL do Railway copiada (ex: `https://api-production-cd06.up.railway.app`)
-- Repo no GitHub com código em `src/frontend/` e `src/dashboard/`
+- Repo no GitHub com código em `projetos/miami-store/frontend/` e `projetos/miami-store/dashboard/`
 
 ## Vai deployar 2 projetos separados
 
-**Loja** (`src/frontend/`) e **Painel** (`src/dashboard/`) são apps Next.js distintos. Cada um vira um project no Vercel. Mesmo repo, root directories diferentes.
+**Loja** (`projetos/miami-store/frontend/`) e **Painel** (`projetos/miami-store/dashboard/`) são apps Next.js distintos. Cada um vira um project no Vercel. Mesmo repo, root directories diferentes.
 
 ## Passos — Loja (frontend)
 
@@ -32,7 +32,7 @@
 |---|---|
 | Project Name | `[marca]-loja` (ex: `miami-store`) — vira `[marca]-loja.vercel.app` |
 | Framework Preset | **Next.js** ⚠️ NÃO clica em "Other" — Vercel detecta sozinho. Se aparecer "Other", expande **Framework Preset** e seleciona Next.js manualmente. Ver [09-vercel-application-preset](../30-LICOES/09-vercel-application-preset.md) |
-| Root Directory | clica **Edit** → seleciona `src/frontend` → **Continue** |
+| Root Directory | clica **Edit** → seleciona `projetos/miami-store/frontend` → **Continue** |
 | Build Command | (deixa default — `next build`) |
 | Output Directory | (default) |
 
@@ -72,7 +72,7 @@ Repete os passos 1-4, mas com:
 | Campo | Valor |
 |---|---|
 | Project Name | `[marca]-painel` |
-| Root Directory | `src/dashboard` |
+| Root Directory | `projetos/miami-store/dashboard` |
 | Framework Preset | **Next.js** |
 
 Environment Variables:
@@ -120,7 +120,7 @@ Falta dep no `package.json`. Rodar `npm install` localmente, commitar `package-l
 Esperado nessa fase. URLs `.vercel.app` são domínios separados. Solução: comprar domínio próprio (ver seção abaixo).
 
 **Build falha com "ENOENT package.json"**
-Root Directory está errado. Settings → General → Root Directory → ajustar pra `src/frontend` ou `src/dashboard`.
+Root Directory está errado. Settings → General → Root Directory → ajustar pra `projetos/miami-store/frontend` ou `projetos/miami-store/dashboard`.
 
 **SSR fetch falha com timeout**
 `INTERNAL_API_URL` apontando pra `http://backend:3001` (URL docker dev) em vez da URL Railway. Trocar pra URL pública do Railway.
@@ -141,7 +141,7 @@ Sessão fica compartilhada entre `loja` e `admin.loja` automaticamente.
 
 ## CSP (Content Security Policy)
 
-`src/frontend/next.config.js` e `src/dashboard/next.config.js` têm CSP configurado. Toda vez que adicionar host externo (Cloudinary, MercadoPago, GA4, Pixel), atualizar `connect-src` e `img-src`. Ver [05-csp-connect-src](../30-LICOES/05-csp-connect-src.md).
+`projetos/miami-store/frontend/next.config.js` e `projetos/miami-store/dashboard/next.config.js` têm CSP configurado. Toda vez que adicionar host externo (Cloudinary, MercadoPago, GA4, Pixel), atualizar `connect-src` e `img-src`. Ver [05-csp-connect-src](../30-LICOES/05-csp-connect-src.md).
 
 ## Métrica de sucesso
 

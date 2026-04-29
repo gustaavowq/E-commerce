@@ -11,7 +11,7 @@
 | 03 | [[03-tsx-dependencies]] | ~30 min — seed falhava silenciosamente |
 | 04 | [[04-seed-startcommand]] | Latente — sobrescreve edições admin |
 | 05 | [[05-csp-connect-src]] | ~1h — "Erro inesperado" no login |
-| 06 | [[06-env-files-multiplos]] | ~30 min — `.env` raiz vs `src/infra/.env` |
+| 06 | [[06-env-files-multiplos]] | ~30 min — `.env` raiz vs `projetos/miami-store/infra/.env` |
 | 07 | [[07-cookie-domain-railway]] | ~30 min — `.miami.test` quebrava cookie em prod |
 | 08 | [[08-tsbuildinfo-gitignore]] | ~5 min — VSCode mostrava arquivo vermelho sempre |
 | 09 | [[09-vercel-application-preset]] | ~10 min — Vercel reseta preset ao mudar Root Directory |

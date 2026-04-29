@@ -66,7 +66,7 @@ Em mensagem nova `DE-techlead_PARA-frontend_<data>-fixes-ux.md`, lista priorizad
 ```markdown
 # Corrigir N bugs UX
 
-NÃO mexer em src/backend/, src/dashboard/middleware (se houver), src/frontend/auth/AuthForm.
+NÃO mexer em projetos/miami-store/backend/, projetos/miami-store/dashboard/middleware (se houver), projetos/miami-store/frontend/auth/AuthForm.
 
 Itens:
 1. [arquivo:linha] descrição. Fix sugerido: ...

@@ -84,7 +84,7 @@ coupons             — cupons de desconto com regras de uso
 - Cadastro público sempre cria `CUSTOMER`. ADMIN só via seed ou outro ADMIN.
 - JWT carrega `{ userId, role, exp }`.
 - Middleware `requireRole('ADMIN')` em todo `/api/admin/*`.
-- Apps separados: `src/frontend/` (loja) e `src/dashboard/` (painel) são Next.js apps independentes. Nginx faz o roteamento.
+- Apps separados: `projetos/miami-store/frontend/` (loja) e `projetos/miami-store/dashboard/` (painel) são Next.js apps independentes. Nginx faz o roteamento.
 - Cookie de auth com `httpOnly + secure + sameSite=strict` em produção.
 
 ---

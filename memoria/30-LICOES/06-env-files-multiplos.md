@@ -1,4 +1,4 @@
-# 🚨 #06 `.env` na raiz vs `src/infra/.env` — sincronizar SEMPRE
+# 🚨 #06 `.env` na raiz vs `projetos/miami-store/infra/.env` — sincronizar SEMPRE
 
 ## Sintoma
 
@@ -10,7 +10,7 @@ Duas cópias do `.env`:
 - `c:\...\ecommerce-agents\.env` (raiz)
 - `c:\...\ecommerce-agents\src\infra\.env` (legado, criado no kickoff inicial)
 
-`docker-compose.yml` aponta `env_file: ../../.env` (relativo a `src/infra/`), o que **deveria** apontar pra raiz. MAS o Compose também faz auto-load de `.env` na **mesma pasta do compose** (`src/infra/.env`). Esse último venceu — sobrescreveu o `JWT_SECRET` da raiz com o placeholder do infra.
+`docker-compose.yml` aponta `env_file: ../../.env` (relativo a `projetos/miami-store/infra/`), o que **deveria** apontar pra raiz. MAS o Compose também faz auto-load de `.env` na **mesma pasta do compose** (`projetos/miami-store/infra/.env`). Esse último venceu — sobrescreveu o `JWT_SECRET` da raiz com o placeholder do infra.
 
 ## Fix aplicado
 
@@ -20,9 +20,9 @@ Duas cópias do `.env`:
 
 ## Solução melhor (próximo e-commerce)
 
-**Não criar `src/infra/.env`.** Deixar só na raiz, e referenciar explicitamente no compose:
+**Não criar `projetos/miami-store/infra/.env`.** Deixar só na raiz, e referenciar explicitamente no compose:
 ```yaml
-# src/infra/docker-compose.yml
+# projetos/miami-store/infra/docker-compose.yml
 services:
   backend:
     env_file:
@@ -34,6 +34,6 @@ E garantir que NÃO tem outro `.env` na pasta do compose pra Compose não auto-c
 ## Prevenção
 
 - ✅ Template do projeto: `.env` só na raiz
-- ✅ `.gitignore` bloqueia `src/infra/.env` (qualquer arquivo `.env` em qualquer lugar)
-- ✅ README documenta: "**Nunca** crie `.env` em `src/infra/`. Se aparecer, deletar."
+- ✅ `.gitignore` bloqueia `projetos/miami-store/infra/.env` (qualquer arquivo `.env` em qualquer lugar)
+- ✅ README documenta: "**Nunca** crie `.env` em `projetos/miami-store/infra/`. Se aparecer, deletar."
 - ✅ Pre-deploy check: `find . -name '.env' -not -path '*/node_modules/*'` deve retornar só `./` 

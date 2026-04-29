@@ -15,7 +15,7 @@
 
 1. Substituir `{{slug}}` (kebab-case do nome da marca, ex: `miami-store`)
 2. Substituir `{{slug_db}}` (snake_case pro nome do DB, ex: `miami_store`)
-3. Caminho do `.env` é relativo a `src/infra/` (onde fica o compose) — `../../.env`
+3. Caminho do `.env` é relativo a `projetos/miami-store/infra/` (onde fica o compose) — `../../.env`
 
 ## Template
 
@@ -26,7 +26,7 @@
 #
 # Como rodar:
 #   1. Na raiz do repo, copie .env.example -> .env e ajuste valores
-#   2. cd src/infra
+#   2. cd projetos/miami-store/infra
 #   3. docker compose up
 #
 # Subdomínios .test (precisa editar hosts file uma vez):
@@ -185,9 +185,9 @@ networks:
 
 ## Decisões importantes (não mudar sem motivo)
 
-### Por que `env_file` na raiz, não em `src/infra/`?
+### Por que `env_file` na raiz, não em `projetos/miami-store/infra/`?
 
-`.env` único na raiz pra evitar duplicação entre dev/prod e entre services. Caminho relativo `../../.env` funciona porque compose roda de `src/infra/`. Se rodar de outro lugar, **quebra** — sempre `cd src/infra && docker compose up`.
+`.env` único na raiz pra evitar duplicação entre dev/prod e entre services. Caminho relativo `../../.env` funciona porque compose roda de `projetos/miami-store/infra/`. Se rodar de outro lugar, **quebra** — sempre `cd projetos/miami-store/infra && docker compose up`.
 
 Detalhes da armadilha em [06-env-files-multiplos](../30-LICOES/06-env-files-multiplos.md).
 
@@ -235,7 +235,7 @@ Copia `.env.example` → `.env` → preenche valores. **Crítico:** `JWT_SECRET`
 ## Comandos comuns
 
 ```bash
-cd src/infra
+cd projetos/miami-store/infra
 
 docker compose up                 # foreground (Ctrl+C pra parar)
 docker compose up -d              # daemon (background)
@@ -254,6 +254,6 @@ docker compose exec postgres psql -U postgres -d {{slug_db}}  # psql direto
 
 ## Ver também
 
-- [nginx-config](nginx-config.md) — config do Nginx que entra em `src/infra/nginx/conf.d/default.conf`
+- [nginx-config](nginx-config.md) — config do Nginx que entra em `projetos/miami-store/infra/nginx/conf.d/default.conf`
 - [estrutura-pastas](../20-DECISOES/estrutura-pastas.md) — onde cada arquivo mora
 - [06-env-files-multiplos](../30-LICOES/06-env-files-multiplos.md) — armadilha do `.env`

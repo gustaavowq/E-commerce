@@ -4,7 +4,7 @@
 
 ## Camada por camada
 
-### Backend (`src/backend/`)
+### Backend (`projetos/miami-store/backend/`)
 
 | Item | Versão | Por quê |
 |---|---|---|
@@ -21,7 +21,7 @@
 | cookie-parser | 1.x | httpOnly cookies |
 | pino + pino-pretty | 9.x | Log estruturado, leve |
 
-### Frontend loja (`src/frontend/`) e Painel (`src/dashboard/`)
+### Frontend loja (`projetos/miami-store/frontend/`) e Painel (`projetos/miami-store/dashboard/`)
 
 | Item | Versão | Por quê |
 |---|---|---|

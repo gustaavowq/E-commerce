@@ -93,7 +93,7 @@ type Category = { id: string }
 
 async function seedProducts(brands: Record<string, Brand>, categories: Record<string, Category>) {
   // Lacoste como carro-chefe (é o que aparece no Instagram da Miami Store).
-  // Imagens são fotos reais do Instagram, copiadas pra src/frontend/public/products/.
+  // Imagens são fotos reais do Instagram, copiadas pra projetos/miami-store/frontend/public/products/.
   const products = [
     {
       slug: 'polo-lacoste-vermelha',

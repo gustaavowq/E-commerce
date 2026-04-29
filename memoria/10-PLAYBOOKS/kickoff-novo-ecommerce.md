@@ -96,7 +96,7 @@ Tech Lead executa **sem perguntar**:
 1. Cria estrutura de pastas conforme [[20-DECISOES/estrutura-pastas]]
 2. Copia [[50-PADROES/docker-compose-template]] adaptando nome (`miami` → nova marca slug)
 3. Copia [[50-PADROES/nginx-config]] com subdomínios `loja.test`, `admin.loja.test`, `api.loja.test`
-4. Cria `.env` raiz e `src/infra/.env` (CRÍTICO: ambos sincronizados — ver [[30-LICOES/06-env-files-multiplos]])
+4. Cria `.env` raiz e `projetos/miami-store/infra/.env` (CRÍTICO: ambos sincronizados — ver [[30-LICOES/06-env-files-multiplos]])
 5. Gera `JWT_SECRET` forte com `openssl rand -base64 48`
 6. Backend boilerplate: Express + Prisma + Helmet + CORS + rate limit + auth flow padrão (ver [[50-PADROES/auth-flow]])
 7. Schema Prisma base ([[50-PADROES/prisma-models-base]]) + customizações do [[70-NICHOS|template do nicho]]

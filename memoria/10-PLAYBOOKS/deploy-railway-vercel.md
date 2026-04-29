@@ -17,7 +17,7 @@
 4. **+ Create** → **Database** → **PostgreSQL** (espera ~30s)
 5. Click no quadrado **backend** (não o Postgres)
 6. Aba **Settings**:
-   - **Source** → **Add Root Directory** → `src/backend`
+   - **Source** → **Add Root Directory** → `projetos/miami-store/backend`
    - **Build** → confirma que **Builder = Dockerfile** (puxado do `railway.json`)
    - **Networking** → **Generate Domain** → **Target port: 3001** → copia URL gerada
 7. Aba **Variables**:
@@ -47,7 +47,7 @@
 1. https://vercel.com → **Sign Up with GitHub**
 2. **Add New** → **Project** → escolhe repo → **Import**
 3. **Project Name**: `<marca>-loja` (ex: `miami-store`, `maria-fitness`)
-4. **Root Directory** → **Edit** → navega até `src/frontend`
+4. **Root Directory** → **Edit** → navega até `projetos/miami-store/frontend`
 5. **CRÍTICO**: depois de mudar Root, **Application Preset** reseta. Clica e seleciona **Next.js** manualmente — ver [[../30-LICOES/09-vercel-application-preset|lição 9]]
 6. Expande **Environment Variables** e adiciona (Production and Preview):
    ```
@@ -63,7 +63,7 @@
 Mesmo processo, mas:
 
 - **Project Name**: `<marca>-painel`
-- **Root Directory**: `src/dashboard`
+- **Root Directory**: `projetos/miami-store/dashboard`
 - Env vars:
   ```
   NEXT_PUBLIC_API_URL    = https://<URL-railway>

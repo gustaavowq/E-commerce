@@ -20,7 +20,7 @@ Substituir `{{slug}}` pelo kebab-case da marca (`miami-store`, `loja-tech`, etc)
 
 ## Onde mora
 
-`src/infra/nginx/conf.d/default.conf` (montado read-only no container Nginx — ver [docker-compose-template](docker-compose-template.md)).
+`projetos/miami-store/infra/nginx/conf.d/default.conf` (montado read-only no container Nginx — ver [docker-compose-template](docker-compose-template.md)).
 
 ## Template
 

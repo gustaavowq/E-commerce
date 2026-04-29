@@ -13,7 +13,7 @@ Isso aparecia em **TODO** fetch da loja: `/settings`, `/auth/me`, `/auth/login`,
 
 ## Causa raiz
 
-`src/frontend/next.config.mjs` tinha CSP herdado do dev local:
+`projetos/miami-store/frontend/next.config.mjs` tinha CSP herdado do dev local:
 ```ts
 "connect-src 'self' https://*.trycloudflare.com https://api.mercadopago.com",
 ```
@@ -27,7 +27,7 @@ Adicionar todos os hosts onde a API pode rodar:
 "connect-src 'self' https://*.trycloudflare.com https://*.up.railway.app https://*.vercel.app https://api.mercadopago.com",
 ```
 
-Mesma mudança em `src/dashboard/next.config.mjs`.
+Mesma mudança em `projetos/miami-store/dashboard/next.config.mjs`.
 
 ## Prevenção
 

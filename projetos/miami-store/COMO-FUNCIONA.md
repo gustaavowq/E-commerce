@@ -36,7 +36,7 @@ Em vez de fazer tudo num programa só (que vira bagunça quando cresce), a gente
 ### 1️⃣ Loja (Frontend)
 
 **O que é:** o site que o cliente abre no navegador pra comprar.
-**Pasta no código:** `src/frontend/`
+**Pasta no código:** `projetos/miami-store/frontend/`
 **Tecnologia:** Next.js 14 (um framework de React)
 **O que faz:**
 - Mostra produtos com fotos, preços, descrições
@@ -52,7 +52,7 @@ Em vez de fazer tudo num programa só (que vira bagunça quando cresce), a gente
 ### 2️⃣ Painel admin (Dashboard)
 
 **O que é:** o "escritório virtual" do dono da loja.
-**Pasta no código:** `src/dashboard/`
+**Pasta no código:** `projetos/miami-store/dashboard/`
 **Tecnologia:** Next.js 14 (mesma tecnologia da loja)
 **O que faz:**
 - Cadastrar/editar produtos (com upload de fotos)
@@ -68,7 +68,7 @@ Em vez de fazer tudo num programa só (que vira bagunça quando cresce), a gente
 ### 3️⃣ API (Backend)
 
 **O que é:** o "cérebro" do sistema. Loja e painel não falam direto com o banco — eles **pedem pra API**, que busca/salva.
-**Pasta no código:** `src/backend/`
+**Pasta no código:** `projetos/miami-store/backend/`
 **Tecnologia:** Express (servidor web em Node.js) + Prisma (acesso ao banco) + TypeScript
 **O que faz:**
 - Recebe requisições da loja ("me dá lista de produtos")

@@ -91,7 +91,7 @@ Esta foi a fase mais longa por causa dos issues do Railway/Vercel:
 - Login com GitHub
 - New Project → escolheu repo
 - Adicionou Postgres (1 clique)
-- Configurou Root Directory: `src/backend`
+- Configurou Root Directory: `projetos/miami-store/backend`
 - Configurou env vars (lista completa)
 - Aprendeu armadilha: **NUNCA clicar em "Suggested Variables"** (importa placeholders inseguros)
 - Generate Domain na porta 3001
@@ -104,13 +104,13 @@ Esta foi a fase mais longa por causa dos issues do Railway/Vercel:
 - Seed rodou: 7 produtos Lacoste no ar
 
 **Loja no Vercel:**
-- Add New Project, Root Directory `src/frontend`
+- Add New Project, Root Directory `projetos/miami-store/frontend`
 - Aprendeu armadilha: Vercel reseta Application Preset pra "Other" ao mudar Root — clicar manualmente Next.js
 - Env vars
 - Deploy → URL `e-commerce-kohl-five-85.vercel.app`
 
 **Painel no Vercel:**
-- Mesma coisa, Root `src/dashboard`
+- Mesma coisa, Root `projetos/miami-store/dashboard`
 - URL `miami-painel.vercel.app`
 
 **Fechar CORS:**

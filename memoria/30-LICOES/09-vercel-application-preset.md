@@ -11,7 +11,7 @@ Ordem de configuração no Vercel:
 1. User cola repo
 2. Project Name OK
 3. Application Preset auto-detectado: **Next.js**
-4. User muda Root Directory de `./` pra `src/frontend`
+4. User muda Root Directory de `./` pra `projetos/miami-store/frontend`
 5. **Vercel reseta Application Preset pra `Other`** (bug visual)
 6. Deploy bloqueado
 
@@ -20,7 +20,7 @@ Ordem de configuração no Vercel:
 Configurar **na ordem certa**:
 
 1. Definir Project Name
-2. Mudar Root Directory pra `src/frontend` (ou `src/dashboard`)
+2. Mudar Root Directory pra `projetos/miami-store/frontend` (ou `projetos/miami-store/dashboard`)
 3. **DEPOIS** clicar em Application Preset e selecionar Next.js manualmente
 4. Adicionar env vars
 5. Deploy

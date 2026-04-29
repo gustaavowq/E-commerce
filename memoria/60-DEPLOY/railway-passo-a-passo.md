@@ -11,7 +11,7 @@
 
 ## Pré-requisitos
 
-- Repo no GitHub com código em `src/backend/` (Dockerfile presente)
+- Repo no GitHub com código em `projetos/miami-store/backend/` (Dockerfile presente)
 - Conta GitHub conectável ao Railway
 - `JWT_SECRET` gerado: `openssl rand -base64 48` (NUNCA usar placeholder — ver [01-jwt-secret-placeholder](../30-LICOES/01-jwt-secret-placeholder.md))
 - Decisão sobre `COOKIE_DOMAIN`: vazio se URLs ainda forem `.vercel.app + .railway.app` (cross-domain), `.dominio.com.br` se já comprou domínio próprio (ver [02-cookie-cross-domain](../30-LICOES/02-cookie-cross-domain.md))
@@ -36,8 +36,8 @@ Clica no quadrado do **backend** (não Postgres) → aba **Settings**:
 
 | Campo | Valor |
 |---|---|
-| Root Directory | `src/backend` |
-| Watch Paths | `src/backend/**` |
+| Root Directory | `projetos/miami-store/backend` |
+| Watch Paths | `projetos/miami-store/backend/**` |
 | Builder | Dockerfile (auto-detectado pelo `Dockerfile`) |
 | Start Command | (vazio — vem do Dockerfile CMD) |
 

@@ -110,7 +110,7 @@ Ver [[../30-LICOES/05-csp-connect-src]].
 - ❌ `NEXT_PUBLIC_*` com segredos (vazam pro client por design)
 - ❌ Default fraco em `SEED_ADMIN_PASSWORD` no `env.ts` schema (`.optional()`, sem default)
 - ❌ Default fraco em `JWT_SECRET` (`.optional()` ou throw se vazio)
-- ❌ Esquecer `src/infra/.env` quando atualizar `.env` raiz (compose lê o do infra) — ver [[../30-LICOES/06-env-files-multiplos]]
+- ❌ Esquecer `projetos/miami-store/infra/.env` quando atualizar `.env` raiz (compose lê o do infra) — ver [[../30-LICOES/06-env-files-multiplos]]
 
 ## Arquivo `.env.example` (commitado, valores são placeholders)
 

@@ -16,7 +16,7 @@ O seed usa `upsert` por slug, com bloco `update` que sobrescreve campos editáve
 - Os 7 produtos hardcoded (que estão no `seed.ts`) → rebatidos a cada deploy
 
 ```ts
-// src/backend/prisma/seed.ts:251
+// projetos/miami-store/backend/prisma/seed.ts:251
 prisma.product.upsert({
   where: { slug: p.slug },
   update: {                  // ← isso roda em todo deploy
@@ -32,7 +32,7 @@ prisma.product.upsert({
 
 1. **Tirar seed do startCommand** depois da primeira execução:
    ```json
-   // src/backend/railway.json
+   // projetos/miami-store/backend/railway.json
    "startCommand": "sh -c 'npx prisma migrate deploy && node dist/index.js'"
    ```
 

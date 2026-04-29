@@ -26,7 +26,7 @@
 ## Cookie config
 
 ```ts
-// src/backend/src/routes/auth.ts — função setAuthCookies
+// projetos/miami-store/backend/src/routes/auth.ts — função setAuthCookies
 function setAuthCookies(res: Response, accessToken: string, refreshTokenRaw: string) {
   const sameSite = env.COOKIE_SAMESITE === 'none' ? 'none' : 'lax'
   // SameSite=None EXIGE Secure=true
@@ -89,7 +89,7 @@ const PASSWORD_BLOCKLIST = [
 ## Middleware de proteção
 
 ```ts
-// src/backend/src/middleware/auth.ts
+// projetos/miami-store/backend/src/middleware/auth.ts
 requireAuth   // 401 se cookie ausente/inválido. Popula req.user
 requireRole(role: 'ADMIN'|'CUSTOMER')  // 403 se role não bate
 ```

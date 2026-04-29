@@ -70,8 +70,8 @@ Assim que o código estiver no GitHub, segue pro passo 2 (Railway).
 **2.5.** Configura o serviço backend:
 - Clica no quadrado do backend (não o do Postgres)
 - Aba **Settings**:
-  - **Root Directory**: `src/backend` (importante! sem isso o Railway tenta buildar a raiz toda)
-  - **Watch Paths**: `src/backend/**` (só rebuilda quando muda backend)
+  - **Root Directory**: `projetos/miami-store/backend` (importante! sem isso o Railway tenta buildar a raiz toda)
+  - **Watch Paths**: `projetos/miami-store/backend/**` (só rebuilda quando muda backend)
 - Clica **Generate Domain** em "Networking" pra ter uma URL pública (vai ficar algo tipo `miami-api-production.up.railway.app`)
 - **COPIA essa URL**. Vai precisar daqui pra frente.
 
@@ -100,7 +100,7 @@ Assim que o código estiver no GitHub, segue pro passo 2 (Railway).
 
 **2.9.** Roda o seed (admin + catalogo Lacoste) uma vez:
 - Aba **Settings** do backend → role até **Service** → **Restart**? Não. Use o terminal:
-- Aba **CLI** do projeto (em cima): `railway run npx prisma db seed --schema=src/backend/prisma/schema.prisma`
+- Aba **CLI** do projeto (em cima): `railway run npx prisma db seed --schema=projetos/miami-store/backend/prisma/schema.prisma`
 - OU pelo terminal local: `railway link` (escolhe o projeto) → `railway run -s backend npx prisma db seed`
 
 > Se não funcionar, abre `https://SUA-URL-RAILWAY.up.railway.app/products` — se voltar `[]`, seed não rodou. Pode rodar manualmente: clica em "..." no deploy → "View Logs" → vai ver os comandos que rodam.
@@ -115,7 +115,7 @@ Assim que o código estiver no GitHub, segue pro passo 2 (Railway).
 
 **3.3.** Configurações de import:
 - **Project Name**: `miami-store` (vai virar `miami-store.vercel.app`)
-- **Root Directory**: clica em **Edit** → seleciona `src/frontend` → **Continue**
+- **Root Directory**: clica em **Edit** → seleciona `projetos/miami-store/frontend` → **Continue**
 - **Framework Preset**: Next.js (auto-detectado)
 
 **3.4.** Antes de clicar Deploy, expande **Environment Variables** e adiciona:
@@ -138,7 +138,7 @@ Mesmo processo do passo 3, mas:
 
 **4.2.**
 - **Project Name**: `miami-admin`
-- **Root Directory**: `src/dashboard`
+- **Root Directory**: `projetos/miami-store/dashboard`
 - **Framework Preset**: Next.js
 
 **4.3.** Environment Variables:
