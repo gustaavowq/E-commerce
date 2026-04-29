@@ -92,6 +92,26 @@ After deploy, update:
 
 **Without this, the machine doesn't learn.**
 
+## Bug-bash com voz (transcrição)
+
+Quando o user cola um bloco de **transcrição de voz** (sinais: várias frases corridas, gírias, possíveis erros de Whisper, sem formatação), assume modo bug-bash:
+
+1. Trata como **input cru**: parsea cada achado como observação independente
+2. Classifica P0/P1/P2 conforme `memoria/10-PLAYBOOKS/bug-bash-ux.md`:
+   - **P0** — quebra função (checkout falha, login impossível)
+   - **P1** — atrapalha mas funciona (foto pixelada, badge sobreposto, copy errada)
+   - **P2** — polimento (espaçamento, hover state)
+3. Dispatcha skills em paralelo:
+   - visuais → `ecommerce-frontend` + `ecommerce-designer`
+   - fluxo → `ecommerce-frontend` + `ecommerce-qa`
+   - API/dados → `ecommerce-backend`
+   - copy → `ecommerce-copywriter`
+4. Reporta consolidado: bugs encontrados (com classificação) + agents dispatchados + ETA
+
+**Anti-pattern:** se o transcript tem só 1-2 frases, NÃO dispatcha — devolve "fala mais coisa antes de eu mandar a galera". Voz é pra observação rica.
+
+App de captura: `voice-tech-lead/` (Electron desktop, Whisper local). Doc completo em `memoria/10-PLAYBOOKS/voice-bug-bash.md`.
+
 ## Top rules
 
 - **NEVER** ask the client about the niche before researching it yourself

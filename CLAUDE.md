@@ -57,7 +57,10 @@ Cada SKILL.md lista:
 
 ## Estrutura
 
-**Regra de ouro:** root tem só 3 arquivos (`.gitignore`, `README.md`, `CLAUDE.md` — exigidos pelas ferramentas) + 3 pastas. **Tudo de cada projeto vive dentro de `projetos/[slug]/`** — código, docs, `.env`, `DEPLOY.md`, brand-brief, jornada, mensagens entre agentes. Não existe `src/` ou `outros/` no root.
+**Regra de ouro:** root tem só 3 arquivos (`.gitignore`, `README.md`, `CLAUDE.md` — exigidos pelas ferramentas) + 3 pastas + tools utilitárias aprovadas. **Tudo de cada projeto vive dentro de `projetos/[slug]/`** — código, docs, `.env`, `DEPLOY.md`, brand-brief, jornada, mensagens entre agentes. Não existe `src/` ou `outros/` no root.
+
+**Tools aprovadas no root** (exceções à regra das 3 pastas — utilitárias do framework, não projetos):
+- `voice-tech-lead/` — app Electron pra falar por voz com tech-lead durante bug-bash. Ver `memoria/10-PLAYBOOKS/voice-bug-bash.md`.
 
 ```
 ecommerce-agents/
@@ -67,6 +70,7 @@ ecommerce-agents/
 │
 ├── .claude/skills/               ← 9 skills (ecommerce-*) — fonte única dos agentes
 ├── memoria/                      ← knowledge base reusável (decisões, lições, padrões)
+├── voice-tech-lead/              ← app Electron pra bug-bash por voz (tool aprovada)
 └── projetos/
     └── miami-store/              ← cada projeto = uma pasta auto-contida
         ├── README.md             ← visão geral do projeto
