@@ -29,12 +29,20 @@ export function Hero({
         className="object-cover"
       />
 
-      {/* Sombra densa, uniforme, NÃO discreta — feedback Gustavo iter5:
-          quer ver sombra forte mesmo. ink/85 ≈ 85% preto sobre a foto.
-          Reforço inferior pra preservar profundidade. */}
-      <div className="absolute inset-0 bg-ink/85" aria-hidden="true" />
+      {/* Sombra na foto — usa arbitrary rgba pq cores Tailwind são CSS vars
+          sem componentes RGB, então `bg-ink/X` NÃO renderiza opacity (era
+          o bug que segurou o feedback do Gustavo por horas). */}
       <div
-        className="absolute inset-0 bg-gradient-to-t from-ink/60 via-ink/15 to-transparent"
+        className="absolute inset-0"
+        style={{ backgroundColor: 'rgba(10, 10, 10, 0.6)' }}
+        aria-hidden="true"
+      />
+      <div
+        className="absolute inset-0"
+        style={{
+          background:
+            'linear-gradient(to top, rgba(10,10,10,0.55), rgba(10,10,10,0.15) 50%, transparent)',
+        }}
         aria-hidden="true"
       />
 
