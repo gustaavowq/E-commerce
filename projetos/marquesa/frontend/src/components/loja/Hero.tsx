@@ -33,20 +33,12 @@ export function Hero({
         quality={80}
         className="object-cover"
       />
-      {/* Overlay duplo iter3:
-          1) Gradient HORIZONTAL escurece esquerda (zona do texto) e preserva
-             a fotografia visível à direita — feedback Gustavo: foto perfeita,
-             texto ilegível por estar sobre área clara da imagem.
-          2) Vignette inferior sutil garante contraste no scroll cue. */}
-      {/* Overlay esquerda: gradient que dura até ~60% e morre suave.
-          Garante zona escura sólida pro texto, foto fica intacta na direita. */}
+      {/* Overlay UNIFORME e SUTIL — feedback iter4 Gustavo: tema branco,
+          sombra densa só na esquerda ficou pesada. Aplicado em toda a foto:
+          ~35% no flat + leve reforço inferior pro scroll cue. */}
+      <div className="absolute inset-0 bg-ink/35" aria-hidden="true" />
       <div
-        className="absolute inset-0 bg-gradient-to-r from-ink via-ink/85 via-30% to-transparent to-65%"
-        aria-hidden="true"
-      />
-      {/* Vignette inferior leve pra preservar contraste do scroll cue. */}
-      <div
-        className="absolute inset-0 bg-gradient-to-t from-ink/50 via-ink/15 to-transparent"
+        className="absolute inset-0 bg-gradient-to-t from-ink/30 via-transparent to-transparent"
         aria-hidden="true"
       />
 
@@ -88,7 +80,7 @@ export function Hero({
               </Link>
               <Link
                 href="/sobre"
-                className="inline-flex items-center justify-center px-8 py-4 font-sans font-medium text-body-sm uppercase tracking-[0.04em] border border-paper text-paper hover:bg-paper hover:text-ink transition-colors duration-fast bg-ink/70 backdrop-blur-md"
+                className="inline-flex items-center justify-center px-8 py-4 font-sans font-medium text-body-sm uppercase tracking-[0.04em] border border-paper text-paper hover:bg-paper hover:text-ink transition-colors duration-fast bg-ink/30 backdrop-blur-sm"
               >
                 {microcopy.hero.cta_secundario}
               </Link>
