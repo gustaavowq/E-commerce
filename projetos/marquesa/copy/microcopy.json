@@ -14,12 +14,15 @@
     "painel": "Painel"
   },
   "hero": {
-    "titulo": "Imóveis com curadoria.",
-    "subtitulo": "Apartamentos, casas e coberturas em endereços selecionados de São Paulo.",
+    "eyebrow": "CURADORIA · 2026",
+    "titulo": "Endereço antes de metragem.",
+    "subtitulo": "Apartamentos, casas e coberturas escolhidos um a um, em bairros que envelhecem bem em São Paulo e Rio.",
     "cta_primario": "Ver catálogo",
     "cta_secundario": "Conheça a Marquesa"
   },
   "home": {
+    "curadoria_intro_eyebrow": "MÉTODO",
+    "curadoria_intro": "Cada imóvel passa por arquitetura, vizinhança e documentação antes de entrar. O que não passa, fica de fora.",
     "secao_destaques": "Em destaque",
     "secao_destaques_subtitulo": "Seleção atual da curadoria.",
     "secao_bairros": "Endereços que assinamos",
@@ -67,10 +70,17 @@
   "catalogo": {
     "titulo": "Catálogo",
     "subtitulo": "Tudo que está disponível agora.",
+    "intro_editorial": "Entram aqui apartamentos, casas e coberturas com matrícula limpa, fotografia feita em visita e ficha técnica conferida pela equipe. Faixas de preço variam, o critério não.",
+    "outro_editorial": "Não encontrou o que procurava? A curadoria também trabalha com pedidos sob encomenda.",
+    "outro_editorial_cta": "Falar com a curadoria",
     "resultado_singular": "1 imóvel encontrado.",
     "resultado_plural": "{n} imóveis encontrados.",
     "ver_no_mapa": "Ver no mapa",
     "ver_em_lista": "Ver em lista"
+  },
+  "policies": {
+    "privacidade_intro": "Tratamos seus dados com a mesma discrição que tratamos cada negociação. Coletamos só o necessário, guardamos pelo tempo necessário, compartilhamos apenas com quem precisa estar na mesa. Para qualquer dúvida, fale com nosso encarregado de dados antes de chegar ao texto legal abaixo.",
+    "reserva_intro": "A reserva por sinal serve para retirar o imóvel do catálogo enquanto você decide com calma. São 10 dias corridos de exclusividade, prazo escolhido por respeitar o tempo de uma decisão dessa ordem sem prender quem está do outro lado. Devolução, prorrogação e regras de retratação estão descritas a seguir, sem letra miúda."
   },
   "pdp": {
     "voltar_catalogo": "Voltar ao catálogo",
@@ -132,6 +142,25 @@
     "passo_3": "Caso a negociação não avance em 10 dias, o sinal é devolvido integralmente em até 5 dias úteis.",
     "voltar_inicio": "Voltar ao início",
     "ver_minhas_reservas": "Ver minhas reservas"
+  },
+  "contato": {
+    "eyebrow": "CONTATO",
+    "titulo_editorial": "Fale com a curadoria",
+    "intro_editorial": "Atendimento por agendamento, com pessoa, não com bot. Resposta em até 4 horas úteis. Se a pergunta for sobre um imóvel específico, mencione o bairro ou o código no contato, agiliza para nós dois.",
+    "coluna_visita_titulo": "Visite o escritório",
+    "coluna_visita_corpo": "Recebemos por agendamento, segunda a sexta, das 10h às 19h. Café feito na hora, mesa para conversar com calma, plantas das opções impressas se for o caso.",
+    "coluna_visita_endereco_titulo": "Endereço",
+    "coluna_visita_endereco": "Rua dos Tranquilos, 142, Jardins, São Paulo, SP, CEP 01401-000.",
+    "coluna_remoto_titulo": "Atendimento remoto",
+    "coluna_remoto_corpo": "WhatsApp para conversa rápida, email para tudo que precisa de registro, vídeo-chamada para visita guiada quando você está em outra cidade. Resposta em até 4 horas úteis.",
+    "coluna_remoto_whatsapp_titulo": "WhatsApp",
+    "coluna_remoto_email_titulo": "Email",
+    "form_titulo": "Escreva para a curadoria",
+    "form_subtitulo": "Conte o que procura ou o que já encontrou. Volta a resposta em até 4 horas úteis.",
+    "vendedores_titulo": "Para vendedores",
+    "vendedores_corpo": "Captação de imóveis em São Paulo e Rio de Janeiro com avaliação técnica e plano de divulgação personalizado. Trabalhamos com exclusividade ou semi-exclusividade. Para apresentar seu imóvel à curadoria, escreva para captacao@marquesa.dev.",
+    "lgpd_titulo": "Encarregado de dados (LGPD)",
+    "lgpd_corpo": "Para exercer direitos de acesso, correção, portabilidade ou exclusão de dados pessoais, escreva para dpo@marquesa.dev. Resposta em até 15 dias."
   },
   "lead": {
     "titulo": "Tenho interesse neste imóvel",
