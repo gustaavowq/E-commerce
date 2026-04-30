@@ -36,8 +36,9 @@ export function Hero({
         aria-hidden="true"
       />
 
-      {/* Conteúdo alinhado à base */}
-      <div className="relative h-full flex flex-col justify-end pb-16 md:pb-24">
+      {/* Conteúdo centralizado verticalmente — feedback Gustavo iter3:
+          "deveriam estar no meio da tela, não na base". */}
+      <div className="relative h-full flex flex-col justify-center">
         <div className="container-marquesa">
           <p className="text-eyebrow uppercase tracking-[0.16em] text-paper mb-6">
             {eyebrowText}
