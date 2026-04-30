@@ -22,6 +22,8 @@ interface PageProps {
 }
 
 function getApiBase(): string {
+  // Server-only path (esta page é Server Component). INTERNAL_API_URL prefere; fallback
+  // pro NEXT_PUBLIC_API_URL se for não-vazio (no server, '' não é URL utilizável); depois localhost.
   return (
     process.env.INTERNAL_API_URL ||
     process.env.NEXT_PUBLIC_API_URL ||

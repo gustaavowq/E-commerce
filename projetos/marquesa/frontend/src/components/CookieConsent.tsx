@@ -2,7 +2,11 @@
 
 // Banner de consentimento de cookies (LGPD).
 // 3 categorias: essenciais (sempre on), analytics (toggle), marketing (toggle).
-// Aparece só se ainda não decidiu. Discreto no rodapé, sem bloquear conteúdo.
+// Aparece só se ainda não decidiu. Barra discreta na base. Settings abre em modal/sheet
+// separado, NÃO inline expansível (evita empurrar conteúdo da página).
+//
+// Spec dimensional do Designer (iter2): desktop ~56px / mobile ~88-96px, sem shadow,
+// border-t como único separador, botões compactos px-4 py-2 text-caption.
 
 import { useEffect, useState } from 'react'
 import Link from 'next/link'
@@ -32,6 +36,16 @@ export function CookieConsent() {
     setMarketingToggle(consent.marketing)
   }, [consent.analytics, consent.marketing])
 
+  // ESC fecha o modal de settings sem fechar o banner.
+  useEffect(() => {
+    if (!showSettings) return
+    function onKey(e: KeyboardEvent) {
+      if (e.key === 'Escape') setShowSettings(false)
+    }
+    window.addEventListener('keydown', onKey)
+    return () => window.removeEventListener('keydown', onKey)
+  }, [showSettings])
+
   if (!hydrated || hasDecided || !open) return null
 
   const c = microcopy.cookies
@@ -46,90 +60,160 @@ export function CookieConsent() {
   }
   function handleSavePreferences() {
     update({ analytics: analyticsToggle, marketing: marketingToggle })
+    setShowSettings(false)
     setOpen(false)
   }
 
   return (
-    <div
-      role="dialog"
-      aria-live="polite"
-      aria-label="Consentimento de cookies"
-      className={cn(
-        'fixed inset-x-0 bottom-0 z-50',
-        'border-t border-bone bg-paper/98 backdrop-blur',
-        'shadow-[0_-8px_32px_rgba(0,0,0,0.06)]',
-      )}
-    >
-      <div className="container-marquesa py-6 md:py-8">
-        <div className="grid grid-cols-1 lg:grid-cols-[1fr_auto] gap-6 items-start">
-          <div className="max-w-3xl">
-            <p className="text-eyebrow uppercase tracking-[0.16em] text-ash mb-2">
-              {c.titulo}
-            </p>
-            <p className="text-body-sm text-ink leading-relaxed">
-              {c.texto}{' '}
-              <Link
-                href="/policies/privacidade"
-                className="underline underline-offset-4 hover:text-moss transition-colors duration-fast"
-              >
-                {c.saiba_mais}
-              </Link>
-              .
-            </p>
+    <>
+      {/* Banner barra única, base da viewport. */}
+      <div
+        role="dialog"
+        aria-live="polite"
+        aria-label="Consentimento de cookies"
+        className={cn(
+          'fixed inset-x-0 bottom-0 z-50',
+          'border-t border-bone bg-paper/95 backdrop-blur',
+        )}
+      >
+        <div className="container-marquesa py-3">
+          {/* Mobile: 2 linhas. Desktop: 1 linha horizontal. */}
+          <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between md:gap-6">
+            {/* Texto */}
+            <div className="md:flex-1 md:min-w-0">
+              <p className="text-body-sm text-ink md:truncate">
+                {c.texto_curto}{' '}
+                <Link
+                  href="/policies/privacidade"
+                  className="text-ink underline underline-offset-4 hover:text-moss transition-colors duration-fast"
+                >
+                  {c.saiba_mais}
+                </Link>
+              </p>
+            </div>
 
-            {showSettings && (
-              <div className="mt-5 flex flex-col gap-3 border border-bone p-4 bg-paper-warm">
-                <ConsentRow
-                  title="Essenciais"
-                  description="Necessários pra autenticação, sessão e segurança. Sempre ativos."
-                  checked
-                  disabled
-                />
-                <ConsentRow
-                  title="Analytics"
-                  description="Entender como o site é usado pra melhorar o catálogo e a experiência."
-                  checked={analyticsToggle}
-                  onChange={setAnalyticsToggle}
-                />
-                <ConsentRow
-                  title="Marketing"
-                  description="Mensurar campanhas e personalizar comunicações. Opcional."
-                  checked={marketingToggle}
-                  onChange={setMarketingToggle}
-                />
-              </div>
-            )}
-          </div>
-
-          <div className="flex flex-col sm:flex-row lg:flex-col gap-3 lg:items-end">
-            {showSettings ? (
-              <button
-                onClick={handleSavePreferences}
-                className="inline-flex items-center justify-center px-6 py-3 bg-moss text-paper text-body-sm uppercase tracking-[0.04em] hover:bg-moss-deep transition-colors duration-fast"
-              >
-                Salvar preferências
-              </button>
-            ) : (
+            {/* Ações */}
+            <div className="flex items-center gap-3 md:shrink-0 flex-wrap">
               <button
                 onClick={handleAcceptAll}
-                className="inline-flex items-center justify-center px-6 py-3 bg-moss text-paper text-body-sm uppercase tracking-[0.04em] hover:bg-moss-deep transition-colors duration-fast"
+                className="px-4 py-2 bg-moss text-paper text-caption uppercase tracking-[0.04em] hover:bg-moss-deep transition-colors duration-fast"
               >
                 {c.aceitar}
               </button>
-            )}
-            <button
-              onClick={handleEssentialsOnly}
-              className="inline-flex items-center justify-center px-6 py-3 border border-ink text-ink text-body-sm uppercase tracking-[0.04em] hover:bg-ink hover:text-paper transition-colors duration-fast"
-            >
-              {c.recusar}
-            </button>
-            <button
-              onClick={() => setShowSettings((v) => !v)}
-              className="text-body-sm text-ash hover:text-ink transition-colors duration-fast underline underline-offset-4"
-            >
-              {showSettings ? 'Fechar configurações' : 'Configurar'}
-            </button>
+              <button
+                onClick={handleEssentialsOnly}
+                className="px-4 py-2 border border-ink text-ink text-caption uppercase tracking-[0.04em] hover:bg-ink hover:text-paper transition-colors duration-fast"
+              >
+                {c.recusar}
+              </button>
+              <button
+                onClick={() => setShowSettings(true)}
+                className="text-caption text-ash hover:text-ink underline underline-offset-4 transition-colors duration-fast"
+              >
+                {c.configurar}
+              </button>
+            </div>
           </div>
+        </div>
+      </div>
+
+      {/* Modal de preferências — desktop centralizado, mobile bottom-sheet. */}
+      {showSettings && (
+        <CookieSettingsModal
+          analytics={analyticsToggle}
+          marketing={marketingToggle}
+          onAnalytics={setAnalyticsToggle}
+          onMarketing={setMarketingToggle}
+          onSave={handleSavePreferences}
+          onCancel={() => setShowSettings(false)}
+        />
+      )}
+    </>
+  )
+}
+
+interface CookieSettingsModalProps {
+  analytics: boolean
+  marketing: boolean
+  onAnalytics: (v: boolean) => void
+  onMarketing: (v: boolean) => void
+  onSave: () => void
+  onCancel: () => void
+}
+
+function CookieSettingsModal({
+  analytics,
+  marketing,
+  onAnalytics,
+  onMarketing,
+  onSave,
+  onCancel,
+}: CookieSettingsModalProps) {
+  const c = microcopy.cookies
+  return (
+    <div className="fixed inset-0 z-[60] flex items-end md:items-start md:justify-center">
+      {/* Backdrop */}
+      <button
+        type="button"
+        aria-label="Fechar"
+        onClick={onCancel}
+        className="absolute inset-0 bg-ink/60"
+      />
+
+      {/* Painel — bottom-sheet mobile / centralizado desktop */}
+      <div
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="cookie-modal-title"
+        className={cn(
+          'relative w-full bg-paper border-t border-bone p-6',
+          'md:max-w-md md:mx-auto md:mt-[20vh] md:border md:border-bone md:p-8',
+        )}
+      >
+        <h2
+          id="cookie-modal-title"
+          className="font-display text-heading-lg text-ink mb-2"
+        >
+          {c.modal_titulo}
+        </h2>
+        <p className="text-body-sm text-ash leading-relaxed mb-6">
+          {c.modal_subtitulo}
+        </p>
+
+        <div className="flex flex-col gap-4 border-t border-bone pt-6">
+          <ConsentRow
+            title={c.categoria_essenciais_titulo}
+            description={c.categoria_essenciais_descricao}
+            checked
+            disabled
+          />
+          <ConsentRow
+            title={c.categoria_analytics_titulo}
+            description={c.categoria_analytics_descricao}
+            checked={analytics}
+            onChange={onAnalytics}
+          />
+          <ConsentRow
+            title={c.categoria_marketing_titulo}
+            description={c.categoria_marketing_descricao}
+            checked={marketing}
+            onChange={onMarketing}
+          />
+        </div>
+
+        <div className="mt-8 flex flex-wrap items-center gap-4 justify-end">
+          <button
+            onClick={onCancel}
+            className="text-caption text-ash hover:text-ink underline underline-offset-4 transition-colors duration-fast"
+          >
+            {c.modal_cancelar}
+          </button>
+          <button
+            onClick={onSave}
+            className="px-4 py-2 bg-moss text-paper text-caption uppercase tracking-[0.04em] hover:bg-moss-deep transition-colors duration-fast"
+          >
+            {c.modal_salvar}
+          </button>
         </div>
       </div>
     </div>

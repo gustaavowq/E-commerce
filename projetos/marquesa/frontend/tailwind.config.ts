@@ -29,6 +29,9 @@ const config: Config = {
         'text-muted': 'var(--text-muted)',
         'text-subtle': 'var(--text-subtle)',
         'text-inverse': 'var(--text-inverse)',
+        // Subtle em fundos escuros (footer/dark) — equivale a ash-pale (#B0B0B0).
+        // Designer iter2: garante AA (5.6:1) sobre graphite, melhor que opacity arbitrária.
+        'inverse-subtle': 'var(--text-inverse-subtle)',
         'border-default': 'var(--border)',
         'border-strong': 'var(--border-strong)',
         'border-subtle': 'var(--border-subtle)',

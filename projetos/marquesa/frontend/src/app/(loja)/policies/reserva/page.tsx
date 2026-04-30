@@ -1,3 +1,5 @@
+import { microcopy } from '@/lib/microcopy'
+
 export const metadata = {
   title: 'Política de reserva',
   description: 'Como funciona a reserva por sinal na Marquesa.',
@@ -7,7 +9,12 @@ export default function PoliticaReservaPage() {
   return (
     <article className="container-marquesa py-24 max-w-3xl">
       <p className="text-eyebrow uppercase tracking-[0.16em] text-ash mb-4">Políticas</p>
-      <h1 className="font-display text-display-xl text-ink mb-12">Política de reserva</h1>
+      <h1 className="font-display text-display-xl text-ink mb-8">Política de reserva</h1>
+
+      {/* Intro editorial — voz da marca antes do texto legal */}
+      <p className="text-body-lg text-ink leading-relaxed mb-12 pb-12 border-b border-bone">
+        {microcopy.policies.reserva_intro}
+      </p>
 
       <div className="prose-marquesa space-y-6 text-body-lg text-ink leading-relaxed">
         <h2 className="font-display text-heading-lg text-ink mt-8">O que é a reserva por sinal</h2>

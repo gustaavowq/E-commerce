@@ -67,15 +67,27 @@ const organizationJsonLd = {
   identifier: 'CRECI/SP 12345-J',
 }
 
+// Revalidate periódico — destaques mudam pouco, 60s mantém HTML quente sem ficar stale.
+export const revalidate = 60
+
 // SSR — busca destaques no servidor pra HTML inicial completo.
+// Tenta `destaque=true` (filtro do backend); se vier vazio, fallback pra últimos 3 recentes
+// pra não deixar a home com seção sem conteúdo (lição feedback_demo_first_seed_completo).
 async function getDestaques(): Promise<ImovelListItem[]> {
   try {
     const res = await apiList<ImovelListItem>('/api/imoveis', {
-      query: { destaque: 'true', limit: 6, sort: 'recentes' },
+      query: { destaque: 'true', limit: 3, sort: 'recentes' },
       withAuth: false,
       next: { revalidate: 60 } as never,
     })
-    return res.data
+    if (res.data.length > 0) return res.data
+    // Fallback: backend pode não suportar destaque=true ou catálogo ainda sem flag.
+    const fallback = await apiList<ImovelListItem>('/api/imoveis', {
+      query: { limit: 3, sort: 'recentes' },
+      withAuth: false,
+      next: { revalidate: 60 } as never,
+    })
+    return fallback.data
   } catch {
     return []
   }
@@ -93,30 +105,45 @@ export default async function HomePage() {
       />
       <Hero imovelSlug={heroImovel?.slug} imageUrl={heroImovel?.fotos?.[0]} />
 
-      {/* Destaques */}
-      <section className="container-marquesa py-24">
+      {/* Curadoria — abertura editorial entre Hero e Destaques.
+         Discreto, max-w-2xl, font-display em peso Light. */}
+      <section className="container-marquesa py-16 md:py-24">
+        <ScrollReveal>
+          <div className="max-w-2xl">
+            <p className="text-eyebrow uppercase tracking-[0.16em] text-ash mb-4">
+              {microcopy.home.curadoria_intro_eyebrow}
+            </p>
+            <p className="font-display font-light text-display-md text-ink leading-snug">
+              {microcopy.home.curadoria_intro}
+            </p>
+          </div>
+        </ScrollReveal>
+      </section>
+
+      {/* Em destaque — 3 cards estáticos, sem carousel */}
+      <section className="container-marquesa pb-24">
         <ScrollReveal>
           <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-12">
             <div>
               <p className="text-eyebrow uppercase tracking-[0.16em] text-ash mb-3">
-                Catálogo
+                {microcopy.home.secao_destaques}
               </p>
               <h2 className="font-display text-display-lg text-ink">
-                {microcopy.home.secao_destaques}
+                Seleção atual
               </h2>
-              <p className="text-body text-ash mt-3 max-w-md">
+              <p className="text-body text-ash mt-3 max-w-xl">
                 {microcopy.home.secao_destaques_subtitulo}
               </p>
             </div>
             <Link
               href="/imoveis"
-              className="text-body-sm text-ink hover:underline underline-offset-4 self-start md:self-auto"
+              className="text-body-sm text-ink hover:text-moss border-b border-ink hover:border-moss pb-1 self-start md:self-auto transition-colors duration-fast"
             >
-              Ver catálogo completo →
+              Ver catálogo completo
             </Link>
           </div>
         </ScrollReveal>
-        <ImovelGrid imoveis={destaques} />
+        <ImovelGrid imoveis={destaques} emptyMessage={microcopy.vazio.sem_destaques} />
       </section>
 
       {/* Sobre Marquesa */}

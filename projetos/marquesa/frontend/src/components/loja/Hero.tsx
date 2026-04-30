@@ -11,9 +11,11 @@ interface HeroProps {
 export function Hero({
   imageUrl = 'https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=2400&q=85',
   imovelSlug,
-  eyebrow = 'CURADORIA · 2026',
+  eyebrow,
 }: HeroProps) {
   const linkPrimario = imovelSlug ? `/imoveis/${imovelSlug}` : '/imoveis'
+  // Eyebrow sai do JSON quando não vier override por prop. Permite tunar centralizado.
+  const eyebrowText = eyebrow ?? microcopy.hero.eyebrow
 
   return (
     <section className="relative w-screen left-1/2 -translate-x-1/2 h-[80vh] md:h-[85vh] min-h-[560px] overflow-hidden">
@@ -24,21 +26,26 @@ export function Hero({
         fill
         sizes="100vw"
         priority
+        quality={80}
         className="object-cover"
       />
-      {/* Overlay sutil pra garantir contraste */}
-      <div className="absolute inset-0 bg-ink/20" aria-hidden="true" />
+      {/* Overlay gradient — escurece a base (onde está o texto) e mantém topo limpo.
+         Spec Designer iter2: from-ink/55 via-ink/25 to-transparent garante AA em texto pequeno. */}
+      <div
+        className="absolute inset-0 bg-gradient-to-t from-ink/55 via-ink/25 to-transparent"
+        aria-hidden="true"
+      />
 
       {/* Conteúdo alinhado à base */}
       <div className="relative h-full flex flex-col justify-end pb-16 md:pb-24">
         <div className="container-marquesa">
-          <p className="text-eyebrow uppercase tracking-[0.16em] text-paper/70 mb-6">
-            {eyebrow}
+          <p className="text-eyebrow uppercase tracking-[0.16em] text-paper mb-6">
+            {eyebrowText}
           </p>
           <h1 className="font-display font-light text-display-hero text-paper max-w-4xl leading-[0.95]">
             {microcopy.hero.titulo}
           </h1>
-          <p className="font-sans text-body-lg text-paper/80 mt-6 max-w-xl">
+          <p className="font-sans text-body-lg text-paper/95 mt-6 max-w-xl">
             {microcopy.hero.subtitulo}
           </p>
           <div className="mt-10 flex flex-wrap gap-4">
@@ -50,7 +57,7 @@ export function Hero({
             </Link>
             <Link
               href="/sobre"
-              className="inline-flex items-center justify-center px-8 py-4 font-sans font-medium text-body-sm uppercase tracking-[0.04em] border border-paper/40 text-paper hover:bg-paper hover:text-ink transition-colors duration-fast"
+              className="inline-flex items-center justify-center px-8 py-4 font-sans font-medium text-body-sm uppercase tracking-[0.04em] border border-paper/60 text-paper hover:bg-paper hover:text-ink transition-colors duration-fast"
             >
               {microcopy.hero.cta_secundario}
             </Link>

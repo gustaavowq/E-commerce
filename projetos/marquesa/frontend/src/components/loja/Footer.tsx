@@ -104,9 +104,9 @@ export function Footer() {
 
       <div className="border-t border-paper/10">
         <div className="container-marquesa py-8 flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
-          <p className="text-caption text-paper/40">{c.creci}</p>
-          <p className="text-caption text-paper/40">{c.endereco}</p>
-          <p className="text-caption text-paper/40">{c.copyright}</p>
+          <p className="text-caption text-inverse-subtle">{c.creci}</p>
+          <p className="text-caption text-inverse-subtle">{c.endereco}</p>
+          <p className="text-caption text-inverse-subtle">{c.copyright}</p>
         </div>
       </div>
     </footer>

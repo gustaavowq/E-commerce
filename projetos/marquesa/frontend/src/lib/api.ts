@@ -1,6 +1,8 @@
 // Cliente HTTP Marquesa.
-// - Server-side usa INTERNAL_API_URL (rede interna no compose)
-// - Client-side usa NEXT_PUBLIC_API_URL (browser)
+// - Server-side usa INTERNAL_API_URL (rede interna no compose) ou cai pro localhost dev
+// - Client-side usa NEXT_PUBLIC_API_URL — string vazia significa caminho relativo,
+//   onde o rewrite() do Next proxa pra `${INTERNAL_API_URL}/api/*`. Assim cookies
+//   httpOnly persistem por same-origin (lição cloudflare-tunnel-same-origin-rewrites).
 // - credentials: 'include' propaga cookies httpOnly do backend
 
 import type { ApiResponse, ListResponse } from '@/types/api'
@@ -19,13 +21,17 @@ export class ApiError extends Error {
 
 function getBaseUrl(): string {
   if (typeof window === 'undefined') {
+    // Server-side: INTERNAL_API_URL preferido. Cai pro NEXT_PUBLIC_API_URL só se for
+    // string não-vazia (`||` está OK aqui porque '' não é URL absoluta válida no servidor),
+    // senão localhost dev.
     return (
       process.env.INTERNAL_API_URL ||
       process.env.NEXT_PUBLIC_API_URL ||
       'http://localhost:8211'
     )
   }
-  return process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8211'
+  // Client-side: '?? ""' preserva string vazia. Vazio = path relativo + rewrite Next.
+  return process.env.NEXT_PUBLIC_API_URL ?? ''
 }
 
 export type ApiOptions = Omit<RequestInit, 'body'> & {

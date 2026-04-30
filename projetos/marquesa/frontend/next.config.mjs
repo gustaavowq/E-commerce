@@ -31,13 +31,24 @@ const nextConfig = {
   },
 
   // Vars expostas ao client (NEXT_PUBLIC_*) com fallbacks de dev
+  // NOTE: NEXT_PUBLIC_API_URL pode ser string vazia ('') — browser usa caminho relativo
+  // e o rewrite() abaixo proxa pro backend interno. Isso elimina cross-origin em
+  // ambiente tunnel/cloudflare onde back e front estão em hosts diferentes.
   env: {
-    NEXT_PUBLIC_API_URL: process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8211',
+    NEXT_PUBLIC_API_URL: process.env.NEXT_PUBLIC_API_URL ?? '',
     NEXT_PUBLIC_WHATSAPP_NUMBER: process.env.NEXT_PUBLIC_WHATSAPP_NUMBER || '5511900000000',
     NEXT_PUBLIC_SITE_URL: process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000',
-    // Analytics (opcionais — vazios = scripts não carregam).
     NEXT_PUBLIC_GA4_ID: process.env.NEXT_PUBLIC_GA4_ID || '',
     NEXT_PUBLIC_META_PIXEL_ID: process.env.NEXT_PUBLIC_META_PIXEL_ID || '',
+  },
+
+  // Proxy interno: browser pede /api/*, Next reescreve pro backend.
+  // Cookies httpOnly persistem porque tudo é same-origin do ponto de vista do browser.
+  async rewrites() {
+    const target = process.env.INTERNAL_API_URL || 'http://localhost:8211'
+    return [
+      { source: '/api/:path*', destination: `${target}/api/:path*` },
+    ]
   },
 
   async headers() {

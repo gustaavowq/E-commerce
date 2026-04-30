@@ -277,9 +277,21 @@
   "cookies": {
     "titulo": "Cookies",
     "texto": "Usamos cookies essenciais para o funcionamento do site e cookies analíticos para entender como você o utiliza. Você pode aceitar ou recusar os analíticos.",
-    "aceitar": "Aceitar todos",
-    "recusar": "Apenas essenciais",
-    "saiba_mais": "Política de privacidade"
+    "texto_curto": "Cookies essenciais para o site funcionar e analíticos para melhorá-lo. Você decide.",
+    "aceitar": "Aceitar",
+    "recusar": "Recusar",
+    "configurar": "Configurar",
+    "saiba_mais": "Saiba mais",
+    "modal_titulo": "Preferências de cookies",
+    "modal_subtitulo": "Escolha o que você permite. Essenciais são sempre ativos porque o site depende deles para funcionar.",
+    "modal_salvar": "Salvar preferências",
+    "modal_cancelar": "Cancelar",
+    "categoria_essenciais_titulo": "Essenciais",
+    "categoria_essenciais_descricao": "Necessários para autenticação, sessão e segurança. Sempre ativos.",
+    "categoria_analytics_titulo": "Analytics",
+    "categoria_analytics_descricao": "Entender como o site é usado para melhorar o catálogo e a experiência.",
+    "categoria_marketing_titulo": "Marketing",
+    "categoria_marketing_descricao": "Mensurar campanhas e personalizar comunicações. Opcional."
   },
   "compartilhar": {
     "titulo": "Compartilhar imóvel",

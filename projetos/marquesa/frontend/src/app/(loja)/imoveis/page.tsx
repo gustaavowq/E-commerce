@@ -1,4 +1,5 @@
 import { Suspense } from 'react'
+import Link from 'next/link'
 import { FiltersBar } from '@/components/loja/FiltersBar'
 import { ImovelGrid, ImovelGridSkeleton } from '@/components/loja/ImovelGrid'
 
@@ -98,7 +99,10 @@ export default async function CatalogoPage({
         <header className="mb-12">
           <p className="text-eyebrow uppercase tracking-[0.16em] text-ash mb-3">Catálogo</p>
           <h1 className="font-display text-display-lg text-ink">{microcopy.catalogo.titulo}</h1>
-          <p className="text-body text-ash mt-3 tnum">
+          <p className="text-body-lg text-ink leading-relaxed mt-4 max-w-2xl">
+            {microcopy.catalogo.intro_editorial}
+          </p>
+          <p className="text-body text-ash mt-6 tnum">
             {meta.total === 1
               ? microcopy.catalogo.resultado_singular
               : microcopy.catalogo.resultado_plural.replace('{n}', String(meta.total))}
@@ -111,6 +115,17 @@ export default async function CatalogoPage({
 
         {/* Paginação simples */}
         {meta.totalPages > 1 && <Pagination meta={meta} searchParams={searchParams} />}
+
+        {/* Outro editorial — saída humana sem virar pop-up de captura */}
+        <div className="mt-24 text-center">
+          <p className="text-body text-ash mb-3">{microcopy.catalogo.outro_editorial}</p>
+          <Link
+            href="/contato"
+            className="inline-block text-body-sm text-ink hover:text-moss border-b border-ink hover:border-moss pb-1 transition-colors duration-fast"
+          >
+            {microcopy.catalogo.outro_editorial_cta}
+          </Link>
+        </div>
       </section>
     </>
   )
