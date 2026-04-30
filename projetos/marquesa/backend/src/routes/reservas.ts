@@ -177,3 +177,47 @@ reservasRouter.get('/:id', requireAuth, async (req, res, next) => {
     next(err)
   }
 })
+
+// =====================================================================
+// POST /api/reservas/:id/mock-aprovar — simula aprovação (só sem token MP real)
+// Permite demo do fluxo completo sem cobrança real. Bloqueado quando token MP
+// PRODUCTION está setado. Cliente dono da reserva.
+// =====================================================================
+reservasRouter.post('/:id/mock-aprovar', requireAuth, async (req, res, next) => {
+  try {
+    const token = env.MERCADOPAGO_ACCESS_TOKEN
+    const tokenReal = !!token && !/x{4,}/i.test(token)
+    if (tokenReal) throw errors.forbidden('Mock indisponível com token MP real configurado')
+
+    const id = String(req.params.id ?? '')
+    const reserva = await prisma.reserva.findUnique({ where: { id } })
+    if (!reserva) throw errors.notFound('Reserva não encontrada')
+    if (reserva.userId !== req.user!.id) throw errors.forbidden()
+    if (reserva.pagamentoStatus === 'APROVADO') {
+      return ok(res, { reservaId: id, status: 'APROVADO', mock: true })
+    }
+
+    const expiraEm = new Date(Date.now() + env.RESERVA_DURACAO_DIAS * 86400_000)
+
+    await prisma.$transaction(async (tx) => {
+      await tx.reserva.update({
+        where: { id },
+        data: {
+          pagamentoStatus: 'APROVADO',
+          status:          'ATIVA',
+          paidAt:          new Date(),
+          expiraEm,
+        },
+      })
+      await tx.imovel.update({
+        where: { id: reserva.imovelId },
+        data:  { status: 'RESERVADO' },
+      })
+    })
+
+    logger.info({ reservaId: id, mock: true }, 'reserva aprovada via mock')
+    return ok(res, { reservaId: id, status: 'APROVADO', mock: true })
+  } catch (err) {
+    next(err)
+  }
+})
