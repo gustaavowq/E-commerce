@@ -21,7 +21,8 @@ const state = {
   audioCtx: null,
   processor: null,
   source: null,
-  samples: [],
+  chunks: [],
+  totalSamples: 0,
   startedAt: null,
   timerHandle: null,
 };
@@ -67,11 +68,14 @@ async function startRecording() {
   state.audioCtx = new AudioContext({ sampleRate: 16000 });
   state.source = state.audioCtx.createMediaStreamSource(state.mediaStream);
   state.processor = state.audioCtx.createScriptProcessor(4096, 1, 1);
-  state.samples = [];
+  state.chunks = [];
+  state.totalSamples = 0;
 
   state.processor.onaudioprocess = (e) => {
     const chunk = e.inputBuffer.getChannelData(0);
-    for (let i = 0; i < chunk.length; i++) state.samples.push(chunk[i]);
+    // WebAudio reusa o buffer interno; copia pro nosso ownership
+    state.chunks.push(new Float32Array(chunk));
+    state.totalSamples += chunk.length;
   };
 
   state.source.connect(state.processor);
@@ -107,9 +111,10 @@ async function stopRecording() {
   els.dot.classList.remove('recording');
   els.dot.classList.add('ready');
 
-  if (state.samples.length < 16000 * 0.3) {
+  if (state.totalSamples < 16000 * 0.3) {
     els.status.textContent = 'Áudio muito curto. Tenta de novo.';
-    state.samples = [];
+    state.chunks = [];
+    state.totalSamples = 0;
     els.record.disabled = false;
     els.stop.disabled = true;
     return;
@@ -122,10 +127,20 @@ async function transcribeSamples() {
   state.transcribing = true;
   els.record.disabled = true;
   els.stop.disabled = true;
-  els.status.textContent = 'Transcrevendo…';
 
-  const float32 = new Float32Array(state.samples);
-  state.samples = [];
+  const totalSec = Math.round(state.totalSamples / 16000);
+  const etaSec = Math.max(2, Math.round(totalSec / 3));
+  els.status.textContent = `Transcrevendo ${totalSec}s de áudio (≈${etaSec}s)…`;
+
+  // Concat todos os chunks num Float32Array contíguo (O(n), sem push quadrático)
+  const float32 = new Float32Array(state.totalSamples);
+  let offset = 0;
+  for (const chunk of state.chunks) {
+    float32.set(chunk, offset);
+    offset += chunk.length;
+  }
+  state.chunks = [];
+  state.totalSamples = 0;
 
   try {
     const result = await window.api.transcribe({ buffer: float32.buffer });
