@@ -33,12 +33,12 @@ export function Hero({
         quality={80}
         className="object-cover"
       />
-      {/* Overlay UNIFORME e SUTIL — feedback iter4 Gustavo: tema branco,
-          sombra densa só na esquerda ficou pesada. Aplicado em toda a foto:
-          ~35% no flat + leve reforço inferior pro scroll cue. */}
-      <div className="absolute inset-0 bg-ink/35" aria-hidden="true" />
+      {/* Overlay UNIFORME e DENSO em toda a foto — feedback Gustavo:
+          gostou da sombra, quer ela espalhada (não só na esquerda).
+          ~60% flat + reforço inferior pro scroll cue. */}
+      <div className="absolute inset-0 bg-ink/60" aria-hidden="true" />
       <div
-        className="absolute inset-0 bg-gradient-to-t from-ink/30 via-transparent to-transparent"
+        className="absolute inset-0 bg-gradient-to-t from-ink/40 via-transparent to-transparent"
         aria-hidden="true"
       />
 
