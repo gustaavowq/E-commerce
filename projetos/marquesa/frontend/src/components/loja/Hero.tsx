@@ -48,18 +48,18 @@ export function Hero({
         <div className="container-marquesa">
           <div className="max-w-2xl">
             <motion.p
-              className="text-eyebrow uppercase tracking-[0.16em] text-paper mb-6 drop-shadow-[0_1px_3px_rgba(10,10,10,0.6)]"
+              className="text-eyebrow uppercase tracking-[0.16em] text-paper mb-6"
               initial={{ opacity: 0, y: 12 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
             >
               {eyebrowText}
             </motion.p>
-            <h1 className="font-display font-light text-display-hero text-paper leading-[0.95] drop-shadow-[0_2px_8px_rgba(10,10,10,0.5)]">
+            <h1 className="font-display font-light text-display-hero text-paper leading-[0.95]">
               <WordReveal text={microcopy.hero.titulo} delay={0.15} staggerChildren={0.09} />
             </h1>
             <motion.p
-              className="font-sans text-body-lg text-paper mt-6 drop-shadow-[0_2px_10px_rgba(10,10,10,0.95)] [text-shadow:0_1px_2px_rgba(10,10,10,0.85)]"
+              className="font-sans text-body-lg text-paper mt-6"
               initial={{ opacity: 0, y: 12 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.7, delay: 0.6, ease: [0.16, 1, 0.3, 1] }}
@@ -74,13 +74,13 @@ export function Hero({
             >
               <Link
                 href={linkPrimario}
-                className="inline-flex items-center justify-center px-8 py-4 font-sans font-medium text-body-sm uppercase tracking-[0.04em] bg-paper text-ink hover:bg-paper-warm transition-colors duration-fast shadow-[0_4px_16px_rgba(10,10,10,0.25)]"
+                className="inline-flex items-center justify-center px-8 py-4 font-sans font-medium text-body-sm uppercase tracking-[0.04em] bg-paper text-ink hover:bg-paper-warm transition-colors duration-fast"
               >
                 {microcopy.hero.cta_primario}
               </Link>
               <Link
                 href="/sobre"
-                className="inline-flex items-center justify-center px-8 py-4 font-sans font-medium text-body-sm uppercase tracking-[0.04em] border border-paper text-paper hover:bg-paper hover:text-ink transition-colors duration-fast bg-ink/30 backdrop-blur-sm"
+                className="inline-flex items-center justify-center px-8 py-4 font-sans font-medium text-body-sm uppercase tracking-[0.04em] border border-paper text-paper hover:bg-paper hover:text-ink transition-colors duration-fast"
               >
                 {microcopy.hero.cta_secundario}
               </Link>
