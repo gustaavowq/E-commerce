@@ -38,12 +38,15 @@ export function Hero({
              a fotografia visível à direita — feedback Gustavo: foto perfeita,
              texto ilegível por estar sobre área clara da imagem.
           2) Vignette inferior sutil garante contraste no scroll cue. */}
+      {/* Overlay esquerda: gradient que dura até ~60% e morre suave.
+          Garante zona escura sólida pro texto, foto fica intacta na direita. */}
       <div
-        className="absolute inset-0 bg-gradient-to-r from-ink/95 via-ink/75 to-ink/25"
+        className="absolute inset-0 bg-gradient-to-r from-ink via-ink/85 via-30% to-transparent to-65%"
         aria-hidden="true"
       />
+      {/* Vignette inferior leve pra preservar contraste do scroll cue. */}
       <div
-        className="absolute inset-0 bg-gradient-to-t from-ink/40 via-ink/10 to-transparent"
+        className="absolute inset-0 bg-gradient-to-t from-ink/50 via-ink/15 to-transparent"
         aria-hidden="true"
       />
 
@@ -64,7 +67,7 @@ export function Hero({
               <WordReveal text={microcopy.hero.titulo} delay={0.15} staggerChildren={0.09} />
             </h1>
             <motion.p
-              className="font-sans text-body-lg text-paper mt-6 drop-shadow-[0_1px_4px_rgba(10,10,10,0.6)]"
+              className="font-sans text-body-lg text-paper mt-6 drop-shadow-[0_2px_10px_rgba(10,10,10,0.95)] [text-shadow:0_1px_2px_rgba(10,10,10,0.85)]"
               initial={{ opacity: 0, y: 12 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.7, delay: 0.6, ease: [0.16, 1, 0.3, 1] }}
@@ -85,7 +88,7 @@ export function Hero({
               </Link>
               <Link
                 href="/sobre"
-                className="inline-flex items-center justify-center px-8 py-4 font-sans font-medium text-body-sm uppercase tracking-[0.04em] border border-paper/70 text-paper hover:bg-paper hover:text-ink transition-colors duration-fast backdrop-blur-[2px] bg-ink/10"
+                className="inline-flex items-center justify-center px-8 py-4 font-sans font-medium text-body-sm uppercase tracking-[0.04em] border border-paper text-paper hover:bg-paper hover:text-ink transition-colors duration-fast bg-ink/70 backdrop-blur-md"
               >
                 {microcopy.hero.cta_secundario}
               </Link>
