@@ -1,7 +1,6 @@
 'use client'
 
-import { motion, useReducedMotion } from 'framer-motion'
-import type { ReactNode } from 'react'
+import { useEffect, useRef, useState, type ReactNode } from 'react'
 
 type Direction = 'up' | 'down' | 'left' | 'right' | 'fade'
 
@@ -9,68 +8,91 @@ interface ScrollRevealProps {
   children: ReactNode
   delay?: number
   direction?: Direction
-  distance?: number
   duration?: number
-  as?: keyof typeof motionTags
+  as?: 'div' | 'section' | 'article' | 'li' | 'ol' | 'ul' | 'header'
   className?: string
 }
 
-const motionTags = {
-  div: motion.div,
-  section: motion.section,
-  article: motion.article,
-  li: motion.li,
-  ol: motion.ol,
-  ul: motion.ul,
-  header: motion.header,
-} as const
+// REGRA ABSOLUTA (memória feedback_nunca_esconder_conteudo_inicial):
+// HTML SSR sai com conteúdo VISÍVEL (opacity:1 default). Se JS hidrar, aplicamos
+// estado "before-reveal" (opacity-0 + translate) E observamos viewport. Quando
+// entra na tela, removemos as classes "before" → CSS transition cuida do fade.
+// Se JS falhar / atrasar / framer não montar — conteúdo permanece visível.
 
-const offsetByDirection: Record<Direction, { x?: number; y?: number }> = {
-  up: { y: 32 },
-  down: { y: -32 },
-  left: { x: 32 },
-  right: { x: -32 },
-  fade: {},
+const directionToTranslate: Record<Direction, string> = {
+  up: 'translate-y-6',
+  down: '-translate-y-6',
+  left: 'translate-x-6',
+  right: '-translate-x-6',
+  fade: '',
 }
 
-// Scroll-reveal padrão Marquesa via Framer Motion.
-// Run-once via viewport={{ once: true, margin: '0px 0px -10% 0px' }}.
-// Respeita prefers-reduced-motion (sem distance, só fade).
-// API mantida — todos os usos antigos seguem funcionando.
 export function ScrollReveal({
   children,
   delay = 0,
   direction = 'up',
-  distance,
   duration = 0.4,
-  as = 'div',
-  className,
+  as: Tag = 'div',
+  className = '',
 }: ScrollRevealProps) {
-  const prefersReduced = useReducedMotion()
-  const Tag = motionTags[as]
-  const offset = offsetByDirection[direction]
-  const x = prefersReduced ? 0 : (distance !== undefined ? Math.sign(offset.x ?? 0) * distance : offset.x ?? 0)
-  const y = prefersReduced ? 0 : (distance !== undefined ? Math.sign(offset.y ?? 0) * distance : offset.y ?? 0)
+  const ref = useRef<HTMLElement | null>(null)
+  // armed = JS rodou e prendeu o estado "before". Default false → sai visível no SSR.
+  const [armed, setArmed] = useState(false)
+  const [revealed, setRevealed] = useState(false)
 
-  return (
-    <Tag
-      className={className}
-      initial={{ opacity: 0, x, y }}
-      whileInView={{ opacity: 1, x: 0, y: 0 }}
-      viewport={{ once: true, margin: '0px 0px -10% 0px' }}
-      transition={{
-        duration,
-        delay,
-        ease: [0.16, 1, 0.3, 1],
-      }}
-    >
-      {children}
-    </Tag>
-  )
+  useEffect(() => {
+    // Após mount, só armamos a animação se o usuário NÃO pediu reduced motion.
+    if (typeof window === 'undefined') return
+    const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+    if (reducedMotion) {
+      setRevealed(true)
+      return
+    }
+    setArmed(true)
+
+    const node = ref.current
+    if (!node) return
+    const observer = new IntersectionObserver(
+      (entries) => {
+        for (const entry of entries) {
+          if (entry.isIntersecting) {
+            setTimeout(() => setRevealed(true), delay * 1000)
+            observer.unobserve(entry.target)
+          }
+        }
+      },
+      { threshold: 0.12, rootMargin: '0px 0px -8% 0px' },
+    )
+    observer.observe(node)
+    return () => observer.disconnect()
+  }, [delay])
+
+  // Se ainda não armou (SSR ou JS atrasado): conteúdo visível.
+  // Se armou e ainda não revelou: aplica before (opacity-0 + translate).
+  // Se revelou: opacity-100, translate zerado.
+  const beforeClasses = armed && !revealed ? `opacity-0 ${directionToTranslate[direction]}` : 'opacity-100'
+  const finalClass = `transition-all ease-out will-change-transform ${beforeClasses} ${className}`
+  const style = { transitionDuration: `${duration}s` }
+  const refAny = ref as React.RefObject<never>
+
+  switch (Tag) {
+    case 'section':
+      return <section ref={refAny} className={finalClass} style={style}>{children}</section>
+    case 'article':
+      return <article ref={refAny} className={finalClass} style={style}>{children}</article>
+    case 'li':
+      return <li ref={refAny} className={finalClass} style={style}>{children}</li>
+    case 'ol':
+      return <ol ref={refAny} className={finalClass} style={style}>{children}</ol>
+    case 'ul':
+      return <ul ref={refAny} className={finalClass} style={style}>{children}</ul>
+    case 'header':
+      return <header ref={refAny} className={finalClass} style={style}>{children}</header>
+    default:
+      return <div ref={refAny} className={finalClass} style={style}>{children}</div>
+  }
 }
 
-// Wrapper que aplica stagger nos filhos diretos.
-// Cada filho deve ser um <StaggerItem> (ou outro motion element com variants).
 interface StaggerListProps {
   staggerChildren?: number
   delay?: number
@@ -79,31 +101,16 @@ interface StaggerListProps {
   children: ReactNode
 }
 
-const containerVariants = (staggerChildren: number, delay: number) => ({
-  hidden: {},
-  visible: {
-    transition: { staggerChildren, delayChildren: delay },
-  },
-})
-
+// Stagger via delay incremental nos children — NÃO esconde nenhum filho
+// no SSR (rendering inicial visível). Após hydration, anima cascata.
 export function StaggerList({
-  staggerChildren = 0.08,
-  delay = 0,
-  as = 'ul',
-  className,
+  as: Tag = 'ul',
+  className = '',
   children,
 }: StaggerListProps) {
-  const variants = containerVariants(staggerChildren, delay)
-  const common = {
-    className,
-    initial: 'hidden' as const,
-    whileInView: 'visible' as const,
-    viewport: { once: true, margin: '0px 0px -10% 0px' },
-    variants,
-  }
-  if (as === 'ul') return <motion.ul {...common}>{children}</motion.ul>
-  if (as === 'ol') return <motion.ol {...common}>{children}</motion.ol>
-  return <motion.div {...common}>{children}</motion.div>
+  if (Tag === 'ol') return <ol className={className}>{children}</ol>
+  if (Tag === 'div') return <div className={className}>{children}</div>
+  return <ul className={className}>{children}</ul>
 }
 
 interface StaggerItemProps {
@@ -111,30 +118,26 @@ interface StaggerItemProps {
   className?: string
   as?: 'li' | 'div' | 'article'
   direction?: Direction
+  index?: number
 }
 
+// Cada item é um ScrollReveal independente com delay calculado pelo index.
 export function StaggerItem({
   children,
   className,
   as = 'li',
   direction = 'up',
+  index = 0,
 }: StaggerItemProps) {
-  const prefersReduced = useReducedMotion()
-  const offset = offsetByDirection[direction]
-  const itemVariants = {
-    hidden: {
-      opacity: 0,
-      x: prefersReduced ? 0 : offset.x ?? 0,
-      y: prefersReduced ? 0 : offset.y ?? 0,
-    },
-    visible: {
-      opacity: 1,
-      x: 0,
-      y: 0,
-      transition: { duration: 0.35, ease: [0.16, 1, 0.3, 1] as [number, number, number, number] },
-    },
-  }
-  if (as === 'li') return <motion.li className={className} variants={itemVariants}>{children}</motion.li>
-  if (as === 'article') return <motion.article className={className} variants={itemVariants}>{children}</motion.article>
-  return <motion.div className={className} variants={itemVariants}>{children}</motion.div>
+  return (
+    <ScrollReveal
+      as={as}
+      direction={direction}
+      delay={index * 0.06}
+      duration={0.35}
+      className={className}
+    >
+      {children}
+    </ScrollReveal>
+  )
 }

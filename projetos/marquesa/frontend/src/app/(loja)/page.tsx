@@ -172,8 +172,8 @@ export default async function HomePage() {
               staggerChildren={0.06}
               className="grid grid-cols-2 md:grid-cols-3 gap-px bg-bone border border-bone"
             >
-              {bairrosTop.map((bairro) => (
-                <StaggerItem key={bairro} as="li" className="bg-paper-warm">
+              {bairrosTop.map((bairro, i) => (
+                <StaggerItem key={bairro} as="li" index={i} className="bg-paper-warm">
                   <Link
                     href={`/imoveis?bairro=${encodeURIComponent(bairro)}`}
                     className="block px-6 py-8 hover:bg-paper transition-colors duration-fast group"
@@ -213,7 +213,7 @@ export default async function HomePage() {
           className="grid grid-cols-1 md:grid-cols-3 gap-12"
         >
           {PASSOS.map((passo, i) => (
-            <StaggerItem key={passo.titulo} as="li" className="border-t border-ink pt-6">
+            <StaggerItem key={passo.titulo} as="li" index={i} className="border-t border-ink pt-6">
               <p className="font-display text-display-md text-ink leading-none mb-6 tnum">
                 {String(i + 1).padStart(2, '0')}
               </p>
@@ -245,16 +245,16 @@ export default async function HomePage() {
             staggerChildren={0.1}
             className="grid grid-cols-2 md:grid-cols-4 gap-8 md:gap-12"
           >
-            <StaggerItem as="div">
+            <StaggerItem as="div" index={0}>
               <StatAnimated to={total} label={microcopy.home.numero_imoveis_label} />
             </StaggerItem>
-            <StaggerItem as="div">
+            <StaggerItem as="div" index={1}>
               <StatAnimated to={bairros.length} label={microcopy.home.numero_bairros_label} />
             </StaggerItem>
-            <StaggerItem as="div">
+            <StaggerItem as="div" index={2}>
               <StatAnimated to={100} suffix="%" label={microcopy.home.numero_documentacao_label} />
             </StaggerItem>
-            <StaggerItem as="div">
+            <StaggerItem as="div" index={3}>
               <StatAnimated to={5} suffix="%" label={microcopy.home.numero_sinal_label} />
             </StaggerItem>
           </StaggerList>
