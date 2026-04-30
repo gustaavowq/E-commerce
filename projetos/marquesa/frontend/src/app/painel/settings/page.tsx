@@ -14,10 +14,10 @@ export default function PainelSettingsPage() {
 
       <section className="border border-bone bg-paper p-8">
         <h2 className="text-eyebrow uppercase tracking-[0.16em] text-ash mb-4">Conta</h2>
-        <dl className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+        <dl className="grid grid-cols-1 sm:grid-cols-2 gap-x-8 gap-y-5">
           <Field label="Nome" value={user?.name} />
-          <Field label="Email" value={user?.email} />
           <Field label="Perfil" value={user?.role} />
+          <Field label="Email" value={user?.email} className="sm:col-span-2" />
         </dl>
       </section>
 
@@ -34,11 +34,13 @@ export default function PainelSettingsPage() {
   )
 }
 
-function Field({ label, value }: { label: string; value?: string | null }) {
+function Field({
+  label, value, className,
+}: { label: string; value?: string | null; className?: string }) {
   return (
-    <div>
+    <div className={className}>
       <dt className="text-eyebrow uppercase tracking-[0.16em] text-ash text-caption">{label}</dt>
-      <dd className="text-body text-ink mt-1">{value ?? '—'}</dd>
+      <dd className="text-body text-ink mt-1 break-all">{value ?? '—'}</dd>
     </div>
   )
 }

@@ -142,7 +142,8 @@ adminDashboardRouter.get('/series', async (req, res, next) => {
 
 // =====================================================================
 // GET /api/admin/dashboard/summary — consolidado
-// Retorna { funil, topImoveis, kpis, reservasAtivasResumo }
+// Retorna { funil, topImoveis, kpis, reservasAtivasResumo,
+//          distribuicaoTipo, imoveisPorStatus, serie30d }
 // =====================================================================
 adminDashboardRouter.get('/summary', async (_req, res, next) => {
   try {
@@ -164,12 +165,67 @@ adminDashboardRouter.get('/summary', async (_req, res, next) => {
       { etapa: 'Vendidos',         count: reservasConvertidas },
     ]
 
+    // Distribuição por tipo (apartamento/casa/cobertura/sobrado/terreno/comercial)
+    const distTipoRaw = await prisma.imovel.groupBy({
+      by:     ['tipo'],
+      _count: { _all: true },
+      where:  { status: { not: 'INATIVO' } },
+    })
+    const distribuicaoTipo = distTipoRaw.map(d => ({
+      tipo:  d.tipo,
+      count: d._count._all,
+    }))
+
+    // Imóveis por status (todos os 5)
+    const statusRaw = await prisma.imovel.groupBy({
+      by:     ['status'],
+      _count: { _all: true },
+    })
+    const imoveisPorStatus = statusRaw.map(s => ({
+      status: s.status,
+      count:  s._count._all,
+    }))
+
+    // Série 30d: leads por dia + reservas pagas por dia (single query roda 2x)
+    const leadsSerie = await prisma.$queryRaw<Array<{ day: Date; count: bigint }>>`
+      SELECT date_trunc('day', "created_at") AS day, COUNT(*)::bigint AS count
+      FROM leads
+      WHERE "created_at" >= ${thirtyDaysAgo}
+      GROUP BY 1 ORDER BY 1
+    `
+    const reservasSerie = await prisma.$queryRaw<Array<{ day: Date; count: bigint; sum: number | null }>>`
+      SELECT date_trunc('day', "paid_at") AS day, COUNT(*)::bigint AS count,
+             SUM("valor_sinal")::float AS sum
+      FROM reservas
+      WHERE "paid_at" IS NOT NULL AND "paid_at" >= ${thirtyDaysAgo}
+        AND "pagamento_status" = 'APROVADO'
+      GROUP BY 1 ORDER BY 1
+    `
+    // Normaliza pra 30 dias preenchendo zero onde não houver registro
+    const serie30d: Array<{ day: string; leads: number; reservas: number; receita: number }> = []
+    for (let i = 29; i >= 0; i--) {
+      const d = new Date(Date.now() - i * 24 * 60 * 60 * 1000)
+      const dayStr = d.toISOString().slice(0, 10)
+      const lead = leadsSerie.find(l => l.day.toISOString().slice(0, 10) === dayStr)
+      const res  = reservasSerie.find(r => r.day.toISOString().slice(0, 10) === dayStr)
+      serie30d.push({
+        day:      dayStr,
+        leads:    lead ? Number(lead.count) : 0,
+        reservas: res ? Number(res.count) : 0,
+        receita:  res ? Number(res.sum ?? 0) : 0,
+      })
+    }
+
     // Top 5 por engagement score (viewCount + leads*5 + reservas*20)
     const topImoveisRaw = await prisma.$queryRaw<Array<{
       id: string; slug: string; titulo: string; bairro: string;
-      view_count: number; score: number
+      view_count: number; preco: number; fotos: string[];
+      leads: number; reservas: number; score: number
     }>>`
       SELECT i.id, i.slug, i.titulo, i.bairro, i."view_count",
+        i.preco::float as preco, i.fotos,
+        COALESCE(l.leads, 0)::int as leads,
+        COALESCE(r.reservas, 0)::int as reservas,
         (i."view_count" + COALESCE(l.leads * 5, 0) + COALESCE(r.reservas * 20, 0))::int as score
       FROM imoveis i
       LEFT JOIN (
@@ -190,6 +246,10 @@ adminDashboardRouter.get('/summary', async (_req, res, next) => {
       titulo:    t.titulo,
       bairro:    t.bairro,
       viewCount: Number(t.view_count ?? 0),
+      preco:     Number(t.preco ?? 0),
+      fotos:     Array.isArray(t.fotos) ? t.fotos : [],
+      leads:     Number(t.leads ?? 0),
+      reservas:  Number(t.reservas ?? 0),
       score:     Number(t.score ?? 0),
     }))
 
@@ -237,7 +297,15 @@ adminDashboardRouter.get('/summary', async (_req, res, next) => {
       somaPrecoCheio:  Number(reservasAtivasAgg._sum.precoSnapshot ?? 0),
     }
 
-    return ok(res, { funil, topImoveis, kpis, reservasAtivasResumo })
+    return ok(res, {
+      funil,
+      topImoveis,
+      kpis,
+      reservasAtivasResumo,
+      distribuicaoTipo,
+      imoveisPorStatus,
+      serie30d,
+    })
   } catch (err) {
     next(err)
   }

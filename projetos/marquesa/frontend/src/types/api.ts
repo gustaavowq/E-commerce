@@ -136,24 +136,22 @@ export interface Lead {
   createdAt: string
 }
 
-// Dashboard
+// Dashboard — espelha shape REAL de /api/admin/dashboard/summary
 export interface DashboardKpis {
-  visitas: { valor: number; delta: number | null }
-  leads: { valor: number; delta: number | null }
-  sinaisPagos: { valor: number; delta: number | null }
-  ticketMedio: { valor: number; delta: number | null }
-  conversaoLead: { valor: number; delta: number | null }
-  reservasAtivas: { valor: number; delta: number | null }
-  taxaFechamento: { valor: number; delta: number | null }
-  domMedio: { valor: number; delta: number | null }
-  receitaPrevista: { valor: number; delta: number | null }
-  receitaConfirmada: { valor: number; delta: number | null }
+  ticketMedio: number
+  conversao: number          // %
+  taxaFechamento: number     // %
+  receitaPrevista: number
+  receitaSinaisAtivos: number
+  reservasAtivasCount: number
+  totalImoveis: number
+  imoveisDisponiveis: number
+  imoveisVendidos: number
 }
 
 export interface FunnelEtapa {
-  label: string
-  valor: number
-  convNext: number | null
+  etapa: string
+  count: number
 }
 
 export interface ImovelEngajamento {
@@ -161,12 +159,45 @@ export interface ImovelEngajamento {
   slug: string
   titulo: string
   bairro: string
-  preco: string | number
+  viewCount: number
+  preco: number
   fotos: string[]
-  score: number
-  views: number
   leads: number
   reservas: number
+  score: number
+}
+
+export interface DistribuicaoTipo {
+  tipo: ImovelTipo
+  count: number
+}
+
+export interface ImoveisPorStatus {
+  status: ImovelStatus
+  count: number
+}
+
+export interface SerieDia {
+  day: string        // YYYY-MM-DD
+  leads: number
+  reservas: number
+  receita: number
+}
+
+export interface ReservasAtivasResumo {
+  count: number
+  somaSinais: number
+  somaPrecoCheio: number
+}
+
+export interface DashboardSummary {
+  kpis: DashboardKpis
+  funil: FunnelEtapa[]
+  topImoveis: ImovelEngajamento[]
+  reservasAtivasResumo: ReservasAtivasResumo
+  distribuicaoTipo: DistribuicaoTipo[]
+  imoveisPorStatus: ImoveisPorStatus[]
+  serie30d: SerieDia[]
 }
 
 export interface ApiSuccess<T> {
