@@ -5,7 +5,7 @@ import { useTransition, useState, useEffect } from 'react'
 import { microcopy } from '@/lib/microcopy'
 import { cn } from '@/lib/format'
 
-type Sort = 'recentes' | 'precoAsc' | 'precoDesc' | 'areaDesc'
+type Sort = 'recent' | 'precoAsc' | 'precoDesc' | 'areaDesc'
 
 const tipos: { value: string; label: string }[] = [
   { value: '', label: microcopy.filtros.tipo_todos },
@@ -18,7 +18,7 @@ const tipos: { value: string; label: string }[] = [
 ]
 
 const sorts: { value: Sort; label: string }[] = [
-  { value: 'recentes', label: microcopy.filtros.ordenar_recentes },
+  { value: 'recent', label: microcopy.filtros.ordenar_recentes },
   { value: 'precoAsc', label: microcopy.filtros.ordenar_preco_asc },
   { value: 'precoDesc', label: microcopy.filtros.ordenar_preco_desc },
   { value: 'areaDesc', label: microcopy.filtros.ordenar_area_desc },
@@ -42,7 +42,7 @@ export function FiltersBar() {
   const [precoMin, setPrecoMin] = useState(params.get('precoMin') || '')
   const [precoMax, setPrecoMax] = useState(params.get('precoMax') || '')
   const [quartosMin, setQuartosMin] = useState(params.get('quartosMin') || '')
-  const [sort, setSort] = useState<Sort>((params.get('sort') as Sort) || 'recentes')
+  const [sort, setSort] = useState<Sort>((params.get('sort') as Sort) || 'recent')
 
   // Sincroniza state quando URL muda externamente
   useEffect(() => {
@@ -51,7 +51,7 @@ export function FiltersBar() {
     setPrecoMin(params.get('precoMin') || '')
     setPrecoMax(params.get('precoMax') || '')
     setQuartosMin(params.get('quartosMin') || '')
-    setSort((params.get('sort') as Sort) || 'recentes')
+    setSort((params.get('sort') as Sort) || 'recent')
   }, [params])
 
   const hasFilters = !!(tipo || bairro || precoMin || precoMax || quartosMin)
@@ -63,7 +63,7 @@ export function FiltersBar() {
     if (precoMin) url.set('precoMin', precoMin)
     if (precoMax) url.set('precoMax', precoMax)
     if (quartosMin) url.set('quartosMin', quartosMin)
-    if (sort && sort !== 'recentes') url.set('sort', sort)
+    if (sort && sort !== 'recent') url.set('sort', sort)
     startTransition(() => router.push(`/imoveis?${url.toString()}`))
   }
 
@@ -73,7 +73,7 @@ export function FiltersBar() {
     setPrecoMin('')
     setPrecoMax('')
     setQuartosMin('')
-    setSort('recentes')
+    setSort('recent')
     startTransition(() => router.push('/imoveis'))
   }
 

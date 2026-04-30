@@ -69,7 +69,7 @@ export const dynamic = 'force-dynamic'
 async function getImoveis(): Promise<{ destaques: ImovelListItem[]; total: number; bairros: string[] }> {
   try {
     const todos = await apiList<ImovelListItem>('/api/imoveis', {
-      query: { limit: 50, sort: 'recentes' },
+      query: { limit: 50, sort: 'recent' },
       withAuth: false,
     })
     const dataDestaque = todos.data.filter((i) => (i as { destaque?: boolean }).destaque === true)
