@@ -42,7 +42,7 @@ export function ScrollReveal({
   delay = 0,
   direction = 'up',
   distance,
-  duration = 0.7,
+  duration = 0.4,
   as = 'div',
   className,
 }: ScrollRevealProps) {
@@ -131,7 +131,7 @@ export function StaggerItem({
       opacity: 1,
       x: 0,
       y: 0,
-      transition: { duration: 0.6, ease: [0.16, 1, 0.3, 1] as [number, number, number, number] },
+      transition: { duration: 0.35, ease: [0.16, 1, 0.3, 1] as [number, number, number, number] },
     },
   }
   if (as === 'li') return <motion.li className={className} variants={itemVariants}>{children}</motion.li>
