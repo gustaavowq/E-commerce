@@ -1,6 +1,10 @@
+'use client'
+
 import Link from 'next/link'
 import Image from 'next/image'
+import { motion } from 'framer-motion'
 import { microcopy } from '@/lib/microcopy'
+import { WordReveal } from '@/components/effects/WordReveal'
 
 interface HeroProps {
   imageUrl?: string
@@ -48,16 +52,31 @@ export function Hero({
       <div className="relative h-full flex flex-col justify-center">
         <div className="container-marquesa">
           <div className="max-w-2xl">
-            <p className="text-eyebrow uppercase tracking-[0.16em] text-paper mb-6 drop-shadow-[0_1px_3px_rgba(10,10,10,0.6)]">
+            <motion.p
+              className="text-eyebrow uppercase tracking-[0.16em] text-paper mb-6 drop-shadow-[0_1px_3px_rgba(10,10,10,0.6)]"
+              initial={{ opacity: 0, y: 12 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
+            >
               {eyebrowText}
-            </p>
+            </motion.p>
             <h1 className="font-display font-light text-display-hero text-paper leading-[0.95] drop-shadow-[0_2px_8px_rgba(10,10,10,0.5)]">
-              {microcopy.hero.titulo}
+              <WordReveal text={microcopy.hero.titulo} delay={0.15} staggerChildren={0.09} />
             </h1>
-            <p className="font-sans text-body-lg text-paper mt-6 drop-shadow-[0_1px_4px_rgba(10,10,10,0.6)]">
+            <motion.p
+              className="font-sans text-body-lg text-paper mt-6 drop-shadow-[0_1px_4px_rgba(10,10,10,0.6)]"
+              initial={{ opacity: 0, y: 12 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.7, delay: 0.6, ease: [0.16, 1, 0.3, 1] }}
+            >
               {microcopy.hero.subtitulo}
-            </p>
-            <div className="mt-10 flex flex-wrap gap-4">
+            </motion.p>
+            <motion.div
+              className="mt-10 flex flex-wrap gap-4"
+              initial={{ opacity: 0, y: 12 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.7, delay: 0.85, ease: [0.16, 1, 0.3, 1] }}
+            >
               <Link
                 href={linkPrimario}
                 className="inline-flex items-center justify-center px-8 py-4 font-sans font-medium text-body-sm uppercase tracking-[0.04em] bg-paper text-ink hover:bg-paper-warm transition-colors duration-fast shadow-[0_4px_16px_rgba(10,10,10,0.25)]"
@@ -70,7 +89,7 @@ export function Hero({
               >
                 {microcopy.hero.cta_secundario}
               </Link>
-            </div>
+            </motion.div>
           </div>
         </div>
       </div>

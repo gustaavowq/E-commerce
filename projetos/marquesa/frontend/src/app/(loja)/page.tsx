@@ -2,7 +2,8 @@ import Link from 'next/link'
 import type { Metadata } from 'next'
 import { Hero } from '@/components/loja/Hero'
 import { ImovelGrid } from '@/components/loja/ImovelGrid'
-import { ScrollReveal } from '@/components/effects/ScrollReveal'
+import { ScrollReveal, StaggerList, StaggerItem } from '@/components/effects/ScrollReveal'
+import { CountUp } from '@/components/effects/CountUp'
 import { apiList } from '@/lib/api'
 import type { ImovelListItem } from '@/types/api'
 import { microcopy } from '@/lib/microcopy'
@@ -166,25 +167,27 @@ export default async function HomePage() {
                 </div>
               </div>
             </ScrollReveal>
-            <ScrollReveal>
-              <ul className="grid grid-cols-2 md:grid-cols-3 gap-px bg-bone border border-bone">
-                {bairrosTop.map((bairro) => (
-                  <li key={bairro} className="bg-paper-warm">
-                    <Link
-                      href={`/imoveis?bairro=${encodeURIComponent(bairro)}`}
-                      className="block px-6 py-8 hover:bg-paper transition-colors duration-fast group"
-                    >
-                      <p className="font-display text-heading-lg text-ink group-hover:text-moss transition-colors duration-fast">
-                        {bairro}
-                      </p>
-                      <p className="text-caption text-ash mt-2 uppercase tracking-[0.12em]">
-                        Ver imóveis →
-                      </p>
-                    </Link>
-                  </li>
-                ))}
-              </ul>
-            </ScrollReveal>
+            <StaggerList
+              as="ul"
+              staggerChildren={0.06}
+              className="grid grid-cols-2 md:grid-cols-3 gap-px bg-bone border border-bone"
+            >
+              {bairrosTop.map((bairro) => (
+                <StaggerItem key={bairro} as="li" className="bg-paper-warm">
+                  <Link
+                    href={`/imoveis?bairro=${encodeURIComponent(bairro)}`}
+                    className="block px-6 py-8 hover:bg-paper transition-colors duration-fast group"
+                  >
+                    <p className="font-display text-heading-lg text-ink group-hover:text-moss transition-colors duration-fast">
+                      {bairro}
+                    </p>
+                    <p className="text-caption text-ash mt-2 uppercase tracking-[0.12em]">
+                      Ver imóveis →
+                    </p>
+                  </Link>
+                </StaggerItem>
+              ))}
+            </StaggerList>
           </div>
         </section>
       )}
@@ -204,19 +207,21 @@ export default async function HomePage() {
             </p>
           </div>
         </ScrollReveal>
-        <ScrollReveal>
-          <ol className="grid grid-cols-1 md:grid-cols-3 gap-12">
-            {PASSOS.map((passo, i) => (
-              <li key={passo.titulo} className="border-t border-ink pt-6">
-                <p className="font-display text-display-md text-ink leading-none mb-6 tnum">
-                  {String(i + 1).padStart(2, '0')}
-                </p>
-                <h3 className="font-display text-heading-lg text-ink mb-3">{passo.titulo}</h3>
-                <p className="text-body text-ash leading-relaxed">{passo.corpo}</p>
-              </li>
-            ))}
-          </ol>
-        </ScrollReveal>
+        <StaggerList
+          as="ol"
+          staggerChildren={0.15}
+          className="grid grid-cols-1 md:grid-cols-3 gap-12"
+        >
+          {PASSOS.map((passo, i) => (
+            <StaggerItem key={passo.titulo} as="li" className="border-t border-ink pt-6">
+              <p className="font-display text-display-md text-ink leading-none mb-6 tnum">
+                {String(i + 1).padStart(2, '0')}
+              </p>
+              <h3 className="font-display text-heading-lg text-ink mb-3">{passo.titulo}</h3>
+              <p className="text-body text-ash leading-relaxed">{passo.corpo}</p>
+            </StaggerItem>
+          ))}
+        </StaggerList>
       </section>
 
       {/* Números — 4 stats horizontais */}
@@ -235,14 +240,24 @@ export default async function HomePage() {
               </p>
             </div>
           </ScrollReveal>
-          <ScrollReveal>
-            <dl className="grid grid-cols-2 md:grid-cols-4 gap-8 md:gap-12">
-              <Stat numero={total.toString()} label={microcopy.home.numero_imoveis_label} />
-              <Stat numero={bairros.length.toString()} label={microcopy.home.numero_bairros_label} />
-              <Stat numero="100%" label={microcopy.home.numero_documentacao_label} />
-              <Stat numero="5%" label={microcopy.home.numero_sinal_label} />
-            </dl>
-          </ScrollReveal>
+          <StaggerList
+            as="div"
+            staggerChildren={0.1}
+            className="grid grid-cols-2 md:grid-cols-4 gap-8 md:gap-12"
+          >
+            <StaggerItem as="div">
+              <StatAnimated to={total} label={microcopy.home.numero_imoveis_label} />
+            </StaggerItem>
+            <StaggerItem as="div">
+              <StatAnimated to={bairros.length} label={microcopy.home.numero_bairros_label} />
+            </StaggerItem>
+            <StaggerItem as="div">
+              <StatAnimated to={100} suffix="%" label={microcopy.home.numero_documentacao_label} />
+            </StaggerItem>
+            <StaggerItem as="div">
+              <StatAnimated to={5} suffix="%" label={microcopy.home.numero_sinal_label} />
+            </StaggerItem>
+          </StaggerList>
         </div>
       </section>
 
@@ -293,13 +308,13 @@ export default async function HomePage() {
   )
 }
 
-function Stat({ numero, label }: { numero: string; label: string }) {
+function StatAnimated({ to, suffix = '', label }: { to: number; suffix?: string; label: string }) {
   return (
     <div>
-      <dt className="font-display font-light text-paper text-display-lg leading-none mb-3 tnum">
-        {numero}
-      </dt>
-      <dd className="text-body-sm text-paper/70 leading-snug">{label}</dd>
+      <p className="font-display font-light text-paper text-display-lg leading-none mb-3 tnum">
+        <CountUp to={to} suffix={suffix} duration={1.4} />
+      </p>
+      <p className="text-body-sm text-paper/70 leading-snug">{label}</p>
     </div>
   )
 }
