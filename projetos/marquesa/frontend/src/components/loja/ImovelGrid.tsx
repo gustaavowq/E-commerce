@@ -1,5 +1,4 @@
 import { ImovelCard } from './ImovelCard'
-import { ScrollReveal } from '@/components/effects/ScrollReveal'
 import type { ImovelListItem } from '@/types/api'
 
 interface ImovelGridProps {
@@ -7,6 +6,10 @@ interface ImovelGridProps {
   emptyMessage?: string
 }
 
+// Cards SEMPRE visíveis no SSR — sem ScrollReveal envolvendo. Bug iter5:
+// ScrollReveal armava opacity:0 após hydration e esperava ms tratados como
+// segundos = imagens "sumindo" e alternando entre paints (60-180s pra revelar).
+// Imóveis são CONTEÚDO CRÍTICO, não decoração. Aparecem direto.
 export function ImovelGrid({ imoveis, emptyMessage }: ImovelGridProps) {
   if (imoveis.length === 0) {
     return (
@@ -25,9 +28,7 @@ export function ImovelGrid({ imoveis, emptyMessage }: ImovelGridProps) {
   return (
     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
       {imoveis.map((imovel, idx) => (
-        <ScrollReveal key={imovel.id} delay={Math.min(idx, 6) * 60}>
-          <ImovelCard imovel={imovel} priority={idx < 3} />
-        </ScrollReveal>
+        <ImovelCard key={imovel.id} imovel={imovel} priority={idx < 3} />
       ))}
     </div>
   )

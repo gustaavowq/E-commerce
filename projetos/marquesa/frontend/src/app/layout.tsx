@@ -6,11 +6,17 @@ import { MetaPixel } from '@/components/analytics/MetaPixel'
 import { CookieConsent } from '@/components/CookieConsent'
 import './globals.css'
 
+// preload + display:swap COM adjustFontFallback (default true) reduz FOUT.
+// Adicionado fallback explícito casado nas métricas pra evitar
+// "bold mudando ao recarregar" — feedback Gustavo iter5.
 const display = Cormorant_Garamond({
   subsets: ['latin'],
   weight: ['300', '400', '500'],
   variable: '--font-display-google',
   display: 'swap',
+  preload: true,
+  fallback: ['Georgia', 'Cambria', 'Times New Roman', 'serif'],
+  adjustFontFallback: true,
 })
 
 const sans = Inter({
@@ -18,6 +24,9 @@ const sans = Inter({
   weight: ['400', '500', '600'],
   variable: '--font-sans-google',
   display: 'swap',
+  preload: true,
+  fallback: ['system-ui', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'sans-serif'],
+  adjustFontFallback: true,
 })
 
 export const metadata: Metadata = {
