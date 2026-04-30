@@ -29,39 +29,48 @@ export function Hero({
         quality={80}
         className="object-cover"
       />
-      {/* Overlay gradient — escurece a base (onde está o texto) e mantém topo limpo.
-         Spec Designer iter2: from-ink/55 via-ink/25 to-transparent garante AA em texto pequeno. */}
+      {/* Overlay duplo iter3:
+          1) Gradient HORIZONTAL escurece esquerda (zona do texto) e preserva
+             a fotografia visível à direita — feedback Gustavo: foto perfeita,
+             texto ilegível por estar sobre área clara da imagem.
+          2) Vignette inferior sutil garante contraste no scroll cue. */}
       <div
-        className="absolute inset-0 bg-gradient-to-t from-ink/55 via-ink/25 to-transparent"
+        className="absolute inset-0 bg-gradient-to-r from-ink/80 via-ink/55 to-ink/5"
+        aria-hidden="true"
+      />
+      <div
+        className="absolute inset-0 bg-gradient-to-t from-ink/30 via-transparent to-transparent"
         aria-hidden="true"
       />
 
-      {/* Conteúdo centralizado verticalmente — feedback Gustavo iter3:
-          "deveriam estar no meio da tela, não na base". */}
+      {/* Conteúdo centralizado vertical, encostado à esquerda dentro da
+          coluna escura. max-w-2xl garante que H1 não escapa pra zona clara. */}
       <div className="relative h-full flex flex-col justify-center">
         <div className="container-marquesa">
-          <p className="text-eyebrow uppercase tracking-[0.16em] text-paper mb-6">
-            {eyebrowText}
-          </p>
-          <h1 className="font-display font-light text-display-hero text-paper max-w-4xl leading-[0.95]">
-            {microcopy.hero.titulo}
-          </h1>
-          <p className="font-sans text-body-lg text-paper/95 mt-6 max-w-xl">
-            {microcopy.hero.subtitulo}
-          </p>
-          <div className="mt-10 flex flex-wrap gap-4">
-            <Link
-              href={linkPrimario}
-              className="inline-flex items-center justify-center px-8 py-4 font-sans font-medium text-body-sm uppercase tracking-[0.04em] bg-paper text-ink hover:bg-paper-warm transition-colors duration-fast"
-            >
-              {microcopy.hero.cta_primario}
-            </Link>
-            <Link
-              href="/sobre"
-              className="inline-flex items-center justify-center px-8 py-4 font-sans font-medium text-body-sm uppercase tracking-[0.04em] border border-paper/60 text-paper hover:bg-paper hover:text-ink transition-colors duration-fast"
-            >
-              {microcopy.hero.cta_secundario}
-            </Link>
+          <div className="max-w-2xl">
+            <p className="text-eyebrow uppercase tracking-[0.16em] text-paper mb-6 drop-shadow-[0_1px_3px_rgba(10,10,10,0.6)]">
+              {eyebrowText}
+            </p>
+            <h1 className="font-display font-light text-display-hero text-paper leading-[0.95] drop-shadow-[0_2px_8px_rgba(10,10,10,0.5)]">
+              {microcopy.hero.titulo}
+            </h1>
+            <p className="font-sans text-body-lg text-paper mt-6 drop-shadow-[0_1px_4px_rgba(10,10,10,0.6)]">
+              {microcopy.hero.subtitulo}
+            </p>
+            <div className="mt-10 flex flex-wrap gap-4">
+              <Link
+                href={linkPrimario}
+                className="inline-flex items-center justify-center px-8 py-4 font-sans font-medium text-body-sm uppercase tracking-[0.04em] bg-paper text-ink hover:bg-paper-warm transition-colors duration-fast shadow-[0_4px_16px_rgba(10,10,10,0.25)]"
+              >
+                {microcopy.hero.cta_primario}
+              </Link>
+              <Link
+                href="/sobre"
+                className="inline-flex items-center justify-center px-8 py-4 font-sans font-medium text-body-sm uppercase tracking-[0.04em] border border-paper/70 text-paper hover:bg-paper hover:text-ink transition-colors duration-fast backdrop-blur-[2px] bg-ink/10"
+              >
+                {microcopy.hero.cta_secundario}
+              </Link>
+            </div>
           </div>
         </div>
       </div>
