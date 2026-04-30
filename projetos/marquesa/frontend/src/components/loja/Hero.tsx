@@ -29,10 +29,12 @@ export function Hero({
         className="object-cover"
       />
 
-      {/* Sombra densa e uniforme em toda a foto pra texto ler nítido */}
-      <div className="absolute inset-0 bg-ink/75" aria-hidden="true" />
+      {/* Sombra densa, uniforme, NÃO discreta — feedback Gustavo iter5:
+          quer ver sombra forte mesmo. ink/85 ≈ 85% preto sobre a foto.
+          Reforço inferior pra preservar profundidade. */}
+      <div className="absolute inset-0 bg-ink/85" aria-hidden="true" />
       <div
-        className="absolute inset-0 bg-gradient-to-t from-ink/40 via-transparent to-transparent"
+        className="absolute inset-0 bg-gradient-to-t from-ink/60 via-ink/15 to-transparent"
         aria-hidden="true"
       />
 
