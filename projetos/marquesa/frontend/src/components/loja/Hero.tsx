@@ -35,11 +35,11 @@ export function Hero({
              texto ilegível por estar sobre área clara da imagem.
           2) Vignette inferior sutil garante contraste no scroll cue. */}
       <div
-        className="absolute inset-0 bg-gradient-to-r from-ink/80 via-ink/55 to-ink/5"
+        className="absolute inset-0 bg-gradient-to-r from-ink/95 via-ink/75 to-ink/25"
         aria-hidden="true"
       />
       <div
-        className="absolute inset-0 bg-gradient-to-t from-ink/30 via-transparent to-transparent"
+        className="absolute inset-0 bg-gradient-to-t from-ink/40 via-ink/10 to-transparent"
         aria-hidden="true"
       />
 
