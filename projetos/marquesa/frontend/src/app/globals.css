@@ -1,0 +1,144 @@
+/* Marquesa — global styles. Tokens viviam em design/tokens.css; aqui replicamos
+   o conteúdo pra que o Tailwind resolva CSS vars sem depender de import externo
+   (next compila TS apenas dentro do frontend). Fonte de verdade: design/tokens.css
+   no projeto raiz. Mudou ali, replica aqui. */
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    /* ============ Tier 1 — primitives ============ */
+    --ink:        #0A0A0A;
+    --ink-soft:   #1A1A1A;
+
+    --paper:      #FAFAF7;
+    --paper-warm: #F4F1EA;
+
+    --graphite:   #1F1F1F;
+    --ash:        #6B6B6B;
+    --ash-soft:   #9A9A9A;
+
+    --bone:       #E8E4DD;
+    --bone-soft:  #EFEBE3;
+
+    --moss:       #4A5D4F;
+    --moss-deep:  #3B4B3F;
+    --moss-pale:  #DCE4DE;
+    --moss-paper: #EEF2EE;
+
+    /* ============ Tier 2 — semantic ============ */
+    --bg:           var(--paper);
+    --bg-elevated:  var(--paper-warm);
+    --bg-inverse:   var(--graphite);
+    --bg-overlay:   rgba(10, 10, 10, 0.20);
+    --bg-overlay-strong: rgba(10, 10, 10, 0.92);
+
+    --text:         var(--ink);
+    --text-muted:   var(--ash);
+    --text-subtle:  var(--ash-soft);
+    --text-inverse: var(--paper);
+
+    --border:        var(--bone);
+    --border-strong: var(--ash-soft);
+    --border-subtle: var(--bone-soft);
+
+    --accent:        var(--moss);
+    --accent-hover:  var(--moss-deep);
+    --accent-pale:   var(--moss-pale);
+    --accent-foreground: var(--paper);
+
+    /* Tipografia (next/font preenche estas vars no layout) */
+    --font-display: 'Cormorant Garamond', Georgia, 'Times New Roman', serif;
+    --font-sans:    'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+    --font-mono:    'Geist Mono', 'JetBrains Mono', ui-monospace, monospace;
+
+    /* Animação */
+    --duration-instant: 120ms;
+    --duration-fast:    200ms;
+    --duration-base:    400ms;
+    --duration-reveal:  700ms;
+
+    --ease-standard: cubic-bezier(0.16, 1, 0.3, 1);
+    --ease-swift:    cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  /* Reset / base — body usa paper de fundo, ink para texto */
+  html {
+    /* NUNCA scroll-behavior: smooth global. Lição registrada em
+       feedback_scroll_behavior_smooth_proibido.md (Kore Tech bug). */
+    -webkit-text-size-adjust: 100%;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  body {
+    background-color: var(--bg);
+    color: var(--text);
+    font-family: var(--font-sans);
+    font-size: 16px;
+    line-height: 1.6;
+  }
+
+  /* H1-H4 em serif por default (componente pode override) */
+  h1, h2, h3, h4 {
+    font-family: var(--font-display);
+    color: var(--text);
+    font-weight: 400;
+  }
+
+  /* Focus visível em todos os interativos */
+  :focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+  }
+
+  /* Inputs herdarem fontes */
+  input, button, select, textarea {
+    font: inherit;
+  }
+
+  /* Reduced motion — desliga reveal e hovers animados */
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+    }
+  }
+}
+
+@layer utilities {
+  /* Numerais tabulares onde número precisa alinhar */
+  .tnum,
+  .price,
+  .stat,
+  .feature-number {
+    font-feature-settings: 'tnum' 1, 'lnum' 1;
+  }
+
+  /* Container central com padding lateral consistente */
+  .container-marquesa {
+    width: 100%;
+    max-width: 1280px;
+    margin-left: auto;
+    margin-right: auto;
+    padding-left: 1.5rem;
+    padding-right: 1.5rem;
+  }
+  @media (min-width: 768px) {
+    .container-marquesa {
+      padding-left: 2rem;
+      padding-right: 2rem;
+    }
+  }
+
+  /* Hide scrollbar mas mantém scroll funcional (galeria PDP, p.ex.) */
+  .no-scrollbar {
+    scrollbar-width: none;
+  }
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+}

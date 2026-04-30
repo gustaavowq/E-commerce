@@ -1,0 +1,150 @@
+/* =====================================================================
+   Marquesa — Design Tokens (fonte de verdade)
+   Importar em frontend/src/app/globals.css ANTES das diretivas @tailwind.
+   Tier 1 (primitives) -> Tier 2 (semantic vars) -> usado por Tailwind extend.
+   Mudou aqui? Atualiza brand-brief.md + dispara mensagem update-brief.
+   ===================================================================== */
+
+@layer base {
+  :root {
+    /* ============ Tier 1 — primitives (paleta crua) ============ */
+
+    /* Ink scale (preto editorial) */
+    --ink:        #0A0A0A;
+    --ink-soft:   #1A1A1A;
+
+    /* Paper scale (off-white quente) */
+    --paper:      #FAFAF7;
+    --paper-warm: #F4F1EA;
+
+    /* Neutros frios */
+    --graphite:   #1F1F1F;
+    --ash:        #6B6B6B;
+    --ash-soft:   #9A9A9A;
+
+    /* Bone (off-white acinzentado para borders) */
+    --bone:       #E8E4DD;
+    --bone-soft:  #EFEBE3;
+
+    /* Accent — verde-musgo (única cor da marca) */
+    --moss:       #4A5D4F;
+    --moss-deep:  #3B4B3F;
+    --moss-pale:  #DCE4DE;
+    --moss-paper: #EEF2EE;
+
+    /* ============ Tier 2 — semantic ============ */
+
+    /* Surfaces */
+    --bg:           var(--paper);
+    --bg-elevated:  var(--paper-warm);
+    --bg-inverse:   var(--graphite);
+    --bg-overlay:   rgba(10, 10, 10, 0.20);
+    --bg-overlay-strong: rgba(10, 10, 10, 0.92);
+
+    /* Text */
+    --text:         var(--ink);
+    --text-muted:   var(--ash);
+    --text-subtle:  var(--ash-soft);
+    --text-inverse: var(--paper);
+
+    /* Borders */
+    --border:        var(--bone);
+    --border-strong: var(--ash-soft);
+    --border-subtle: var(--bone-soft);
+
+    /* Accent semantic */
+    --accent:        var(--moss);
+    --accent-hover:  var(--moss-deep);
+    --accent-pale:   var(--moss-pale);
+    --accent-foreground: var(--paper);
+
+    /* Status pills (imóvel) */
+    --status-disponivel-bg:    var(--moss-pale);
+    --status-disponivel-text:  var(--moss-deep);
+    --status-reservado-bg:     var(--bone);
+    --status-reservado-text:   var(--ash);
+    --status-negociacao-bg:    var(--paper-warm);
+    --status-negociacao-text:  var(--ink);
+    --status-negociacao-border: var(--bone);
+    --status-vendido-bg:       var(--ink);
+    --status-vendido-text:     var(--paper);
+    --status-inativo-text:     var(--ash-soft);
+    --status-inativo-border:   var(--bone);
+
+    /* ============ Tipografia ============ */
+    /* Substituir por Canela / Söhne quando licenciado em prod. */
+    --font-display: 'Cormorant Garamond', Georgia, 'Times New Roman', serif;
+    --font-sans:    'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+    --font-mono:    'Geist Mono', 'JetBrains Mono', ui-monospace, monospace;
+
+    /* Tamanhos canônicos */
+    --fs-eyebrow:   12px;
+    --fs-caption:   12px;
+    --fs-body-sm:   14px;
+    --fs-body:      16px;
+    --fs-body-lg:   18px;
+    --fs-heading-md: 20px;
+    --fs-heading-lg: 24px;
+    --fs-display-md: 32px;
+    --fs-display-lg: clamp(32px, 4vw, 48px);
+    --fs-display-xl: clamp(40px, 5.5vw, 64px);
+    --fs-display-hero: clamp(56px, 9vw, 96px);
+
+    /* Letter-spacing canônico */
+    --ls-eyebrow:   0.16em;
+    --ls-caption:   0.04em;
+    --ls-display:   -0.015em;
+    --ls-hero:      -0.02em;
+
+    /* ============ Espaçamento (uso direto em CSS, Tailwind segue default) ============ */
+    --space-1: 4px;
+    --space-2: 8px;
+    --space-3: 12px;
+    --space-4: 16px;
+    --space-5: 20px;
+    --space-6: 24px;
+    --space-8: 32px;
+    --space-12: 48px;
+    --space-16: 64px;
+    --space-24: 96px;
+    --space-32: 128px;
+
+    /* ============ Border radius ============ */
+    --radius-0:    0;
+    --radius-sm:   2px;
+    --radius-md:   4px;
+    --radius-full: 9999px;
+
+    /* ============ Sombra (raramente usada — Marquesa é flat) ============ */
+    --shadow-card-rest:  none;
+    --shadow-card-hover: none;
+    --shadow-modal:      0 20px 50px -10px rgba(10, 10, 10, 0.18);
+    --shadow-sticky:     0 1px 0 var(--bone);
+
+    /* ============ Animação ============ */
+    --duration-instant: 120ms;
+    --duration-fast:    200ms;
+    --duration-base:    400ms;
+    --duration-reveal:  700ms;
+
+    --ease-standard: cubic-bezier(0.16, 1, 0.3, 1);
+    --ease-swift:    cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  /* Reduced motion — desliga reveal e hovers animados */
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+    }
+  }
+
+  /* Numerais tabulares onde número precisa alinhar */
+  .tnum,
+  .price,
+  .stat,
+  .feature-number {
+    font-feature-settings: 'tnum' 1, 'lnum' 1;
+  }
+}

@@ -1,0 +1,36 @@
+# =============================================================================
+# Marquesa — Docker Compose DEV (local)
+# Sobe só o Postgres pra desenvolver. API e frontend rodam local com `npm run dev`
+# (mais rápido que rebuildar container a cada save).
+#
+# Uso:
+#   cd projetos/marquesa/infra
+#   docker compose up -d
+#
+# Conexão (no .env do backend):
+#   DATABASE_URL="postgresql://marquesa:dev@localhost:5433/marquesa?schema=public"
+#
+# A porta 5433 evita conflito com Postgres locais que já usem 5432.
+# =============================================================================
+
+services:
+  db:
+    image: postgres:16-alpine
+    container_name: marquesa-db-dev
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: marquesa
+      POSTGRES_PASSWORD: dev
+      POSTGRES_DB: marquesa
+    ports:
+      - "127.0.0.1:5433:5432"
+    volumes:
+      - marquesa-dbdata-dev:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U marquesa -d marquesa"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+volumes:
+  marquesa-dbdata-dev:

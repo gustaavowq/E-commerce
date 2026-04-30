@@ -1,0 +1,98 @@
+# =============================================================================
+# Marquesa — Docker Compose PROD (VPS Ever Growth — Jean)
+#
+# Convenções obrigatórias (memoria/reference_vps_ever_growth.md):
+#   - Container: gustavo-marquesa-{servico}
+#   - Bind 127.0.0.1 (NUNCA 0.0.0.0) — nginx host faz a ponte pública
+#   - Faixa de portas livres 8200-8299 (8210=web, 8211=api)
+#   - mem_limit + cpus em todos services
+#   - USER non-root (já no Dockerfile)
+#   - Postgres SEM porta exposta
+#   - Log rotation (max-size 10m, max-file 3)
+#
+# Uso (na VPS):
+#   cd /opt/gustavo/marquesa/infra
+#   docker compose -f docker-compose.prod.yml up -d --build
+# =============================================================================
+
+services:
+  db:
+    image: postgres:16-alpine
+    container_name: gustavo-marquesa-db
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: marquesa
+      POSTGRES_PASSWORD: ${DB_PASSWORD:?DB_PASSWORD obrigatorio no .env do compose}
+      POSTGRES_DB: marquesa
+    volumes:
+      - marquesa-dbdata:/var/lib/postgresql/data
+    networks:
+      - marquesa-net
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U marquesa -d marquesa"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    mem_limit: 512m
+    cpus: 1.0
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+  api:
+    build:
+      context: ../backend
+      dockerfile: Dockerfile
+    container_name: gustavo-marquesa-api
+    restart: unless-stopped
+    env_file: ../backend/.env.production
+    environment:
+      # Override do host do DB pra apontar pro container (não localhost)
+      # Garante que o DATABASE_URL no .env.production possa usar @db:5432 OU @localhost (override aqui).
+      NODE_ENV: production
+    ports:
+      - "127.0.0.1:8211:8211"
+    depends_on:
+      db:
+        condition: service_healthy
+    networks:
+      - marquesa-net
+    mem_limit: 512m
+    cpus: 1.0
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+  web:
+    build:
+      # Context é o projeto raiz (projetos/marquesa/) pra que o Dockerfile do
+      # frontend possa COPY do copy/ que é irmão de frontend/.
+      context: ..
+      dockerfile: frontend/Dockerfile
+    container_name: gustavo-marquesa-web
+    restart: unless-stopped
+    env_file: ../frontend/.env.production
+    ports:
+      - "127.0.0.1:8210:3000"
+    depends_on:
+      - api
+    networks:
+      - marquesa-net
+    mem_limit: 512m
+    cpus: 1.0
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+networks:
+  marquesa-net:
+    driver: bridge
+
+volumes:
+  marquesa-dbdata:
